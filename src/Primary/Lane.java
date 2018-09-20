@@ -4,6 +4,8 @@ public class Lane {
 
     private boolean isTurn;
     private String name;
+    private boolean carOnLane;
+    private boolean emergencyOnLane;
     private MicrowaveSensor microwaveSensor;
     private EmergencySensor emergencySensor;
 
@@ -16,5 +18,13 @@ public class Lane {
 
     public String getName (){
         return this.name;
+    }
+
+    public boolean carOnLane(){
+        return this.carOnLane;
+    }
+
+    public boolean emergencyOnLane(){
+        return this.emergencyOnLane;
     }
 }

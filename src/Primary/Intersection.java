@@ -55,4 +55,12 @@ public class Intersection {
         }
         return names;
     }
+
+    public boolean getCarOnLane(Lane lane){
+        return lane.carOnLane();
+    }
+
+    public boolean getEmergencyOnLane(Lane lane){
+        return lane.emergencyOnLane();
+    }
 }
