@@ -1,6 +1,6 @@
 package Primary;
 
-public class TestTCS {
+public class TestTCS extends Thread {
 
     public void begin(){
         while(true){
@@ -24,7 +24,16 @@ public class TestTCS {
                 System.out.println("Emergency on lane " + n + " - " + n.getEmergencyOnLane());
             }
 
+            for(Lights p : Lights.values()){
+                System.out.println("Pedestrian at light " + p + " - " + p.isPedestrianAt());
+            }
+
             System.out.println("Loop Done...");
+            try {
+                sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
