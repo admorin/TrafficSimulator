@@ -13,7 +13,6 @@ public class Main extends Application {
      * intersection to the TestTCS program for them to run. This will also call run() on the TestTCS code.
      */
 
-    Intersection intersection;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -21,7 +20,6 @@ public class Main extends Application {
         Pane mainPane = new Pane();
 
         Controller controller = new Controller();
-        intersection = controller.getIntersection();
         controller.start();
 
         root.getChildren().add(mainPane);

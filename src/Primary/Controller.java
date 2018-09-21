@@ -1,16 +1,12 @@
 package Primary;
 
-import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
+import javafx.animation.AnimationTimer;
 
 public class Controller extends Thread{
 
-    private Intersection intersection;
-    private Pane mainPane;
+    private AnimationTimer animationTimer;
 
     public Controller(){
-        intersection = new Intersection();
-        intersection.start();
     }
 
     public void run(){
@@ -21,13 +17,16 @@ public class Controller extends Thread{
                     Thread.currentThread().getId() + " Controller Thread" +
                     " is running");
 
-            TestTCS test = new TestTCS(intersection);
+            animationTimer = new AnimationTimer() {
+                @Override
+                public void handle(long now) {
+                    //updateGUI();
+                    //TODO Beau!!!! This is where we are going to update the GUI, can you make this one function call do all the updating?
+                }
+            };
+            animationTimer.start();
+            TestTCS test = new TestTCS();
             test.begin();
-
-            //END
-
-            System.out.println("HERE");
-
         }
         catch (Exception e)
         {
@@ -35,9 +34,4 @@ public class Controller extends Thread{
             System.out.println ("Exception is caught");
         }
     }
-
-    public Intersection getIntersection(){
-        return intersection;
-    }
-
 }
