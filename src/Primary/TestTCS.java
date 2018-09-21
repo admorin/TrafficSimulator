@@ -16,6 +16,10 @@ public class TestTCS extends Thread {
                 k.setColor(SignalColor.RED);
             }
 
+            for(Lights l : Lights.values()){
+                l.setPedestrianAt(!l.isPedestrianAt());
+            }
+
             for(Lanes m : Lanes.values()){
                 System.out.println("Car on lane " + m + " - " + m.getCarOnLane());
             }
@@ -26,6 +30,14 @@ public class TestTCS extends Thread {
 
             for(Lights p : Lights.values()){
                 System.out.println("Pedestrian at light " + p + " - " + p.isPedestrianAt());
+            }
+
+            for(Lanes q : Lanes.values()){
+                q.setCarOnLane(!q.getCarOnLane());
+            }
+
+            for(Lanes r : Lanes.values()){
+                r.setEmergencyOnLane(!r.getEmergencyOnLane());
             }
 
             System.out.println("Loop Done...");
