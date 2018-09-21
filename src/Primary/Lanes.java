@@ -1,27 +1,25 @@
 package Primary;
 
 public enum Lanes {
-    N1 (1, true, false, false, SignalColor.RED),
-    N2 (2, false, false, false, SignalColor.RED),
-    N3 (3, false, false, false, SignalColor.RED),
-    E1 (11, true, false, false, SignalColor.RED),
-    E2 (12, false, false, false, SignalColor.RED),
-    E3 (13, false, false, false, SignalColor.RED),
-    S1 (21, true, false, false, SignalColor.RED),
-    S2 (22, false, false, false, SignalColor.RED),
-    S3 (23, false, false, false, SignalColor.RED),
-    W1 (31, true, false, false, SignalColor.RED),
-    W2 (32, false, false, false, SignalColor.RED),
-    W3 (33, false, false, false, SignalColor.RED);
+    N1 (true, false, false, SignalColor.RED),
+    N2 (false, false, false, SignalColor.RED),
+    N3 (false, false, false, SignalColor.RED),
+    E1 (true, false, false, SignalColor.RED),
+    E2 (false, false, false, SignalColor.RED),
+    E3 (false, false, false, SignalColor.RED),
+    S1 (true, false, false, SignalColor.RED),
+    S2 (false, false, false, SignalColor.RED),
+    S3 (false, false, false, SignalColor.RED),
+    W1 (true, false, false, SignalColor.RED),
+    W2 (false, false, false, SignalColor.RED),
+    W3 (false, false, false, SignalColor.RED);
 
-    public final int i;
     public final boolean isTurn;
     public boolean carOnLane;
     public boolean emergencyOnLane;
     public SignalColor color;
 
-    Lanes(int i, boolean isTurn, boolean carOnLane, boolean emergencyOnLane, SignalColor color) {
-        this.i = i;
+    Lanes(boolean isTurn, boolean carOnLane, boolean emergencyOnLane, SignalColor color) {
         this.isTurn = isTurn;
         this.carOnLane = carOnLane;
         this.emergencyOnLane = emergencyOnLane;
