@@ -2,25 +2,45 @@ package Primary;
 
 import java.util.LinkedList;
 
-public class Intersection {
+public class Intersection extends Thread {
 
     public LinkedList<Light> lights = new LinkedList<>();
+
+    public void run(){
+        try
+        {
+            // Displaying the thread that is running
+            System.out.println ("Thread " +
+                    Thread.currentThread().getId() + " Intersection Thread" +
+                    " is running");
+
+        }
+        catch (Exception e)
+        {
+            // Throwing an exception
+            System.out.println ("Exception is caught");
+        }
+    }
 
     public Intersection(){
         lights.add(new Light("North Light",3, 1));
         lights.add(new Light("East Light",3, 1));
         lights.add(new Light("South Light",3, 1));
         lights.add(new Light("West Light",3, 1));
+
+        for(Light i : lights){
+            i.start();
+        }
     }
 
     public LinkedList<Light> getLights(){
         return this.lights;
     }
 
-    public LinkedList<Lane> getLane(Light light){
+    public Lane getLane(Light light, int index){
         for(Light i : lights){
             if(light.equals(i)){
-                return i.getLanes();
+                return i.getLanes().get(index);
             }
         }
         return null;
@@ -38,7 +58,7 @@ public class Intersection {
     public String printLights(){
         String names = "";
         for(Light i : lights){
-            names += i.getName();
+            names += i.getLightName();
             names += "   ";
         }
         return names;
@@ -48,7 +68,7 @@ public class Intersection {
         String names = "";
         for(Light i : lights){
             for(Lane j : i.lanes){
-                names += j.getName();
+                names += j.getLaneName();
                 names += "   ";
             }
             names += "\n";

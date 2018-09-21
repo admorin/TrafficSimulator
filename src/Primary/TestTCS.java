@@ -2,17 +2,29 @@ package Primary;
 
 public class TestTCS {
 
+    Intersection intersection;
+
     public TestTCS(Intersection intersection){
-        System.out.println(intersection.printLights());
-        System.out.println(intersection.printLanes());
+        this.intersection = intersection;
     }
 
-    public void run(){
+    public void begin(){
+        while(true){
 
-        /**
-         * Test code will go here. This is run by the Main once an intersection is made.
-         */
 
+
+
+
+
+            System.out.println("This is test code.");
+
+
+
+
+
+
+
+        }
     }
 
 }

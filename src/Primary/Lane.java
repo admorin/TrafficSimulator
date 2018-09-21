@@ -1,6 +1,6 @@
 package Primary;
 
-public class Lane {
+public class Lane extends Thread {
 
     private boolean isTurn;
     private String name;
@@ -9,6 +9,22 @@ public class Lane {
     private MicrowaveSensor microwaveSensor;
     private EmergencySensor emergencySensor;
 
+    public void run(){
+        try
+        {
+            // Displaying the thread that is running
+            System.out.println ("Thread " +
+                    Thread.currentThread().getId() + " Lane Thread" +
+                    " is running");
+
+        }
+        catch (Exception e)
+        {
+            // Throwing an exception
+            System.out.println ("Exception is caught LANE " + this.name);
+        }
+    }
+
     public Lane(boolean isTurn, String name){
         this.isTurn = isTurn;
         this.name = name;
@@ -16,7 +32,7 @@ public class Lane {
         this.emergencySensor = new EmergencySensor(this);
     }
 
-    public String getName (){
+    public String getLaneName (){
         return this.name;
     }
 
@@ -26,5 +42,9 @@ public class Lane {
 
     public boolean emergencyOnLane(){
         return this.emergencyOnLane;
+    }
+
+    public void setCarOnLane(){
+        this.carOnLane = true;
     }
 }

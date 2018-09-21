@@ -3,21 +3,34 @@ package Primary;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 public class Main extends Application {
 
-    Intersection intersection = new Intersection();
+    /**
+     * This is the primary controller for the program. This will create the intersection, create the GUI, and give the
+     * intersection to the TestTCS program for them to run. This will also call run() on the TestTCS code.
+     */
+
+    Intersection intersection;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
         Group root = new Group();
-        primaryStage.setTitle("Traffic Simulator");
-        primaryStage.setScene(new Scene(root, 600, 450));
-        primaryStage.show();
+        Pane mainPane = new Pane();
 
-        TestTCS test = new TestTCS(intersection);
-        test.run();
+        Controller controller = new Controller();
+        intersection = controller.getIntersection();
+        controller.start();
+
+        root.getChildren().add(mainPane);
+
+        Scene scene = new Scene(root, 600, 450);
+
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Traffic Simulator");
+        primaryStage.show();
     }
 
 
