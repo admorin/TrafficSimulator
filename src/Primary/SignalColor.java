@@ -1,13 +1,15 @@
 package Primary;
 
+import javafx.scene.paint.Color;
+
 public enum SignalColor {
-    RED (0),
-    YELLOW (1),
-    GREEN (2);
+    RED (Color.RED),
+    YELLOW (Color.YELLOW),
+    GREEN (Color.GREEN);
 
-    int color;
+    Color color;
 
-    SignalColor(int i) {
-        this.color = i;
+    SignalColor(Color color) {
+        this.color = color;
     }
 }
