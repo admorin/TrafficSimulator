@@ -61,7 +61,7 @@ public class Car extends Thread{
         this.notify();
     }
 
-    // Decrement the total threadCount back towards 0 after move update
+    // Decrement the total activeCount back towards 0 after move update
     // then wait until drawn and notified to increment back up for another move
     //
     private synchronized void waiter(){
@@ -77,14 +77,14 @@ public class Car extends Thread{
     private void increment(){
         synchronized (Controller.countLock)
         {
-            Controller.threadCount++;
+            Controller.activeCount++;
         }
     }
 
     private void decrement(){
         synchronized (Controller.countLock)
         {
-            Controller.threadCount--;
+            Controller.activeCount--;
         }
     }
 

@@ -25,7 +25,6 @@ public class Main extends Application {
         // Setup border pane with HBox of two buttons along the top and
         // canvas to display the simulation in the center, also initialize
         // the controller with something to draw on
-
         BorderPane root = new BorderPane();
         Canvas canvas = new Canvas(500, 500);
         GraphicsContext gc = canvas.getGraphicsContext2D();
@@ -38,43 +37,34 @@ public class Main extends Application {
         Button moderateTraffic = new Button("Moderate Traffic");
         Button lowTraffic = new Button("Low Traffic");
         Button combinationTraffic = new Button("Combination");
-        Button emergency = new Button("Emergency");
         Button reset = new Button("Reset");
 
         Controller controller = new Controller(gc);
         controller.start();
 
         // Handle button press actions
-
         highTraffic.setOnMousePressed(e -> {
-            controller.spawnCar();
+            controller.highTrafficMode();
         });
 
         moderateTraffic.setOnMousePressed(e -> {
-            controller.spawnCar();
+            controller.moderateTrafficMode();
         });
 
         lowTraffic.setOnMousePressed(e -> {
-            controller.spawnCar();
+            controller.lowTrafficMode();
         });
 
         combinationTraffic.setOnMousePressed(e -> {
-            controller.spawnCar();
-        });
-
-        emergency.setOnMousePressed(e -> {
-            controller.spawnCar();
+            controller.combinationMode();
         });
 
         reset.setOnMousePressed(e -> {
-            controller.clearTraffic();
+            controller.reset();
         });
 
-
         // Setup the scene
-
-        controls.getChildren().addAll(controlLabel, highTraffic, moderateTraffic, lowTraffic, combinationTraffic,
-                emergency, reset);
+        controls.getChildren().addAll(controlLabel, highTraffic, moderateTraffic, lowTraffic, combinationTraffic, reset);
         root.setRight(controls);
         root.setLeft(canvas);
 

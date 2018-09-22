@@ -2,17 +2,26 @@ package Primary;
 
 import GUI.Simulation;
 import javafx.animation.AnimationTimer;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.util.Duration;
 
 public class Controller extends Thread{
 
-    private Simulation sim;
-    public volatile static int threadCount = 0; // used to see how many threads need to move before draw update
-    public static final Object countLock = new Object(); // Used to lock the threadCount when changed
+    private Simulation simulation;
+    public volatile static int activeCount = 0; // used to see how many threads need to move before draw update
+    public static final Object countLock = new Object(); // Used to lock the activeCount when changed
+    public Timeline spawnInterval = new Timeline();
+    public int spawnDuration = 0;
 
+    public Controller(GraphicsContext gc)
+    {
+        this.simulation = new Simulation(gc);
 
-    public Controller(GraphicsContext gc){
-        this.sim = new Simulation(gc);
+        spawnInterval.setCycleCount(2);
+        spawnInterval.setAutoReverse(true);
+        spawnInterval.getKeyFrames().add(new KeyFrame(Duration.millis(spawnDuration*1000)));
     }
 
     public void run(){
@@ -42,15 +51,43 @@ public class Controller extends Thread{
     // Button press action to spawn a car
     //
     public void spawnCar(){
-        sim.spawnCar();
+        simulation.spawnCar();
     }
 
     // Button press action to remove all the traffic threads
     //
-    public void clearTraffic(){
-        sim.clear();
+    public void reset(){
+        simulation.clear();
     }
 
+    public void highTrafficMode()
+    {
+        spawnInterval.stop();
+        spawnDuration = 3;
+        spawnInterval.getKeyFrames().add(new KeyFrame(Duration.millis(spawnDuration*1000)));
+        spawnInterval.playFromStart();
+    }
+
+    public void moderateTrafficMode()
+    {
+        spawnInterval.stop();
+        spawnDuration = 5;
+        spawnInterval.getKeyFrames().add(new KeyFrame(Duration.millis(spawnDuration*1000)));
+        spawnInterval.playFromStart();
+    }
+
+    public void lowTrafficMode()
+    {
+        spawnInterval.stop();
+        spawnDuration = 7;
+        spawnInterval.getKeyFrames().add(new KeyFrame(Duration.millis(spawnDuration*1000)));
+        spawnInterval.playFromStart();
+    }
+
+    public void combinationMode()
+    {
+
+    }
 
     // Inner gui updating class that moves and redraws traffic on a timer
     //
@@ -62,17 +99,18 @@ public class Controller extends Thread{
         @Override
         public void handle(long now) // called by JavaFX at 60Hz
         {
-            // threadCount will be 0 when every single car thread has moved
-            // then the sim can redraw all traffic at the new positions and notify
+            System.out.println(spawnInterval.getCurrentTime().toSeconds());
+            
+            // activeCount will be 0 when every single car thread has moved
+            // then the simulation can redraw all traffic at the new positions and notify
             // each thread it can move again
-
-            if (threadCount == 0) {
-                //sim.updateSpots();
-                sim.drawTraffic(); // loop over all traffic and draw new positions
-                sim.freeTraffic(); // notify all
+            if (activeCount == 0) {
+                //simulation.updateSpots();
+                simulation.drawTraffic(); // loop over all traffic and draw new positions
+                simulation.freeTraffic(); // notify all
             } else {
                 // this shouldn't happen
-                System.out.println("threads count at " + threadCount);
+                System.out.println("threads count at " + activeCount);
             }
         }
 

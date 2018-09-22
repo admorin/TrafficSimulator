@@ -17,8 +17,6 @@ public class Ground {
 
     private LinkedList<Car> cars = new LinkedList<>();
 
-
-
     // Allows a Road or Lane object to have reference to the Intersection
     // object that is a neighbor of it for Cars to transfer onto
     //
@@ -46,8 +44,6 @@ public class Ground {
     public Car getLast(){
         return last;
     }
-
-
 
     public void addCar(Car c){
         cars.add(c);
