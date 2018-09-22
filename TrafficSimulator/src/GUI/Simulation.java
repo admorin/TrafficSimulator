@@ -2,6 +2,7 @@ package GUI;
 
 import Primary.Lanes;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
 import java.util.LinkedList;
@@ -83,7 +84,7 @@ public class Simulation {
     // Draws the initial setup with no traffic
     //
     private void drawInterSection() {
-        gc.setFill(Paint.valueOf("#33334d"));
+        gc.setFill(Paint.valueOf("#383838"));
         intersection.draw();
     }
 
@@ -108,6 +109,8 @@ public class Simulation {
         roads.add(left);
 
         intersection.connectRoads(roads); // give intersection object reference to the roads
+        gc.setFill(Paint.valueOf("#e8e8e8"));
+        gc.fillRect(0, 0, 500, 500);
         drawInterSection();
 
     }

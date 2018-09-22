@@ -41,7 +41,7 @@ public class Lane extends Ground{
     //
     public void drawLane(double x, double y, double laneWidth) {
 
-        gc.setFill(Paint.valueOf("#33334d"));
+        gc.setFill(Paint.valueOf("#383838"));
         this.laneWidth = laneWidth;
         double offset = count * laneWidth;
 
