@@ -8,12 +8,12 @@ import java.util.Random;
 
 public class Simulation {
 
-    private GraphicsContext gc;
+    private final GraphicsContext gc;
     private Boolean needsRefresh = true;
-    private Intersection intersection;
-    private int size = 80;
+    private final Intersection intersection;
+    private final int size = 80;
 
-    private LinkedList<Car> cars = new LinkedList<Car>();
+    private LinkedList<Car> cars = new LinkedList<>();
     private Boolean endSim = false;
 
     public Simulation(GraphicsContext gc){
@@ -104,7 +104,7 @@ public class Simulation {
 
         // All this initialization trash could be put into the Intersection constructor
         // but this could be used to let users customize the type of roads they want from a Graphics
-        LinkedList<RoadDisplay> roads = new LinkedList<RoadDisplay>();
+        LinkedList<RoadDisplay> roads = new LinkedList<>();
 
         RoadDisplay up = new RoadDisplay(gc, Direction.NORTH, size, intersection);
         RoadDisplay down = new RoadDisplay(gc, Direction.SOUTH, size, intersection);

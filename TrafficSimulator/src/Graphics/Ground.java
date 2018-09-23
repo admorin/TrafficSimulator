@@ -22,7 +22,7 @@ public class Ground {
     // Allows a RoadDisplay or LaneDisplay object to have reference to the Intersection
     // object that is a neighbor of it for Cars to transfer onto
     //
-    public void setIntersection(Ground neighbor) {
+    void setIntersection(Ground neighbor) {
         this.neighbor = neighbor;
     }
 
@@ -30,7 +30,7 @@ public class Ground {
         return this.neighbor;
     }
 
-    public void setPosition(double x, double y, int type) {
+    void setPosition(double x, double y, int type) {
         this.x = x;
         this.y = y;
         this.type = type; // type = 1 if Intersection, type = 0 if LaneDisplay
@@ -80,10 +80,7 @@ public class Ground {
     private Boolean checkBounds(Car c1, Car c2){
         double yDif = Math.abs(c1.getCarY() - c2.getCarY());
         double xDif = Math.abs(c1.getCarX() - c2.getCarX());
-        if (yDif < 5 && xDif < 5){
-            return  true;
-        }
-        return false;
+        return yDif < 5 && xDif < 5;
     }
 
 }

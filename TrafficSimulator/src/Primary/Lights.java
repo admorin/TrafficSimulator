@@ -6,8 +6,8 @@ public enum Lights {
     SOUTH (2, false),
     WEST (3, false);
 
-    public int number;
-    public boolean pedestrianAt;
+    private final int number;
+    private boolean pedestrianAt;
 
     Lights(int i, boolean pedestrianAt) {
         this.number = i;

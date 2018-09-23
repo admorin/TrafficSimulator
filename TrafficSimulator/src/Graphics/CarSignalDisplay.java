@@ -6,9 +6,9 @@ public class CarSignalDisplay {
 
     // LaneDisplay the light's on I'm guessing will be needed for each light to know
     // how many cars are waiting for it in a laneDisplay from a sensor
-    private LaneDisplay laneDisplay;
+    private final LaneDisplay laneDisplay;
 
-    private GraphicsContext gc;
+    private final GraphicsContext gc;
     private Boolean isRed = true;
     public double x;
     public double y;

@@ -7,17 +7,17 @@ import javafx.scene.paint.Paint;
 
 public class LaneDisplay extends Ground{
 
-    private GraphicsContext gc;
-    public Boolean isVert; // vertical or horizontal lane
-    public Boolean in; // ingoing or outgoing lane
+    private final GraphicsContext gc;
+    public final Boolean isVert; // vertical or horizontal lane
+    private Boolean in; // ingoing or outgoing lane
     private Boolean isMid = false;
 
     private CarSignalDisplay carSignalDisplay;
 
-    double laneX = 0;
-    double laneY = 0;
-    double laneLength;
-    double laneWidth;
+    private double laneX = 0;
+    private double laneY = 0;
+    private double laneLength;
+    private double laneWidth;
 
     private Lanes lane; // reference to the actual enum lane that the Test TCS will control
 
@@ -72,9 +72,9 @@ public class LaneDisplay extends Ground{
     // Draw the carSignalDisplay at the end of each lane, handles
     // the carSignalDisplay's color
     //
-    public void drawLight() {
+    private void drawLight() {
 
-        Paint color = Paint.valueOf("#990000");;
+        Paint color = Paint.valueOf("#990000");
         SignalColor c = lane.getSignal(); // Checks what the TC set this lane's signal as
         Boolean isRed = true;
 
@@ -148,19 +148,11 @@ public class LaneDisplay extends Ground{
     //
     private void setIncoming() {
         if (side == Direction.NORTH || side == Direction.EAST) {
-            if (count > 2){
-                in = false;
-            } else {
-                in = true;
-            }
+            in = count <= 2;
         }
 
         if (side == Direction.SOUTH || side == Direction.WEST) {
-            if (count > 1) {
-                in = true;
-            } else {
-                in = false;
-            }
+            in = count > 1;
         }
     }
 

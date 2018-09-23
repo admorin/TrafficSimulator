@@ -5,17 +5,17 @@ import javafx.scene.canvas.GraphicsContext;
 import java.util.LinkedList;
 import java.util.Random;
 
-public class RoadDisplay extends Ground {
+class RoadDisplay extends Ground {
 
     // RoadDisplay is currently set up to add 5 lanes to each road, 3 are ingoing,
     // 2 are outgoing. It takes in the size of the intersection, the side its
     // on, and it's neighbor which is always the Intersection object
 
-    private GraphicsContext gc;
-    private double size; // main intersection square size to fit the lanes around
+    private final GraphicsContext gc;
+    private final double size; // main intersection square size to fit the lanes around
 
-    private LinkedList<LaneDisplay> lanes = new LinkedList<LaneDisplay>();
-    private Random rn = new Random();
+    private final LinkedList<LaneDisplay> lanes = new LinkedList<>();
+    private final Random rn = new Random();
 
     public RoadDisplay(GraphicsContext gc, Direction side, double size, Ground neighbor) {
         this.gc = gc;
@@ -49,9 +49,8 @@ public class RoadDisplay extends Ground {
         }
 
 
-        for (int j = 0; j < lanes.size(); j ++) {
-            LaneDisplay l = lanes.get(j);
-            l.setPosition(x,y, 0);
+        for (LaneDisplay l : lanes) {
+            l.setPosition(x, y, 0);
             l.drawLane(x, y, laneWidth);
         }
     }
@@ -67,8 +66,7 @@ public class RoadDisplay extends Ground {
             randomStart += 2;
         }
 
-        LaneDisplay l = lanes.get(randomStart);
-        return  l;
+        return lanes.get(randomStart);
     }
 
     // Gets a random destination from the two leaving lanes
@@ -86,8 +84,7 @@ public class RoadDisplay extends Ground {
             randDest += 3;
         }
 
-        LaneDisplay l = lanes.get(randDest);
-        return  l;
+        return lanes.get(randDest);
     }
 
 

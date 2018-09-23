@@ -1,7 +1,6 @@
 package Primary;
 
 import javafx.application.Application;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -22,7 +21,7 @@ public class Main extends Application {
      */
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) {
 
 
         // Setup border pane with HBox of two buttons along the top and
@@ -50,12 +49,8 @@ public class Main extends Application {
         controller.start();
 
         // Handle button press actions
-        spawnButton.setOnMousePressed(e -> {
-            controller.spawnCar();
-        });
-        resetButton.setOnMousePressed(e -> {
-            controller.clearTraffic();
-        });
+        spawnButton.setOnMousePressed(e -> controller.spawnCar());
+        resetButton.setOnMousePressed(e -> controller.clearTraffic());
 
 
         // Setup the scene

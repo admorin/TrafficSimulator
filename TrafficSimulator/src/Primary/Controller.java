@@ -10,7 +10,7 @@ import java.util.TimerTask;
 
 public class Controller extends Thread{
 
-    private Simulation sim;
+    private final Simulation sim;
     private TestTCS test;
     public volatile static int threadCount = 0; // used to see how many threads need to move before draw update
     public static final Object countLock = new Object(); // Used to lock the threadCount when changed
@@ -63,7 +63,7 @@ public class Controller extends Thread{
     {
         private Boolean ending = false; // collision is true if any cars have collided in intersection
 
-        public Animation(){}
+        Animation(){}
 
         @Override
         public void handle(long now) // called by JavaFX at 60Hz
@@ -104,16 +104,13 @@ public class Controller extends Thread{
         // Timed task to clear the traffic, draw it again
         // and stop the animation updates
         //
-        TimerTask t = new TimerTask() {
+        final TimerTask t = new TimerTask() {
             @Override
             public void run() {
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        sim.clear();
-                        sim.drawTraffic();
-                        Animation.super.stop();
-                    }
+                Platform.runLater(() -> {
+                    sim.clear();
+                    sim.drawTraffic();
+                    Animation.super.stop();
                 });
 
             }

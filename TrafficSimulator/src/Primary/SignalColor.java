@@ -7,7 +7,7 @@ public enum SignalColor {
     YELLOW (Color.YELLOW),
     GREEN (Color.GREEN);
 
-    private Color color;
+    private final Color color;
 
     SignalColor(Color color) {
         this.color = color;

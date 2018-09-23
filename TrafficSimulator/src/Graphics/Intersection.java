@@ -5,10 +5,10 @@ import javafx.scene.canvas.GraphicsContext;
 import java.util.LinkedList;
 import java.util.Random;
 
-public class Intersection extends Ground {
+class Intersection extends Ground {
 
-    private  GraphicsContext gc;
-    private double size;
+    private final GraphicsContext gc;
+    private final double size;
     private LinkedList<RoadDisplay> roads = new LinkedList<>();
 
     public Intersection(GraphicsContext gc, double size){

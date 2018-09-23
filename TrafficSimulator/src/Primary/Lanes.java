@@ -14,10 +14,10 @@ public enum Lanes {
     W2 (false, false, false, SignalColor.RED),
     W3 (false, false, false, SignalColor.RED);
 
-    public final boolean isTurn;
-    public boolean carOnLane;
-    public boolean emergencyOnLane;
-    public SignalColor color;
+    private final boolean isTurn;
+    private boolean carOnLane;
+    private boolean emergencyOnLane;
+    private SignalColor color;
 
 
     Lanes(boolean isTurn, boolean carOnLane, boolean emergencyOnLane, SignalColor color) {

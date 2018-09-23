@@ -1,8 +1,6 @@
 package Primary;
 
-import java.awt.*;
-
-public class TestTCS extends Thread {
+class TestTCS extends Thread {
 
     private Boolean green = false;
     private Boolean running = true;

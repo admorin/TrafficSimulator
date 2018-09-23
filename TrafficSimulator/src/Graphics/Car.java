@@ -7,14 +7,14 @@ import java.util.Random;
 
 public class Car extends Thread{
     private Ground ground; // keeps track of which Ground piece it's on, could be LaneDisplay or Intersection
-    private Ground dest; // Always the ground piece it's heading to
-    private GraphicsContext gc;
+    private final Ground dest; // Always the ground piece it's heading to
+    private final GraphicsContext gc;
     private Boolean isMoving = true;
     private double laneLength;
     private Paint color;
 
     private CarSignalDisplay carSignalDisplay; // CarSignalDisplay it's checking for when it can go
-    private Car lead; // Reference to the car in front of it in each lane (could be null if first)
+    private final Car lead; // Reference to the car in front of it in each lane (could be null if first)
 
     private double carX;
     private double carY;
@@ -28,7 +28,7 @@ public class Car extends Thread{
 
     public Boolean collision = false; // is true when collided within intersection and stopped
     public Boolean needsGroundUpdate = false; // is true when it has entered or exited the intersection
-    private Paint[] col = {
+    private final Paint[] col = {
             Paint.valueOf("#ff8888"), // Array of colors
             Paint.valueOf("#88ff88"), // for the rectangle car to be
             Paint.valueOf("#8888ff"),
@@ -129,10 +129,9 @@ public class Car extends Thread{
     // to return if the car neededRefresh then would only redraw the intersection
     // if one of the cars needed it but that's not being used now
     //
-    public Boolean drawCar() {
+    public void drawCar() {
         gc.setFill(color);
         gc.fillRect(carX, carY, width, height);
-        return  true;
     }
 
     /*
@@ -140,11 +139,11 @@ public class Car extends Thread{
 
     1 ) if ground is a LaneDisplay type ( 0 ) and car is incoming then if the carSignalDisplay isn't red switch into intersection
     2 ) if car is leaving and it's out of bounds of current component then it must've arrived so stop running
-    3 ) if car is collisioned then stop it and wait for end
+    3 ) if car has crashed then stop it and wait for end
     4 ) if ground type is 1 then it's on the intersection so switch to destination lane
     5 ) else just check if the lead car it stopped for has moved yet
     */
-    public void updatePosition() {
+    private void updatePosition() {
         if (isMoving) {
             move();
         } else {
@@ -164,11 +163,8 @@ public class Car extends Thread{
         }
     }
 
-
-    // Sets up the width, height, x, y, and carSignalDisplay for
-    // a new car
-    //
-    private void setUpCar(Direction side){
+    private void renderCar(Direction side)
+    {
         if (side == Direction.NORTH || side == Direction.SOUTH) {
             width = 8;
             height = 16;
@@ -178,7 +174,13 @@ public class Car extends Thread{
             height = 8;
             carY += 2;
         }
+    }
 
+    // Sets up the width, height, x, y, and carSignalDisplay for
+    // a new car
+    //
+    private void setUpCar(Direction side){
+        renderCar(side);
         if (ground.type == 0) {
             LaneDisplay l = (LaneDisplay) ground;
             carSignalDisplay = l.getCarSignalDisplay();
@@ -329,15 +331,7 @@ public class Car extends Thread{
             carX +=  laneLength - width;
         }
 
-        if (side == Direction.NORTH || side == Direction.SOUTH) {
-            width = 8;
-            height = 16;
-            carX += 2;
-        } else {
-            width = 16;
-            height = 8;
-            carY += 2;
-        }
+        renderCar(side);
 
         // Tell the current ground object that this car is the last
         // one to be on th piece so if a new car is created then it knows
@@ -390,10 +384,11 @@ public class Car extends Thread{
     // Check car thread leading this one to see if it's within bounds
     // for collision then stops if so
     //
+    @SuppressWarnings("Duplicates")
     private void checkCollision() {
         if (ground.type == 1 && isMoving){ // if on the intersection
             Boolean result = ground.checkCollision(this); // then check all other cars on it
-            if (result){ // result = true when collisioned
+            if (result){ // result = true when car has crashed
                 color = Paint.valueOf("#ff0000");
                 isMoving = false;
                 collision = true;
@@ -402,11 +397,7 @@ public class Car extends Thread{
         } else if (lead != null) { // Check the car in front for collision
             if (side == Direction.NORTH || side == Direction.SOUTH){
                 double yDif = Math.abs(lead.carY - carY);
-                if (yDif < height + 5){
-                    isMoving = false;
-                } else{
-                    isMoving = true;
-                }
+                isMoving = !(yDif < height + 5);
                 if (lead.ground != this.ground) isMoving = true;
             } else {
                 double xDif = Math.abs(lead.carX - carX);
