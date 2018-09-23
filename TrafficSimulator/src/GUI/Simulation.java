@@ -2,7 +2,6 @@ package GUI;
 
 import Primary.Lanes;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
 import java.util.LinkedList;
@@ -16,6 +15,7 @@ public class Simulation {
     private int size = 80;
 
     private LinkedList<Car> cars = new LinkedList<Car>();
+    private Boolean endSim = false;
 
     public Simulation(GraphicsContext gc){
         this.gc = gc;
@@ -54,10 +54,12 @@ public class Simulation {
         }
     }
 
-    public void updateSpots(){
+    public Boolean updateSpots(){
         for (Car c : cars) {
+            if (c.collision) endSim = true;
             if (c.running && c.needsGroundUpdate) c.updateGround();
         }
+        return  endSim;
     }
 
 
@@ -70,21 +72,28 @@ public class Simulation {
 
         int range = (roads.size() - 1) + 1;
         int randomStart =  rn.nextInt(range);
-        Road r1 = roads.get(randomStart);
-        Lane start = r1.getRandomStart();
+        //randomStart = 3; // uncomment this line to spawn on specific road
+        Road r = roads.get(randomStart);
+        Lane start = r.getRandomStart();
 
-        int randomDest = rn.nextInt(range);
-        Road r2 = roads.get(randomDest);
-        Lane dest = r2.getRandomDest();
+        Lane dst = intersection.getRandomDest(start);
 
-        Car c = new Car(r1.getSide(), start, dest, gc);
+        System.out.println("spawning car at lane " + start.count + " with dst " + dst.side + " with lane count " + dst.count);
+        Car c = new Car(r.getSide(), start, dst, gc);
         cars.add(c);
     }
+
+    public void showEnd(){
+        gc.setFill(Paint.valueOf("#33334d"));
+        gc.strokeText("12 dead. Sim failed.", gc.getCanvas().getWidth() * .70 , 50, 250);
+    }
+
+
 
     // Draws the initial setup with no traffic
     //
     private void drawInterSection() {
-        gc.setFill(Paint.valueOf("#383838"));
+        gc.setFill(Paint.valueOf("#33334d"));
         intersection.draw();
     }
 
@@ -101,16 +110,15 @@ public class Simulation {
         Road up = new Road(gc, Direction.NORTH, size, intersection);
         Road down = new Road(gc, Direction.SOUTH, size, intersection);
         Road right = new Road(gc, Direction.EAST, size, intersection);
-        Road left = new Road(gc, Direction.WEST, size, intersection); /// left was 3, and right was 2
+        Road left = new Road(gc, Direction.WEST, size, intersection);
 
+        // roads(0) = north,  roads(1) = south, roads(2) = east, roads(3) = west
         roads.add(up);
         roads.add(down);
         roads.add(right);
         roads.add(left);
 
-        intersection.connectRoads(roads); // give intersection object reference to the roads
-        gc.setFill(Paint.valueOf("#e8e8e8"));
-        gc.fillRect(0, 0, 500, 500);
+        intersection.connectRoads(roads); // give intersection object reference to all the roads
         drawInterSection();
 
     }

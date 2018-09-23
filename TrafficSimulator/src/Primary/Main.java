@@ -6,9 +6,8 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
@@ -18,6 +17,7 @@ public class Main extends Application {
      * This is the primary controller for the program. This will create the intersection, create the GUI, and give the
      * intersection to the TestTCS program for them to run. This will also call run() on the TestTCS code.
      */
+
     @Override
     public void start(Stage primaryStage) throws Exception{
 
@@ -25,50 +25,36 @@ public class Main extends Application {
         // Setup border pane with HBox of two buttons along the top and
         // canvas to display the simulation in the center, also initialize
         // the controller with something to draw on
+
         BorderPane root = new BorderPane();
-        Canvas canvas = new Canvas(500, 500);
+        Canvas canvas = new Canvas(550, 550);
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        Label controlLabel = new Label("Mode:");
-
-        VBox controls = new VBox(15);
-
-        Button highTraffic = new Button("High Traffic");
-        Button moderateTraffic = new Button("Moderate Traffic");
-        Button lowTraffic = new Button("Low Traffic");
-        Button combinationTraffic = new Button("Combination");
-        Button reset = new Button("Reset");
+        HBox buttonPane = new HBox(30);
+        Button carButton = new Button("New Car");
+        Button clearButton = new Button("Clear Traffic");
 
         Controller controller = new Controller(gc);
         controller.start();
 
         // Handle button press actions
-        highTraffic.setOnMousePressed(e -> {
-            controller.highTrafficMode();
+
+        carButton.setOnMousePressed(e -> {
+            controller.spawnCar();
         });
 
-        moderateTraffic.setOnMousePressed(e -> {
-            controller.moderateTrafficMode();
+        clearButton.setOnMousePressed(e -> {
+            controller.clearTraffic();
         });
 
-        lowTraffic.setOnMousePressed(e -> {
-            controller.lowTrafficMode();
-        });
-
-        combinationTraffic.setOnMousePressed(e -> {
-            controller.combinationMode();
-        });
-
-        reset.setOnMousePressed(e -> {
-            controller.reset();
-        });
 
         // Setup the scene
-        controls.getChildren().addAll(controlLabel, highTraffic, moderateTraffic, lowTraffic, combinationTraffic, reset);
-        root.setRight(controls);
-        root.setLeft(canvas);
 
-        Scene scene = new Scene(root, 600, 500);
+        buttonPane.getChildren().addAll(carButton,clearButton);
+        root.setTop(buttonPane);
+        root.setCenter(canvas);
+
+        Scene scene = new Scene(root, 550, 550);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Traffic Simulator");
         primaryStage.show();

@@ -5,6 +5,7 @@ import java.awt.*;
 public class TestTCS extends Thread {
 
     private Boolean green = false;
+    private Boolean running = true;
 
     public void begin(){
 
@@ -12,7 +13,7 @@ public class TestTCS extends Thread {
         // just flips from green to red every loop
 
         SignalColor color;
-        while(true){
+        while(running){
 
             if (green){
                 color = SignalColor.GREEN;
@@ -68,6 +69,11 @@ public class TestTCS extends Thread {
                 e.printStackTrace();
             }
         }
+        System.out.println("test ended..");
+    }
+
+    public void end(){
+        running = false;
     }
 
 }

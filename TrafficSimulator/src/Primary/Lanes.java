@@ -45,7 +45,7 @@ public enum Lanes {
 
     public void setColor(SignalColor color){
         this.color = color;
-        System.out.println("Changed color of " + this + " to " + color);
+        //System.out.println("Changed color of " + this + " to " + color);
     }
 
     // Had to add this to get the value of the signal on the lane

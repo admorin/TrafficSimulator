@@ -17,6 +17,8 @@ public class Ground {
 
     private LinkedList<Car> cars = new LinkedList<>();
 
+
+
     // Allows a Road or Lane object to have reference to the Intersection
     // object that is a neighbor of it for Cars to transfer onto
     //
@@ -31,7 +33,7 @@ public class Ground {
     public void setPosition(double x, double y, int type) {
         this.x = x;
         this.y = y;
-        this.type = type;
+        this.type = type; // type = 1 if Intersection, type = 0 if Lane
     }
 
     public void setLast(Car last){
@@ -45,12 +47,43 @@ public class Ground {
         return last;
     }
 
+
+
     public void addCar(Car c){
         cars.add(c);
     }
 
     public void removeCar(Car c ){
         cars.remove(c);
+    }
+
+
+    // Check the passed in car to see if it has collided
+    // with any of the other cars in the intersection and
+    // returns true if so
+    //
+    public Boolean checkCollision(Car car){
+        Boolean result = false;
+        Boolean collision;
+        for (Car c : cars){
+            if (c != car){
+                collision = checkBounds(c, car);
+                if (collision) result = true;
+            }
+        }
+        return result;
+    }
+
+    // Takes in two cars and returns true if they are withing
+    // 5 x and y of each other
+    //
+    private Boolean checkBounds(Car c1, Car c2){
+        double yDif = Math.abs(c1.getCarY() - c2.getCarY());
+        double xDif = Math.abs(c1.getCarX() - c2.getCarX());
+        if (yDif < 5 && xDif < 5){
+            return  true;
+        }
+        return false;
     }
 
 }

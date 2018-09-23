@@ -73,7 +73,12 @@ public class Road extends Ground {
 
     // Gets a random destination from the two leaving lanes
     //
-    public Lane getRandomDest() {
+    public Lane getRandomDest(Lane start) {
+        // check if car is going straight then it should stay in the same lane
+        if ((start.isVert && (side == Direction.SOUTH || side == Direction.NORTH) ) || (!start.isVert && (side == Direction.WEST || side == Direction.EAST))){
+            return lanes.get(start.count);
+        }
+
         int range = (2 - 1) + 1; // 0 or 1
         int randDest =  rn.nextInt(range);
 
@@ -97,11 +102,11 @@ public class Road extends Ground {
         Boolean isVert = false;
         if (side == Direction.NORTH || side == Direction.SOUTH)  isVert = true;
 
-        Lane l1 = new Lane(gc, isVert, 0, this.side);
-        Lane l2 = new Lane(gc, isVert, 1, this.side);
-        Lane l3 = new Lane(gc, isVert, 2, this.side);
-        Lane l4 = new Lane(gc, isVert, 3, this.side);
-        Lane l5 = new Lane(gc, isVert, 4, this.side);
+        Lane l1 = new Lane(gc, isVert, 0, side);
+        Lane l2 = new Lane(gc, isVert, 1, side);
+        Lane l3 = new Lane(gc, isVert, 2, side);
+        Lane l4 = new Lane(gc, isVert, 3, side);
+        Lane l5 = new Lane(gc, isVert, 4, side);
 
         l1.setIntersection(neighbor); // sets all the lanes neighbor as the Intersection
         l2.setIntersection(neighbor);

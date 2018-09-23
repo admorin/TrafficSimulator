@@ -14,10 +14,10 @@ public class Light {
     public double y;
 
     public Light(Lane lane, GraphicsContext gc) {
-
         this.lane = lane;
         this.gc = gc;
     }
+
     // Used by cars to check if red
     //
     public Boolean isRed(){

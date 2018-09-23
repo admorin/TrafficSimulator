@@ -10,6 +10,7 @@ public class Lane extends Ground{
     private GraphicsContext gc;
     public Boolean isVert; // vertical or horizontal lane
     public Boolean in; // ingoing or outgoing lane
+    private Boolean isMid = false;
 
     private Light light;
 
@@ -29,8 +30,8 @@ public class Lane extends Ground{
         this.laneLength = (this.gc.getCanvas().getWidth() - 100) / 2;
         this.light = new Light(this, gc); // each lane get's a light but not drawn unless it's incoming
 
-        setIncoming();
-        setLanes();
+        setIncoming(); // determine whether incoming or leaving lane
+        setLanes(); // assign each Lane object a reference to the proper Lanes enum object
     }
 
     public Light getLight() {
@@ -41,7 +42,7 @@ public class Lane extends Ground{
     //
     public void drawLane(double x, double y, double laneWidth) {
 
-        gc.setFill(Paint.valueOf("#383838"));
+        gc.setFill(Paint.valueOf("#33334d"));
         this.laneWidth = laneWidth;
         double offset = count * laneWidth;
 
@@ -57,7 +58,7 @@ public class Lane extends Ground{
             drawDashes(x ,  y + offset, laneWidth, laneLength);
         }
 
-        if (in) {
+        if (in) { // draw light on incoming lanes only
             light.setPosition(x, y, offset, isVert);
             drawLight();
         }
@@ -77,7 +78,7 @@ public class Lane extends Ground{
         SignalColor c = lane.getSignal(); // Checks what the TC set this lane's signal as
         Boolean isRed = true;
 
-        if (c == SignalColor.GREEN){
+        if (c == SignalColor.GREEN){ // would need to react if the light is yellow still
            color = Paint.valueOf("#00b300");
            isRed = false;
         }
@@ -108,10 +109,12 @@ public class Lane extends Ground{
                     lane = Lanes.N2;
                 } else if(count == 2){
                     lane = Lanes.N3;
+                    isMid = true;
                 }
             } else if (side == Direction.SOUTH){
                 if (count == 2){
                     lane = Lanes.S1;
+                    isMid = true;
                 } else if (count == 3) {
                     lane = Lanes.S2;
                 } else if(count == 4){
@@ -124,11 +127,13 @@ public class Lane extends Ground{
                     lane = Lanes.E2;
                 } else if (count == 2){
                     lane = Lanes.E3;
+                    isMid = true;
                 }
 
             } else if (side == Direction.WEST){
                 if (count == 2){
                     lane = Lanes.W1;
+                    isMid = true;
                 } else if (count == 3) {
                     lane = Lanes.W2;
                 } else if(count == 4){
@@ -163,14 +168,45 @@ public class Lane extends Ground{
     //
     private void drawDashes(double x , double y, double s1, double s2)  {
 
-        gc.setFill(Paint.valueOf("#fffff0"));
+        if (isMid) { // if mid lane draw the double yellows
+            drawMidLine(x, y);
+        } else{
+            gc.setFill(Paint.valueOf("#fffff0"));
+            if (side == Direction.NORTH) x += laneWidth - 2;
+            if (side == Direction.EAST) y += laneWidth - 2;
 
-        for (int i = 0; i < 11; i ++) {
-            if (this.isVert) {
-                gc.fillRect(x + 8, (y + (s2) - 20) - (20 * i), 2, 10);
-            } else {
-                gc.fillRect((x  + (20 * i) + 8), y + 8, 10, 2);
+            for (int i = 0; i < 11; i ++) {
+                if (side == Direction.NORTH && count < 4){
+                    gc.fillRect(x , (y + (s2) - 20) - (20 * i), 2, 10);
+                } else if(side == Direction.SOUTH && count > 0){
+                    gc.fillRect(x , (y + (s2) - 20) - (20 * i), 2, 10);
+                }else if (side == Direction.EAST && count < 4){
+                    gc.fillRect((x  + (20 * i) + 8), y , 10, 2);
+                } else if(side == Direction.WEST && count > 0){
+                    gc.fillRect((x  + (20 * i) + 8), y , 10, 2);
+                }
             }
+        }
+
+    }
+
+    // Draw the two mid yellow lanes
+    //
+    private void drawMidLine(double x, double y){
+        gc.setFill(Paint.valueOf("#ffff00"));
+
+        if (side == Direction.NORTH){
+            gc.fillRect(x + 15, y, 1, laneLength);
+            gc.fillRect(x + 13, y, 1, laneLength);
+        } else if(side == Direction.SOUTH){
+            gc.fillRect(x , y, 1, laneLength);
+            gc.fillRect(x + 2, y, 1, laneLength);
+        }else if (side == Direction.EAST){
+            gc.fillRect(x, y + 15, laneLength, 1);
+            gc.fillRect(x, y + 13, laneLength, 1);
+        } else if(side == Direction.WEST){
+            gc.fillRect(x, y , laneLength, 1);
+            gc.fillRect(x, y + 2, laneLength, 1);
         }
     }
 }
