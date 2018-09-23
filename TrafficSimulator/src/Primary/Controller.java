@@ -35,7 +35,7 @@ public class Controller extends Thread{
                     " is running");
 
             spawner = Executors.newScheduledThreadPool(1);
-            spawnInterval = spawner.scheduleAtFixedRate(() -> spawnCar(), 1000000, 1000, TimeUnit.SECONDS);
+            spawnInterval = spawner.scheduleAtFixedRate(() -> spawnCar(), 1000000, 1000000, TimeUnit.SECONDS);
 
             Animation a = new Animation();
             a.start();

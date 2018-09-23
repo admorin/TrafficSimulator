@@ -65,6 +65,9 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.setTitle("Traffic Control System: Testbed");
         primaryStage.show();
+        primaryStage.setOnCloseRequest(event -> {
+            System.exit(0);
+        });
     }
 
     public static void main(String[] args) {
