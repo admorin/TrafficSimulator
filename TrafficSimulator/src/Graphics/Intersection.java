@@ -9,7 +9,7 @@ public class Intersection extends Ground {
 
     private  GraphicsContext gc;
     private double size;
-    private LinkedList<Road> roads = new LinkedList<>();
+    private LinkedList<RoadDisplay> roads = new LinkedList<>();
 
     public Intersection(GraphicsContext gc, double size){
         this.gc = gc;
@@ -22,7 +22,7 @@ public class Intersection extends Ground {
     public void draw(){
         gc.fillRect(x , y, size, size);
 
-        for (Road r : roads) {
+        for (RoadDisplay r : roads) {
             r.drawRoad();
        }
     }
@@ -32,9 +32,9 @@ public class Intersection extends Ground {
     // so if in left turn lane then it has to turn, in middle lane
     // it has to go straight, and in right line it can do straight or right
     //
-    public Lane getRandomDest(Lane start){
+    public LaneDisplay getRandomDest(LaneDisplay start){
 
-        LinkedList<Road> possible = new LinkedList<>();
+        LinkedList<RoadDisplay> possible = new LinkedList<>();
         Random r = new Random();
 
         if (start.side == Direction.NORTH ){
@@ -79,16 +79,16 @@ public class Intersection extends Ground {
         // Get random road from possible destinations
         int range = (possible.size() - 1) + 1;
         int randRoad = r.nextInt(range);
-        Road road = possible.get(randRoad);
+        RoadDisplay road = possible.get(randRoad);
 
         return road.getRandomDest(start);
     }
 
-    public void connectRoads(LinkedList<Road> roads){
+    public void connectRoads(LinkedList<RoadDisplay> roads){
         this.roads = roads;
     }
 
-    public LinkedList<Road> getRoads(){
+    public LinkedList<RoadDisplay> getRoads(){
         return roads;
     }
 

@@ -2,19 +2,19 @@ package Graphics;
 
 import javafx.scene.canvas.GraphicsContext;
 
-public class Light {
+public class CarSignalDisplay {
 
-    // Lane the light's on I'm guessing will be needed for each light to know
-    // how many cars are waiting for it in a lane from a sensor
-    private Lane lane;
+    // LaneDisplay the light's on I'm guessing will be needed for each light to know
+    // how many cars are waiting for it in a laneDisplay from a sensor
+    private LaneDisplay laneDisplay;
 
     private GraphicsContext gc;
     private Boolean isRed = true;
     public double x;
     public double y;
 
-    public Light(Lane lane, GraphicsContext gc) {
-        this.lane = lane;
+    public CarSignalDisplay(LaneDisplay laneDisplay, GraphicsContext gc) {
+        this.laneDisplay = laneDisplay;
         this.gc = gc;
     }
 
@@ -24,7 +24,7 @@ public class Light {
         return isRed;
     }
 
-    // Each light is given a position based off the lane it's for
+    // Each light is given a position based off the laneDisplay it's for
     //
     public void setPosition(double x, double y, double offset, Boolean isVert){
         if (isVert) {

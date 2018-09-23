@@ -5,19 +5,19 @@ import javafx.scene.canvas.GraphicsContext;
 import java.util.LinkedList;
 import java.util.Random;
 
-public class Road extends Ground {
+public class RoadDisplay extends Ground {
 
-    // Road is currently set up to add 5 lanes to each road, 3 are ingoing,
+    // RoadDisplay is currently set up to add 5 lanes to each road, 3 are ingoing,
     // 2 are outgoing. It takes in the size of the intersection, the side its
     // on, and it's neighbor which is always the Intersection object
 
     private GraphicsContext gc;
     private double size; // main intersection square size to fit the lanes around
 
-    private LinkedList<Lane> lanes = new LinkedList<Lane>();
+    private LinkedList<LaneDisplay> lanes = new LinkedList<LaneDisplay>();
     private Random rn = new Random();
 
-    public Road(GraphicsContext gc, Direction side, double size, Ground neighbor) {
+    public RoadDisplay(GraphicsContext gc, Direction side, double size, Ground neighbor) {
         this.gc = gc;
         this.side = side;
         this.size = size;
@@ -50,7 +50,7 @@ public class Road extends Ground {
 
 
         for (int j = 0; j < lanes.size(); j ++) {
-            Lane l = lanes.get(j);
+            LaneDisplay l = lanes.get(j);
             l.setPosition(x,y, 0);
             l.drawLane(x, y, laneWidth);
         }
@@ -59,7 +59,7 @@ public class Road extends Ground {
 
     // Gets a random start lane from three two ingoing lanes
     //
-    public Lane getRandomStart() {
+    public LaneDisplay getRandomStart() {
         int range = (3 - 1) + 1; // 0, 1, or 2
         int randomStart =  rn.nextInt(range);
 
@@ -67,13 +67,13 @@ public class Road extends Ground {
             randomStart += 2;
         }
 
-        Lane l = lanes.get(randomStart);
+        LaneDisplay l = lanes.get(randomStart);
         return  l;
     }
 
     // Gets a random destination from the two leaving lanes
     //
-    public Lane getRandomDest(Lane start) {
+    public LaneDisplay getRandomDest(LaneDisplay start) {
         // check if car is going straight then it should stay in the same lane
         if ((start.isVert && (side == Direction.SOUTH || side == Direction.NORTH) ) || (!start.isVert && (side == Direction.WEST || side == Direction.EAST))){
             return lanes.get(start.count);
@@ -86,7 +86,7 @@ public class Road extends Ground {
             randDest += 3;
         }
 
-        Lane l = lanes.get(randDest);
+        LaneDisplay l = lanes.get(randDest);
         return  l;
     }
 
@@ -102,11 +102,11 @@ public class Road extends Ground {
         Boolean isVert = false;
         if (side == Direction.NORTH || side == Direction.SOUTH)  isVert = true;
 
-        Lane l1 = new Lane(gc, isVert, 0, side);
-        Lane l2 = new Lane(gc, isVert, 1, side);
-        Lane l3 = new Lane(gc, isVert, 2, side);
-        Lane l4 = new Lane(gc, isVert, 3, side);
-        Lane l5 = new Lane(gc, isVert, 4, side);
+        LaneDisplay l1 = new LaneDisplay(gc, isVert, 0, side);
+        LaneDisplay l2 = new LaneDisplay(gc, isVert, 1, side);
+        LaneDisplay l3 = new LaneDisplay(gc, isVert, 2, side);
+        LaneDisplay l4 = new LaneDisplay(gc, isVert, 3, side);
+        LaneDisplay l5 = new LaneDisplay(gc, isVert, 4, side);
 
         l1.setIntersection(neighbor); // sets all the lanes neighbor as the Intersection
         l2.setIntersection(neighbor);

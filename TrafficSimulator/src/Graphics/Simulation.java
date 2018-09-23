@@ -67,15 +67,15 @@ public class Simulation {
     //
     public void spawnCar(){
         Random rn = new Random();
-        LinkedList<Road> roads = intersection.getRoads();
+        LinkedList<RoadDisplay> roads = intersection.getRoads();
 
         int range = (roads.size() - 1) + 1;
         int randomStart =  rn.nextInt(range);
         //randomStart = 3; // uncomment this line to spawn on specific road
-        Road r = roads.get(randomStart);
-        Lane start = r.getRandomStart();
+        RoadDisplay r = roads.get(randomStart);
+        LaneDisplay start = r.getRandomStart();
 
-        Lane dst = intersection.getRandomDest(start);
+        LaneDisplay dst = intersection.getRandomDest(start);
 
         System.out.println("spawning car at lane " + start.count + " with dst " + dst.side + " with lane count " + dst.count);
         Car c = new Car(r.getSide(), start, dst, gc);
@@ -104,12 +104,12 @@ public class Simulation {
 
         // All this initialization trash could be put into the Intersection constructor
         // but this could be used to let users customize the type of roads they want from a Graphics
-        LinkedList<Road> roads = new LinkedList<Road>();
+        LinkedList<RoadDisplay> roads = new LinkedList<RoadDisplay>();
 
-        Road up = new Road(gc, Direction.NORTH, size, intersection);
-        Road down = new Road(gc, Direction.SOUTH, size, intersection);
-        Road right = new Road(gc, Direction.EAST, size, intersection);
-        Road left = new Road(gc, Direction.WEST, size, intersection);
+        RoadDisplay up = new RoadDisplay(gc, Direction.NORTH, size, intersection);
+        RoadDisplay down = new RoadDisplay(gc, Direction.SOUTH, size, intersection);
+        RoadDisplay right = new RoadDisplay(gc, Direction.EAST, size, intersection);
+        RoadDisplay left = new RoadDisplay(gc, Direction.WEST, size, intersection);
 
         // roads(0) = north,  roads(1) = south, roads(2) = east, roads(3) = west
         roads.add(up);

@@ -5,14 +5,14 @@ import Primary.SignalColor;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Paint;
 
-public class Lane extends Ground{
+public class LaneDisplay extends Ground{
 
     private GraphicsContext gc;
     public Boolean isVert; // vertical or horizontal lane
     public Boolean in; // ingoing or outgoing lane
     private Boolean isMid = false;
 
-    private Light light;
+    private CarSignalDisplay carSignalDisplay;
 
     double laneX = 0;
     double laneY = 0;
@@ -22,23 +22,23 @@ public class Lane extends Ground{
     private Lanes lane; // reference to the actual enum lane that the Test TCS will control
 
 
-    public Lane(GraphicsContext gc, Boolean isVert, int count, Direction side) {
+    public LaneDisplay(GraphicsContext gc, Boolean isVert, int count, Direction side) {
         this.gc = gc;
         this.isVert = isVert;
         this.side = side;
         this.count = count;
         this.laneLength = (this.gc.getCanvas().getWidth() - 100) / 2;
-        this.light = new Light(this, gc); // each lane get's a light but not drawn unless it's incoming
+        this.carSignalDisplay = new CarSignalDisplay(this, gc); // each lane get's a carSignalDisplay but not drawn unless it's incoming
 
         setIncoming(); // determine whether incoming or leaving lane
-        setLanes(); // assign each Lane object a reference to the proper Lanes enum object
+        setLanes(); // assign each LaneDisplay object a reference to the proper Lanes enum object
     }
 
-    public Light getLight() {
-        return this.light;
+    public CarSignalDisplay getCarSignalDisplay() {
+        return this.carSignalDisplay;
     }
 
-    // Draw the lane and it's light if ingoing traffic
+    // Draw the lane and it's carSignalDisplay if ingoing traffic
     //
     public void drawLane(double x, double y, double laneWidth) {
 
@@ -58,8 +58,8 @@ public class Lane extends Ground{
             drawDashes(x ,  y + offset, laneWidth, laneLength);
         }
 
-        if (in) { // draw light on incoming lanes only
-            light.setPosition(x, y, offset, isVert);
+        if (in) { // draw carSignalDisplay on incoming lanes only
+            carSignalDisplay.setPosition(x, y, offset, isVert);
             drawLight();
         }
 
@@ -69,8 +69,8 @@ public class Lane extends Ground{
     }
 
 
-    // Draw the light at the end of each lane, handles
-    // the light's color
+    // Draw the carSignalDisplay at the end of each lane, handles
+    // the carSignalDisplay's color
     //
     public void drawLight() {
 
@@ -78,22 +78,22 @@ public class Lane extends Ground{
         SignalColor c = lane.getSignal(); // Checks what the TC set this lane's signal as
         Boolean isRed = true;
 
-        if (c == SignalColor.GREEN){ // would need to react if the light is yellow still
+        if (c == SignalColor.GREEN){ // would need to react if the carSignalDisplay is yellow still
            color = Paint.valueOf("#009900");
            isRed = false;
         }
 
         gc.setFill(color);
-        light.changeColor(isRed);
+        carSignalDisplay.changeColor(isRed);
 
         if (side == Direction.NORTH ) {
-            gc.fillRect(light.x, light.y + laneLength, laneWidth, 4);
+            gc.fillRect(carSignalDisplay.x, carSignalDisplay.y + laneLength, laneWidth, 4);
         } else if (side == Direction.SOUTH){
-            gc.fillRect(light.x, y  , laneWidth, 4);
+            gc.fillRect(carSignalDisplay.x, y  , laneWidth, 4);
         } else if (side == Direction.EAST){
-            gc.fillRect(light.x, light.y, 4, laneWidth);
+            gc.fillRect(carSignalDisplay.x, carSignalDisplay.y, 4, laneWidth);
         } else if (side == Direction.WEST){
-            gc.fillRect(light.x + laneLength, light.y , 4, laneWidth);
+            gc.fillRect(carSignalDisplay.x + laneLength, carSignalDisplay.y , 4, laneWidth);
         }
     }
 

@@ -41,7 +41,7 @@ public class Main extends Application {
 
         Button heavyButton = new Button("Heavy Traffic");
         Button moderateButton = new Button("Moderate Traffic");
-        Button lightButton = new Button("Light Traffic");
+        Button lightButton = new Button("CarSignalDisplay Traffic");
         Button combinationButton = new Button("Combination Traffic");
         Button spawnButton = new Button("Spawn");
         Button resetButton = new Button("Reset");

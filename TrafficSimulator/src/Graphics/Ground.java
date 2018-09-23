@@ -19,7 +19,7 @@ public class Ground {
 
 
 
-    // Allows a Road or Lane object to have reference to the Intersection
+    // Allows a RoadDisplay or LaneDisplay object to have reference to the Intersection
     // object that is a neighbor of it for Cars to transfer onto
     //
     public void setIntersection(Ground neighbor) {
@@ -33,7 +33,7 @@ public class Ground {
     public void setPosition(double x, double y, int type) {
         this.x = x;
         this.y = y;
-        this.type = type; // type = 1 if Intersection, type = 0 if Lane
+        this.type = type; // type = 1 if Intersection, type = 0 if LaneDisplay
     }
 
     public void setLast(Car last){

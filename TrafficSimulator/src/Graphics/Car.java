@@ -6,14 +6,14 @@ import javafx.scene.paint.Paint;
 import java.util.Random;
 
 public class Car extends Thread{
-    private Ground ground; // keeps track of which Ground piece it's on, could be Lane or Intersection
+    private Ground ground; // keeps track of which Ground piece it's on, could be LaneDisplay or Intersection
     private Ground dest; // Always the ground piece it's heading to
     private GraphicsContext gc;
     private Boolean isMoving = true;
     private double laneLength;
     private Paint color;
 
-    private Light light; // Light it's checking for when it can go
+    private CarSignalDisplay carSignalDisplay; // CarSignalDisplay it's checking for when it can go
     private Car lead; // Reference to the car in front of it in each lane (could be null if first)
 
     private double carX;
@@ -138,7 +138,7 @@ public class Car extends Thread{
     /*
     Keep going unless stopped then check five different scenarios --
 
-    1 ) if ground is a Lane type ( 0 ) and car is incoming then if the light isn't red switch into intersection
+    1 ) if ground is a LaneDisplay type ( 0 ) and car is incoming then if the carSignalDisplay isn't red switch into intersection
     2 ) if car is leaving and it's out of bounds of current component then it must've arrived so stop running
     3 ) if car is collisioned then stop it and wait for end
     4 ) if ground type is 1 then it's on the intersection so switch to destination lane
@@ -149,7 +149,7 @@ public class Car extends Thread{
             move();
         } else {
             if (ground.type == 0 && !isLeaving && willSwitch) {
-                if (!light.isRed()) {
+                if (!carSignalDisplay.isRed()) {
                     switchToIntersection();
                 }
             } else if (isLeaving){
@@ -165,7 +165,7 @@ public class Car extends Thread{
     }
 
 
-    // Sets up the width, height, x, y, and light for
+    // Sets up the width, height, x, y, and carSignalDisplay for
     // a new car
     //
     private void setUpCar(Direction side){
@@ -180,8 +180,8 @@ public class Car extends Thread{
         }
 
         if (ground.type == 0) {
-            Lane l = (Lane) ground;
-            light = l.getLight();
+            LaneDisplay l = (LaneDisplay) ground;
+            carSignalDisplay = l.getCarSignalDisplay();
         }
 
         if (isLeaving) {
@@ -309,7 +309,7 @@ public class Car extends Thread{
     }
 
 
-    // Switches from Intersection object to the destination Lane
+    // Switches from Intersection object to the destination LaneDisplay
     //
     private synchronized void switchToDest(){
         ground = dest;
