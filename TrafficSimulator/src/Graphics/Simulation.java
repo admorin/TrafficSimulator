@@ -1,6 +1,5 @@
-package GUI;
+package Graphics;
 
-import Primary.Lanes;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Paint;
 
@@ -104,7 +103,7 @@ public class Simulation {
     private void setUp(){
 
         // All this initialization trash could be put into the Intersection constructor
-        // but this could be used to let users customize the type of roads they want from a GUI
+        // but this could be used to let users customize the type of roads they want from a Graphics
         LinkedList<Road> roads = new LinkedList<Road>();
 
         Road up = new Road(gc, Direction.NORTH, size, intersection);

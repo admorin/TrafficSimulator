@@ -1,4 +1,4 @@
-package GUI;
+package Graphics;
 
 import Primary.Lanes;
 import Primary.SignalColor;

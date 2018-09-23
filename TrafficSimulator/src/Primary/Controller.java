@@ -1,6 +1,6 @@
 package Primary;
 
-import GUI.Simulation;
+import Graphics.Simulation;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.scene.canvas.GraphicsContext;

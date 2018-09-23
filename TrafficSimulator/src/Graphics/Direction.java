@@ -1,4 +1,4 @@
-package GUI;
+package Graphics;
 
 public enum Direction {
     NORTH, EAST, SOUTH, WEST;

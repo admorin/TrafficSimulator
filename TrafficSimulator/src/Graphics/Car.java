@@ -1,4 +1,4 @@
-package GUI;
+package Graphics;
 
 import Primary.Controller;
 import javafx.scene.canvas.GraphicsContext;

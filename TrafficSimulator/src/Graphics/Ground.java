@@ -1,4 +1,4 @@
-package GUI;
+package Graphics;
 
 import java.util.LinkedList;
 

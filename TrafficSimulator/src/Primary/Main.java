@@ -17,7 +17,7 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
     /**
-     * This is the primary controller for the program. This will create the intersection, create the GUI, and give the
+     * This is the primary controller for the program. This will create the intersection, create the Graphics, and give the
      * intersection to the TestTCS program for them to run. This will also call run() on the TestTCS code.
      */
 

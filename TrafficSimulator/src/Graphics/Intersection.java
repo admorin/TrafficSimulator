@@ -1,8 +1,5 @@
-package GUI;
+package Graphics;
 
-import GUI.Ground;
-import GUI.Road;
-import Primary.Lanes;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.util.LinkedList;
