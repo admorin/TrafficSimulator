@@ -29,11 +29,11 @@ public class Car extends Thread{
     public Boolean collision = false; // is true when collided within intersection and stopped
     public Boolean needsGroundUpdate = false; // is true when it has entered or exited the intersection
     private Paint[] col = {
-            Paint.valueOf("#ff9999"), // Array of random colors
-            Paint.valueOf("#ffff66"), // for the rectangle car to be
-            Paint.valueOf("#d1d1e0"),
-            Paint.valueOf("#ffb84d"),
-            Paint.valueOf("#80ffaa")
+            Paint.valueOf("#ff8888"), // Array of colors
+            Paint.valueOf("#88ff88"), // for the rectangle car to be
+            Paint.valueOf("#8888ff"),
+            Paint.valueOf("#8f8f8f"),
+            Paint.valueOf("#ffffff")
     };
 
     public Car(Direction side, Ground ground, Ground dest, GraphicsContext gc) {

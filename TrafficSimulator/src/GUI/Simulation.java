@@ -84,7 +84,7 @@ public class Simulation {
     }
 
     public void showEnd(){
-        gc.setFill(Paint.valueOf("#33334d"));
+        gc.setFill(Paint.valueOf("#4f4f4f"));
         gc.strokeText("12 dead. Sim failed.", gc.getCanvas().getWidth() * .70 , 50, 250);
     }
 
@@ -93,7 +93,7 @@ public class Simulation {
     // Draws the initial setup with no traffic
     //
     private void drawInterSection() {
-        gc.setFill(Paint.valueOf("#33334d"));
+        gc.setFill(Paint.valueOf("#4f4f4f"));
         intersection.draw();
     }
 

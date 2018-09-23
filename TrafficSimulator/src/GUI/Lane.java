@@ -42,7 +42,7 @@ public class Lane extends Ground{
     //
     public void drawLane(double x, double y, double laneWidth) {
 
-        gc.setFill(Paint.valueOf("#33334d"));
+        gc.setFill(Paint.valueOf("#4f4f4f"));
         this.laneWidth = laneWidth;
         double offset = count * laneWidth;
 
@@ -74,12 +74,12 @@ public class Lane extends Ground{
     //
     public void drawLight() {
 
-        Paint color = Paint.valueOf("#ff0000");;
+        Paint color = Paint.valueOf("#990000");;
         SignalColor c = lane.getSignal(); // Checks what the TC set this lane's signal as
         Boolean isRed = true;
 
         if (c == SignalColor.GREEN){ // would need to react if the light is yellow still
-           color = Paint.valueOf("#00b300");
+           color = Paint.valueOf("#009900");
            isRed = false;
         }
 
