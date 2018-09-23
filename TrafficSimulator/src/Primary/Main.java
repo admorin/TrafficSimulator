@@ -36,12 +36,12 @@ public class Main extends Application {
         controlBox.setPrefSize(150, 550);
         controlBox.setStyle("-fx-background-color: #e0e0e0;");
 
-        Label controlLabel = new Label("Modes:");
+        Label controlLabel = new Label("Modes:\n\n");
+        controlLabel.setPrefSize(150, 50);
 
         Button heavyButton = new Button("Heavy Traffic");
         Button moderateButton = new Button("Moderate Traffic");
         Button lightButton = new Button("Light Traffic");
-        Button combinationButton = new Button("Combination Traffic");
         Button spawnButton = new Button("Spawn");
         Button resetButton = new Button("Reset");
 
@@ -49,13 +49,15 @@ public class Main extends Application {
         controller.start();
 
         // Handle button press actions
+        heavyButton.setOnMousePressed(e -> controller.heavyMode(controlLabel));
+        moderateButton.setOnMousePressed(e -> controller.moderateMode(controlLabel));
+        lightButton.setOnMousePressed(e -> controller.lightMode(controlLabel));
         spawnButton.setOnMousePressed(e -> controller.spawnCar());
-        resetButton.setOnMousePressed(e -> controller.clearTraffic());
+        resetButton.setOnMousePressed(e -> controller.clearTraffic(controlLabel));
 
 
         // Setup the scene
-        controlBox.getChildren().addAll(controlLabel, heavyButton, moderateButton, lightButton,
-                                        combinationButton, spawnButton, resetButton);
+        controlBox.getChildren().addAll(controlLabel, heavyButton, moderateButton, lightButton, spawnButton, resetButton);
         root.setRight(controlBox);
         root.setLeft(canvas);
 

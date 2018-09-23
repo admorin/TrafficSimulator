@@ -4,9 +4,14 @@ import Graphics.Simulation;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 public class Controller extends Thread{
 
@@ -14,7 +19,8 @@ public class Controller extends Thread{
     private TestTCS test;
     public volatile static int threadCount = 0; // used to see how many threads need to move before draw update
     public static final Object countLock = new Object(); // Used to lock the threadCount when changed
-
+    private ScheduledExecutorService spawner;
+    private ScheduledFuture<?> spawnInterval;
 
     public Controller(GraphicsContext gc){
         this.sim = new Simulation(gc);
@@ -28,8 +34,8 @@ public class Controller extends Thread{
                     Thread.currentThread().getId() + " Controller Thread" +
                     " is running");
 
-            // Create a new Display animation that will just keep
-            // moving the traffic threads and drawing their new spots
+            spawner = Executors.newScheduledThreadPool(1);
+            spawnInterval = spawner.scheduleAtFixedRate(() -> spawnCar(), 1000000, 1000, TimeUnit.SECONDS);
 
             Animation a = new Animation();
             a.start();
@@ -44,7 +50,28 @@ public class Controller extends Thread{
         }
     }
 
-    // Button press action to spawn a car
+    public void heavyMode(Label label)
+    {
+        label.setText("Modes:\nHeavy traffic\nPeriod = 1s");
+        spawnInterval.cancel(false);
+        spawnInterval = spawner.scheduleAtFixedRate(() -> spawnCar(), 0, 1, TimeUnit.SECONDS);
+    }
+
+    public void moderateMode(Label label)
+    {
+        label.setText("Modes:\nModerate traffic\nPeriod = 2s");
+        spawnInterval.cancel(false);
+        spawnInterval = spawner.scheduleAtFixedRate(() -> spawnCar(), 0, 2, TimeUnit.SECONDS);
+    }
+
+    public void lightMode(Label label)
+    {
+        label.setText("Modes:\nLight traffic\nPeriod = 4s");
+        spawnInterval.cancel(false);
+        spawnInterval = spawner.scheduleAtFixedRate(() -> spawnCar(), 0, 4, TimeUnit.SECONDS);
+    }
+
+    // Button press action to spawnInterval a car
     //
     public void spawnCar(){
         sim.spawnCar();
@@ -52,7 +79,9 @@ public class Controller extends Thread{
 
     // Button press action to remove all the traffic threads
     //
-    public void clearTraffic(){
+    public void clearTraffic(Label label){
+        label.setText("Modes:\n\n");
+        spawnInterval.cancel(false);
         sim.clear();
     }
 
