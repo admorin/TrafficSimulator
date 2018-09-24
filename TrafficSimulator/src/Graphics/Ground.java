@@ -57,6 +57,12 @@ public class Ground {
         cars.remove(c);
     }
 
+    public void clearOut(){
+        while (!cars.isEmpty()){
+            cars.remove();
+        }
+    }
+
 
     // Check the passed in car to see if it has collided
     // with any of the other cars in the intersection and

@@ -123,10 +123,10 @@ public class Controller extends Thread{
         private void end(){
             ending = true; // so this isn't called multiple times while updating Gui
             test.end(); // end their test controller
-            sim.showEnd(); // show super ugly end popup
+            //sim.showEnd(); // show super ugly end popup
 
             Timer timer = new Timer();
-            timer.schedule(t, 3000, 3000);
+            timer.schedule(t, 3000);
         }
 
 
@@ -139,7 +139,8 @@ public class Controller extends Thread{
                 Platform.runLater(() -> {
                     sim.clear();
                     sim.drawTraffic();
-                    Animation.super.stop();
+
+                    //Animation.super.stop();
                 });
 
             }

@@ -4,8 +4,11 @@ import Primary.Controller;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Paint;
 import java.util.Random;
+import javafx.scene.transform.Affine;
+import javafx.scene.transform.Rotate;
 
 public class Car extends Thread{
+
     private Ground ground; // keeps track of which Ground piece it's on, could be LaneDisplay or Intersection
     private final Ground dest; // Always the ground piece it's heading to
     private final GraphicsContext gc;
@@ -18,16 +21,22 @@ public class Car extends Thread{
 
     private double carX;
     private double carY;
-    private Direction side;
-
-    public Boolean running = true; // running is true if car hasn't arrived at destination
     private int width;
     private int height;
+    private Direction side;
+
+    private int pathType; // 0 = straight, 1 = right, 2 = left
+    private int rotation = 0; // keeps track of rotation angle when turning
+    private double rotationRate = 0;
+
+    public Boolean running = true; // running is true if car hasn't arrived at destination
+
     private Boolean isLeaving = false; // is true when car has passed through intersection
     private Boolean willSwitch = false; // is true when car is about to switch Ground components
 
     public Boolean collision = false; // is true when collided within intersection and stopped
     public Boolean needsGroundUpdate = false; // is true when it has entered or exited the intersection
+
     private final Paint[] col = {
             Paint.valueOf("#ff8888"), // Array of colors
             Paint.valueOf("#88ff88"), // for the rectangle car to be
@@ -36,7 +45,8 @@ public class Car extends Thread{
             Paint.valueOf("#ffffff")
     };
 
-    public Car(Direction side, Ground ground, Ground dest, GraphicsContext gc) {
+
+    public Car(Direction side, Ground ground, Ground dest, GraphicsContext gc){
         this.gc = gc;
         this.ground = ground;
         this.dest = dest;
@@ -51,6 +61,7 @@ public class Car extends Thread{
         this.laneLength = (gc.getCanvas().getWidth() - 100) / 2;
 
         setUpCar(this.side); // set up x, y, width, height for car
+        setPathType(); // set if going straight = 0, right = 1, left = 2
         this.start();
     }
 
@@ -125,15 +136,6 @@ public class Car extends Thread{
     }
 
 
-    // Called by animation timer to draw the car -- this Boolean used t
-    // to return if the car neededRefresh then would only redraw the intersection
-    // if one of the cars needed it but that's not being used now
-    //
-    public void drawCar() {
-        gc.setFill(color);
-        gc.fillRect(carX, carY, width, height);
-    }
-
     /*
     Keep going unless stopped then check five different scenarios --
 
@@ -176,103 +178,25 @@ public class Car extends Thread{
         }
     }
 
-    // Sets up the width, height, x, y, and carSignalDisplay for
-    // a new car
+    // Called by animation timer to draw the car -- this Boolean used t
+    // to return if the car neededRefresh then would only redraw the intersection
+    // if one of the cars needed it but that's not being used now
     //
-    private void setUpCar(Direction side){
-        renderCar(side);
-        if (ground.type == 0) {
-            LaneDisplay l = (LaneDisplay) ground;
-            carSignalDisplay = l.getCarSignalDisplay();
-        }
+    public void drawCar(){
 
-        if (isLeaving) {
-            if (side == Direction.NORTH) {
-                carY += laneLength;
-            }
+        gc.setFill(color);
 
-            if (side == Direction.WEST)
-            {
-                carX +=  laneLength;
-            }
-
+        if ((pathType == 1 || pathType == 2) && ground.type == 1) {
+            if (!collision)rotation += rotationRate;
+            gc.save();
+            gc.transform(new Affine(new Rotate(rotation, carX + width/2, carY + height/2)));
+            gc.fillRect(carX, carY, width, height);
+            gc.restore();
         } else {
-            if (side == Direction.SOUTH) {
-                carY +=  laneLength;
-            }
-
-            if (side == Direction.EAST)
-            {
-                carX +=  laneLength;
-            }
+            gc.fillRect(carX, carY, width, height);
         }
+
     }
-
-    // Checks if the car is about to exit the current Ground object it's on
-    //
-    private void checkBounds() {
-
-        if (isLeaving) {
-            if (side == Direction.NORTH) {
-                if (carY < ground.y) {
-                    isMoving = false;
-                    willSwitch = true;
-                    if (ground.type == 1) System.out.println("will switch off int");
-                }
-            }
-
-            if (side == Direction.SOUTH){
-                if (carY > ground.y - height + laneLength){
-                    isMoving = false;
-                    willSwitch = true;
-                }
-            }
-
-            if (side == Direction.EAST){
-                if (carX > ground.x - width + laneLength) {
-                    isMoving = false;
-                    willSwitch = true;
-                }
-            }
-
-            if (side == Direction.WEST){
-                if (carX < ground.x) {
-                    isMoving = false;
-                    willSwitch = true;
-                }
-            }
-
-        } else {
-            if (side == Direction.NORTH) {
-                if (carY > ground.y - height + laneLength) {
-                    isMoving = false;
-                    willSwitch = true;
-                }
-            }
-
-            if (side == Direction.SOUTH) {
-                if (carY < ground.y){
-                    isMoving = false;
-                    willSwitch = true;
-                }
-            }
-
-            if (side == Direction.EAST){
-                if (carX < ground.x) {
-                    isMoving = false;
-                    willSwitch = true;
-                }
-            }
-            if (side == Direction.WEST) {
-                if (carX > ground.x - width + laneLength) {
-                    isMoving = false;
-                    willSwitch = true;
-                }
-            }
-        }
-    }
-
-
 
     // Changes the current Ground object from the start lane to
     // the Intersection object that is the neighbor of it
@@ -340,6 +264,155 @@ public class Car extends Thread{
         needsGroundUpdate = true; // need to remove the car from intersection list
     }
 
+    // Sets up the width, height, x, y, and carSignalDisplay for
+    // a new car
+    //
+    private void setUpCar(Direction side){
+        renderCar(side);
+        if (ground.type == 0) {
+            LaneDisplay l = (LaneDisplay) ground;
+            carSignalDisplay = l.getCarSignalDisplay();
+        }
+
+        if (isLeaving) {
+            if (side == Direction.NORTH) {
+                carY += laneLength;
+            }
+
+            if (side == Direction.WEST)
+            {
+                carX +=  laneLength;
+            }
+
+        } else {
+            if (side == Direction.SOUTH) {
+                carY +=  laneLength;
+            }
+
+            if (side == Direction.EAST)
+            {
+                carX +=  laneLength;
+            }
+        }
+    }
+
+    private void setPathType(){
+        if (side == Direction.NORTH){
+            if (dest.side == Direction.EAST){
+                pathType = 2;
+            } else if (dest.side == Direction.SOUTH){
+                pathType = 0;
+            } else if (dest.side == Direction.WEST){
+                pathType = 1;
+            }
+        } else if (side == Direction.SOUTH){
+            if (dest.side == Direction.EAST){
+                pathType = 1;
+            } else if (dest.side == Direction.NORTH){
+                pathType = 0;
+            } else if (dest.side == Direction.WEST){
+                pathType = 2;
+            }
+        } else if (side == Direction.EAST){
+            if (dest.side == Direction.NORTH){
+                pathType = 1;
+            } else if (dest.side == Direction.SOUTH){
+                pathType = 2;
+            } else if (dest.side == Direction.WEST){
+                pathType = 0;
+            }
+        } else if (side == Direction.WEST){
+            if (dest.side == Direction.EAST){
+                pathType = 0;
+            } else if (dest.side == Direction.SOUTH){
+                pathType = 1;
+            } else if (dest.side == Direction.NORTH){
+                pathType = 2;
+            }
+        }
+
+        if (pathType == 1) rotationRate = 3; else if(pathType == 2) rotationRate = -1.5;
+    }
+
+
+    // Checks if the car is about to exit the current Ground object it's on
+    //
+    private void checkBounds() {
+
+        if (ground.type == 1 && (pathType == 1 || pathType == 2)){ // checks when to switch to dest while turning
+            if (side == Direction.SOUTH && carY < dest.y){
+                isMoving = false;
+                willSwitch = true;
+            } else if (side == Direction.NORTH && carY > dest.y){
+                isMoving = false;
+                willSwitch = true;
+            } else if (side == Direction.EAST && carX < dest.x){
+                isMoving = false;
+                willSwitch = true;
+            } else if (side == Direction.WEST && carX > dest.x){
+                isMoving = false;
+                willSwitch = true;
+            }
+        }  else if (isLeaving) { // checks when to stop moving on arrival
+            if (side == Direction.NORTH) {
+                if (carY < ground.y) {
+                    isMoving = false;
+                    willSwitch = true;
+                }
+            }
+
+            if (side == Direction.SOUTH){
+                if (carY > ground.y - height + laneLength){
+                    isMoving = false;
+                    willSwitch = true;
+                }
+            }
+
+            if (side == Direction.EAST){
+                if (carX > ground.x - width + laneLength) {
+                    isMoving = false;
+                    willSwitch = true;
+                }
+            }
+
+            if (side == Direction.WEST){
+                if (carX < ground.x) {
+                    isMoving = false;
+                    willSwitch = true;
+                }
+            }
+
+        } else { // checks when to stop moving on lane or intersection
+            if (side == Direction.NORTH) {
+                if (carY > ground.y - height + laneLength) {
+                    isMoving = false;
+                    willSwitch = true;
+                }
+            }
+
+            if (side == Direction.SOUTH) {
+                if (carY < ground.y){
+                    isMoving = false;
+                    willSwitch = true;
+                }
+            }
+
+            if (side == Direction.EAST){
+                if (carX < ground.x) {
+                    isMoving = false;
+                    willSwitch = true;
+                }
+            }
+            if (side == Direction.WEST) {
+                if (carX > ground.x - width + laneLength) {
+                    isMoving = false;
+                    willSwitch = true;
+                }
+            }
+        }
+    }
+
+
 
     // Checks if the car needs to switch Ground component then
     // moves a direction depending on the road it's on and if outgoing
@@ -360,12 +433,20 @@ public class Car extends Thread{
             }
         } else {
             if (side == Direction.NORTH) {
+                if (ground.type == 1 && pathType == 1)carX -= 0.3;
+                if (ground.type == 1 && pathType == 2) carX += 0.5;
                 carY += 1;
             } else if (side == Direction.SOUTH) {
+                if (ground.type == 1 && pathType == 1)carX += 0.3;
+                if (ground.type == 1 && pathType == 2) carX -= 0.5;
                 carY -= 1;
             }else if (side == Direction.EAST) {
+                if (ground.type == 1 && pathType == 1)carY -= 0.3;
+                if (ground.type == 1 && pathType == 2) carY += 0.5;
                 carX -= 1;
             } else if (side == Direction.WEST) {
+                if (ground.type == 1 && pathType == 1)carY += 0.3;
+                if (ground.type == 1 && pathType == 2) carY -= 0.5;
                 carX += 1;
             }
         }
@@ -384,7 +465,6 @@ public class Car extends Thread{
     // Check car thread leading this one to see if it's within bounds
     // for collision then stops if so
     //
-    @SuppressWarnings("Duplicates")
     private void checkCollision() {
         if (ground.type == 1 && isMoving){ // if on the intersection
             Boolean result = ground.checkCollision(this); // then check all other cars on it

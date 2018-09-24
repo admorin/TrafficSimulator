@@ -66,6 +66,7 @@ class RoadDisplay extends Ground {
             randomStart += 2;
         }
 
+        //randomStart = 0; // uncomment this line to start on specific lane index
         return lanes.get(randomStart);
     }
 
