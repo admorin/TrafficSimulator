@@ -56,8 +56,7 @@ public class Controller extends Thread{
     public void extremeMode(Label label){
         label.setText("Modes:\nHeavy traffic\nPeriod = 0.2s");
         spawnInterval.cancel(false);
-        spawnInterval = spawner.scheduleAtFixedRate(() -> spawnCar(), 0, 200, TimeUnit.MILLISECONDS);
-        spawnInterval = spawner.scheduleAtFixedRate(() -> spawnPed(), 0, 250, TimeUnit.MILLISECONDS);
+        spawnInterval = spawner.scheduleAtFixedRate(() -> spawnBoth(), 0, 200, TimeUnit.MILLISECONDS);
     }
 
 
@@ -65,21 +64,27 @@ public class Controller extends Thread{
     {
         label.setText("Modes:\nHeavy traffic\nPeriod = 1s");
         spawnInterval.cancel(false);
-        spawnInterval = spawner.scheduleAtFixedRate(() -> spawnCar(), 0, 1, TimeUnit.SECONDS);
+        spawnInterval = spawner.scheduleAtFixedRate(() -> spawnBoth(), 0, 1, TimeUnit.SECONDS);
     }
 
     public void moderateMode(Label label)
     {
         label.setText("Modes:\nModerate traffic\nPeriod = 2s");
         spawnInterval.cancel(false);
-        spawnInterval = spawner.scheduleAtFixedRate(() -> spawnCar(), 0, 2, TimeUnit.SECONDS);
+        spawnInterval = spawner.scheduleAtFixedRate(() -> spawnBoth(), 0, 2, TimeUnit.SECONDS);
     }
 
     public void lightMode(Label label)
     {
         label.setText("Modes:\nLight traffic\nPeriod = 4s");
         spawnInterval.cancel(false);
-        spawnInterval = spawner.scheduleAtFixedRate(() -> spawnCar(), 0, 4, TimeUnit.SECONDS);
+        spawnInterval = spawner.scheduleAtFixedRate(() -> spawnBoth(), 0, 4, TimeUnit.SECONDS);
+    }
+
+    public void spawnBoth()
+    {
+        spawnCar();
+        spawnPed();
     }
 
     // Button press action to spawn a car
