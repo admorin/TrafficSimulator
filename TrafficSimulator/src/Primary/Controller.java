@@ -139,6 +139,7 @@ public class Controller extends Thread{
             ending = true; // so this isn't called multiple times while updating Gui
             //test.end(); // end their test controller
             sim.showEnd(); // show super ugly end popup
+            spawnInterval.cancel(true);
 
             Timer timer = new Timer();
             timer.schedule(t, 3000);
@@ -154,7 +155,6 @@ public class Controller extends Thread{
                 Platform.runLater(() -> {
 
                     sim.clear();
-                    spawnInterval.cancel(true);
                     //ending = false;
                     sim.drawTraffic();
                     Animation.super.stop();
