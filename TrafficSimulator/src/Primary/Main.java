@@ -42,7 +42,8 @@ public class Main extends Application {
         Button heavyButton = new Button("Heavy Traffic");
         Button moderateButton = new Button("Moderate Traffic");
         Button lightButton = new Button("Light Traffic");
-        Button spawnButton = new Button("Spawn");
+        Button spawnCarButton = new Button("Spawn Car");
+        Button spawnPedButton = new Button("Spawn Pedestrian");
         Button resetButton = new Button("Reset");
 
         Controller controller = new Controller(gc);
@@ -52,12 +53,13 @@ public class Main extends Application {
         heavyButton.setOnMousePressed(e -> controller.heavyMode(controlLabel));
         moderateButton.setOnMousePressed(e -> controller.moderateMode(controlLabel));
         lightButton.setOnMousePressed(e -> controller.lightMode(controlLabel));
-        spawnButton.setOnMousePressed(e -> controller.spawnCar());
+        spawnCarButton.setOnMousePressed(e -> controller.spawnCar());
+        spawnPedButton.setOnMousePressed(e -> controller.spawnPed());
         resetButton.setOnMousePressed(e -> controller.clearTraffic(controlLabel));
 
 
         // Setup the scene
-        controlBox.getChildren().addAll(controlLabel, heavyButton, moderateButton, lightButton, spawnButton, resetButton);
+        controlBox.getChildren().addAll(controlLabel, heavyButton, moderateButton, lightButton, spawnCarButton, spawnPedButton, resetButton);
         root.setRight(controlBox);
         root.setLeft(canvas);
 

@@ -14,6 +14,7 @@ public class Car extends Thread{
     private final GraphicsContext gc;
     private Boolean isMoving = true;
     private double laneLength;
+    private double destLength;
     private Paint color;
 
     private CarSignalDisplay carSignalDisplay; // CarSignalDisplay it's checking for when it can go
@@ -33,6 +34,7 @@ public class Car extends Thread{
 
     private Boolean isLeaving = false; // is true when car has passed through intersection
     private Boolean willSwitch = false; // is true when car is about to switch Ground components
+    private Boolean atCross = false;
 
     public Boolean collision = false; // is true when collided within intersection and stopped
     public Boolean needsGroundUpdate = false; // is true when it has entered or exited the intersection
@@ -59,6 +61,7 @@ public class Car extends Thread{
         this.carX = ground.x;
         this.carY = ground.y;
         this.laneLength = (gc.getCanvas().getWidth() - 100) / 2;
+        this.destLength = laneLength;
 
         setUpCar(this.side); // set up x, y, width, height for car
         setPathType(); // set if going straight = 0, right = 1, left = 2
@@ -150,15 +153,22 @@ public class Car extends Thread{
             move();
         } else {
             if (ground.type == 0 && !isLeaving && willSwitch) {
+                atCross = false;
+                ground.getCrossing().removeCar(this);
+                switchToIntersection();
+            } else if (atCross){
                 if (!carSignalDisplay.isRed()) {
-                    switchToIntersection();
+                    isMoving = true;
                 }
             } else if (isLeaving){
                 running = false;
             } else if(collision){
                 isMoving = false;
             } else if (ground.type == 1){
+                System.out.println("switching to dest");
                 switchToDest();
+                ground.getCrossing().addCar(this);
+                atCross = true;
             } else {
                 checkCollision();
             }
@@ -204,7 +214,7 @@ public class Car extends Thread{
     private synchronized void switchToIntersection() {
         Ground old = ground;
         ground = ground.getIntersection(); // sets current Ground object to be intersection
-        laneLength = 80;
+        laneLength = 100; // very important must match intersection size
         isMoving = true;
 
         if (side == Direction.NORTH || side == Direction.SOUTH) {
@@ -353,40 +363,73 @@ public class Car extends Thread{
                 isMoving = false;
                 willSwitch = true;
             }
-        }  else if (isLeaving) { // checks when to stop moving on arrival
+        } else if (ground.type == 1 && pathType == 0){ // on the intersection and headed straight through
+            if (side == Direction.SOUTH && carY < dest.y + destLength ){
+                isMoving = false;
+                willSwitch = true;
+            } else if (side == Direction.NORTH && carY > dest.y){
+                isMoving = false;
+                willSwitch = true;
+            } else if (side == Direction.EAST && carX < dest.x + destLength){
+                isMoving = false;
+                willSwitch = true;
+            } else if (side == Direction.WEST && carX > dest.x){
+                isMoving = false;
+                willSwitch = true;
+            }
+        } else if (isLeaving) { // checks when to stop moving on arrival
             if (side == Direction.NORTH) {
-                if (carY < ground.y) {
+                if (atCross && carY < ground.y + laneLength - 20){
+                    System.out.println("off da cross north");
+                    ground.getCrossing().removeCar(this);
+                    atCross = false;
+                } else if(carY < ground.y){
                     isMoving = false;
                     willSwitch = true;
                 }
             }
 
             if (side == Direction.SOUTH){
-                if (carY > ground.y - height + laneLength){
+                if (atCross && carY > ground.y + 20){
+                    System.out.println("off da crosss south");
+                    ground.getCrossing().removeCar(this);
+                    atCross = false;
+                } else if (carY > ground.y - height + laneLength){
                     isMoving = false;
                     willSwitch = true;
                 }
             }
 
             if (side == Direction.EAST){
-                if (carX > ground.x - width + laneLength) {
+                if (atCross && carX > ground.x + 20){
+                    ground.getCrossing().removeCar(this);
+                    System.out.println("off da cross east");
+                    atCross = false;
+                }else if (carX > ground.x - width + laneLength) {
                     isMoving = false;
                     willSwitch = true;
                 }
             }
-
             if (side == Direction.WEST){
-                if (carX < ground.x) {
+                if (atCross && carX < ground.x + laneLength -20){
+                    ground.getCrossing().removeCar(this);
+                    System.out.println("off da cross west");
+                    atCross = false;
+                }else if (carX < ground.x) {
                     isMoving = false;
                     willSwitch = true;
                 }
             }
 
-        } else { // checks when to stop moving on lane or intersection
+        } else if (ground.type == 0 && !isLeaving){ // checks when to stop moving on lane or intersection
             if (side == Direction.NORTH) {
-                if (carY > ground.y - height + laneLength) {
+                if (carY > ground.y - height + laneLength ) {
                     isMoving = false;
                     willSwitch = true;
+                } else if (carY > ground.y - height + laneLength - 20 && !atCross){
+                    atCross = true;
+                    isMoving = false;
+                    ground.getCrossing().addCar(this);
                 }
             }
 
@@ -394,6 +437,10 @@ public class Car extends Thread{
                 if (carY < ground.y){
                     isMoving = false;
                     willSwitch = true;
+                } else if (carY < ground.y + 20 && !atCross){
+                    atCross = true;
+                    isMoving = false;
+                    ground.getCrossing().addCar(this);
                 }
             }
 
@@ -401,12 +448,20 @@ public class Car extends Thread{
                 if (carX < ground.x) {
                     isMoving = false;
                     willSwitch = true;
+                } else if (carX < ground.x + 20 && !atCross){
+                    atCross = true;
+                    isMoving = false;
+                    ground.getCrossing().addCar(this);
                 }
             }
             if (side == Direction.WEST) {
                 if (carX > ground.x - width + laneLength) {
                     isMoving = false;
                     willSwitch = true;
+                } else if (carX > ground.x - width + laneLength - 20 && !atCross){
+                    atCross = true;
+                    isMoving = false;
+                    ground.getCrossing().addCar(this);
                 }
             }
         }

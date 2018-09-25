@@ -14,6 +14,7 @@ public class Ground {
     // keeps track of the last Car in line on the component so if a
     // new one is spawned it knows the lead Car in front of it
     private Car last;
+    private Crossing crosswalk;
 
     private LinkedList<Car> cars = new LinkedList<>();
 
@@ -47,7 +48,9 @@ public class Ground {
         return last;
     }
 
-
+    public void setCrosswalk(Crossing crosswalk){
+        this.crosswalk = crosswalk;
+    }
 
     public void addCar(Car c){
         cars.add(c);
@@ -61,6 +64,10 @@ public class Ground {
         while (!cars.isEmpty()){
             cars.remove();
         }
+    }
+
+    public Crossing getCrossing(){
+        return crosswalk;
     }
 
 
@@ -88,5 +95,6 @@ public class Ground {
         double xDif = Math.abs(c1.getCarX() - c2.getCarX());
         return yDif < 5 && xDif < 5;
     }
+
 
 }

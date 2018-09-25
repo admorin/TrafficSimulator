@@ -11,12 +11,11 @@ public class LaneDisplay extends Ground{
     public final Boolean isVert; // vertical or horizontal lane
     private Boolean in; // ingoing or outgoing lane
     private Boolean isMid = false;
-
     private CarSignalDisplay carSignalDisplay;
 
     private double laneX = 0;
     private double laneY = 0;
-    private double laneLength;
+    public double laneLength;
     private double laneWidth;
 
     private Lanes lane; // reference to the actual enum lane that the Test TCS will control
@@ -38,11 +37,12 @@ public class LaneDisplay extends Ground{
         return this.carSignalDisplay;
     }
 
+
     // Draw the lane and it's carSignalDisplay if ingoing traffic
     //
     public void drawLane(double x, double y, double laneWidth) {
 
-        gc.setFill(Paint.valueOf("#4f4f4f"));
+        gc.setFill(Paint.valueOf("#0f1e3e"));
         this.laneWidth = laneWidth;
         double offset = count * laneWidth;
 

@@ -12,9 +12,10 @@ public class Simulation {
     private final GraphicsContext gc;
     private Boolean needsRefresh = true;
     private final Intersection intersection;
-    private final int size = 80;
+    private final int size = 100;
 
     private LinkedList<Car> cars = new LinkedList<>();
+    private LinkedList<Pedestrian> peds = new LinkedList<>();
     private Boolean endSim = false;
 
     public Simulation(GraphicsContext gc){
@@ -30,6 +31,9 @@ public class Simulation {
         for (Car c : cars) {
             if (c.running) c.free(); // running = false if the car has arrived
         }
+        for (Pedestrian p : peds) {
+            if (p.running) p.free();
+        }
     }
 
     // Button action that will clear out all the
@@ -38,7 +42,10 @@ public class Simulation {
     public void clear(){
         needsRefresh = true;
         while (!cars.isEmpty()){
-            cars.removeLast();
+            cars.remove();
+        }
+        while (!peds.isEmpty()){
+            peds.remove();
         }
         intersection.clearOut();
     }
@@ -52,6 +59,10 @@ public class Simulation {
             if (c.running){
                 c.drawCar();
             }
+        }
+
+        for (Pedestrian p : peds) {
+            p.draw();
         }
     }
 
@@ -73,7 +84,7 @@ public class Simulation {
 
         int range = (roads.size() - 1) + 1;
         int randomStart =  rn.nextInt(range);
-        //randomStart = 2; // uncomment this line to spawn on specific road (0 = north, 1 = south, 2 = east, 3 = west)
+        //randomStart = 3; // uncomment this line to spawn on specific road (0 = north, 1 = south, 2 = east, 3 = west)
         RoadDisplay r = roads.get(randomStart);
         LaneDisplay start = r.getRandomStart();
 
@@ -82,6 +93,11 @@ public class Simulation {
         System.out.println("spawning car at lane " + start.count + " with dst " + dst.side + " with lane count " + dst.count);
         Car c = new Car(r.getSide(), start, dst, gc);
         cars.add(c);
+    }
+
+    public void spawnPed(){
+        System.out.println("spawning that pedder");
+        peds.add(intersection.createPed());
     }
 
     public void showEnd(){
@@ -94,7 +110,7 @@ public class Simulation {
     // Draws the initial setup with no traffic
     //
     private void drawInterSection() {
-        gc.setFill(Paint.valueOf("#4f4f4f"));
+        gc.setFill(Paint.valueOf("#0f1e3e"));
         intersection.draw();
     }
 

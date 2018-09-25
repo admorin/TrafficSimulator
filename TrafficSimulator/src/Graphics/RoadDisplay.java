@@ -1,5 +1,6 @@
 package Graphics;
 
+import Primary.Lanes;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.util.LinkedList;
@@ -32,7 +33,7 @@ class RoadDisplay extends Ground {
 
         double screenWidth = gc.getCanvas().getWidth();
 
-        double laneLength = (screenWidth - 100) / 2; // just randomly came up with this width to take up screen
+        double laneLength = (screenWidth - size) / 2; // just randomly came up with this width to take up screen
         double laneWidth = size / lanes.size(); // size / num lanes
 
         double x = screenWidth / 2 - (size/2);
@@ -48,6 +49,8 @@ class RoadDisplay extends Ground {
             x -= laneLength;
         }
 
+        this.x = x;
+        this.y = y;
 
         for (LaneDisplay l : lanes) {
             l.setPosition(x, y, 0);
@@ -66,7 +69,7 @@ class RoadDisplay extends Ground {
             randomStart += 2;
         }
 
-        //randomStart = 0; // uncomment this line to start on specific lane index
+        //randomStart = 4; // uncomment this line to start on specific lane index
         return lanes.get(randomStart);
     }
 
@@ -91,6 +94,12 @@ class RoadDisplay extends Ground {
 
     public Direction getSide(){
         return side;
+    }
+
+    public void setCrosswalk(Crossing c){
+        for (LaneDisplay l : lanes){
+            l.setCrosswalk(c);
+        }
     }
 
 

@@ -71,10 +71,16 @@ public class Controller extends Thread{
         spawnInterval = spawner.scheduleAtFixedRate(() -> spawnCar(), 0, 4, TimeUnit.SECONDS);
     }
 
-    // Button press action to spawnInterval a car
+    // Button press action to spawn a car
     //
     public void spawnCar(){
         sim.spawnCar();
+    }
+
+    // Button press action to spawn a pedestrian
+    //
+    public void spawnPed(){
+        sim.spawnPed();
     }
 
     // Button press action to remove all the traffic threads
@@ -123,7 +129,7 @@ public class Controller extends Thread{
         private void end(){
             ending = true; // so this isn't called multiple times while updating Gui
             test.end(); // end their test controller
-            //sim.showEnd(); // show super ugly end popup
+            sim.showEnd(); // show super ugly end popup
 
             Timer timer = new Timer();
             timer.schedule(t, 3000);
