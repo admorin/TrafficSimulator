@@ -10,13 +10,16 @@ public class Pedestrian extends Thread{
     private Ground ground;
     private Ground dst;
     public Boolean running = true;
+    public  Boolean collision = false;
+
     private Boolean isMoving = true;
     private int type = 0;
 
     private Direction dir;
+    private Paint color = Paint.valueOf("#80ff80");
 
-    private double pedX;
-    private double pedY;
+    private double pedX = 0;
+    private double pedY = 0;
     private int width = 10;
     private int height = 10;
     private int groundSize = 40;
@@ -33,6 +36,14 @@ public class Pedestrian extends Thread{
 
         setDir();
         this.start();
+    }
+
+    public double getX(){
+        return pedX;
+    }
+
+    public double getY(){
+        return pedY;
     }
 
     private void setDir(){
@@ -66,7 +77,6 @@ public class Pedestrian extends Thread{
                 dir = Direction.EAST;
             }
         }
-        System.out.println("my dir is: " + dir);
     }
 
     @Override
@@ -118,7 +128,9 @@ public class Pedestrian extends Thread{
             if (type == 2){
                 isMoving = false;
                 running = false;
-            }else if (!crossing){
+            } else if (collision){
+                isMoving = false;
+            } else if (!crossing){
                 switchToCross();
             } else {
                 switchToDest();
@@ -126,7 +138,7 @@ public class Pedestrian extends Thread{
         }
     }
 
-    private void switchToCross(){
+    private synchronized void switchToCross(){
         ground = dst;
         pedX = dst.x;
         pedY = dst.y;
@@ -140,16 +152,17 @@ public class Pedestrian extends Thread{
 
         isMoving = true;
         crossing = true;
+
+
     }
 
-    private void switchToDest(){
+    private synchronized void switchToDest(){
         ground = ((Crossing) ground).getDest(dir);
         pedX = ground.x;
         pedY = ground.y;
         type = 2;
         groundSize = 40;
 
-        System.out.println("my dir is: " + dir + " and my side be " + dst.side);
         if (dst.side == Direction.SOUTH && dir == Direction.WEST) pedX += groundSize;
         if (dst.side == Direction.NORTH && dir == Direction.WEST) pedX += groundSize;
         if (dst.side == Direction.EAST && dir == Direction.NORTH) pedY += groundSize;
@@ -159,8 +172,20 @@ public class Pedestrian extends Thread{
         crossing = false;
     }
 
+    private void checkCollision(){
+        Boolean result = ground.checkCollision(this); // then check all other cars on it
+        if (result){ // result = true when car has crashed
+            System.out.println("oohhh ped collision");
+            color = Paint.valueOf("#ff0000");
+            isMoving = false;
+            collision = true;
+            //running = false;
+        }
+    }
+
     private void move(){
         checkBounds();
+        if (type == 1) checkCollision();
 
         if (dir == Direction.NORTH){
             pedY -= 1;
@@ -196,7 +221,7 @@ public class Pedestrian extends Thread{
     }
 
     public void draw(){
-        gc.setFill(Paint.valueOf("#80ff80"));
+        gc.setFill(color);
         gc.fillOval(pedX, pedY , width, height);
     }
 }

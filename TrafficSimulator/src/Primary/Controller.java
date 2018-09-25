@@ -19,6 +19,7 @@ public class Controller extends Thread{
     private TestTCS test;
     public volatile static int threadCount = 0; // used to see how many threads need to move before draw update
     public static final Object countLock = new Object(); // Used to lock the threadCount when changed
+    public static final Object simLock = new Object(); // Used to lock the threadCount when changed
     private ScheduledExecutorService spawner;
     private ScheduledFuture<?> spawnInterval;
 
@@ -49,6 +50,14 @@ public class Controller extends Thread{
             System.out.println ("Exception is caught: " + e.toString());
         }
     }
+
+    public void extremeMode(Label label){
+        label.setText("Modes:\nHeavy traffic\nPeriod = 0.2s");
+        spawnInterval.cancel(false);
+        spawnInterval = spawner.scheduleAtFixedRate(() -> spawnCar(), 0, 200, TimeUnit.MILLISECONDS);
+        spawnInterval = spawner.scheduleAtFixedRate(() -> spawnPed(), 0, 250, TimeUnit.MILLISECONDS);
+    }
+
 
     public void heavyMode(Label label)
     {
@@ -128,7 +137,7 @@ public class Controller extends Thread{
         //
         private void end(){
             ending = true; // so this isn't called multiple times while updating Gui
-            test.end(); // end their test controller
+            //test.end(); // end their test controller
             sim.showEnd(); // show super ugly end popup
 
             Timer timer = new Timer();
@@ -143,10 +152,12 @@ public class Controller extends Thread{
             @Override
             public void run() {
                 Platform.runLater(() -> {
-                    sim.clear();
-                    sim.drawTraffic();
 
-                    //Animation.super.stop();
+                    sim.clear();
+                    spawnInterval.cancel(true);
+                    //ending = false;
+                    sim.drawTraffic();
+                    Animation.super.stop();
                 });
 
             }

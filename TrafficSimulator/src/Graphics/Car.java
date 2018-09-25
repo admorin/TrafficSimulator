@@ -37,7 +37,7 @@ public class Car extends Thread{
     private Boolean atCross = false;
 
     public Boolean collision = false; // is true when collided within intersection and stopped
-    public Boolean needsGroundUpdate = false; // is true when it has entered or exited the intersection
+    public int needsGroundUpdate = 0; // is true when it has entered or exited the intersection
 
     private final Paint[] col = {
             Paint.valueOf("#ff8888"), // Array of colors
@@ -129,12 +129,16 @@ public class Car extends Thread{
     // 2 ) Remove car from the intersection's list of cars once it reaches destination lane
     //
     public void updateGround(){
-        if (ground.type == 1){ // 1 type = intersection
+        if (needsGroundUpdate == 2){
+            ground.getCrossing().removeCar(this);
+        } else if (needsGroundUpdate == 3){
+            ground.getCrossing().addCar(this);
+        } else if (ground.type == 1){ // 1 type = intersection
             ground.addCar(this);
-            needsGroundUpdate = false;
+            needsGroundUpdate = 0;
         } else if (ground.type == 0){ // 0 type = lane
             ground.getIntersection().removeCar(this);
-            needsGroundUpdate = false;
+            needsGroundUpdate = 0;
         }
     }
 
@@ -167,7 +171,8 @@ public class Car extends Thread{
             } else if (ground.type == 1){
                 System.out.println("switching to dest");
                 switchToDest();
-                ground.getCrossing().addCar(this);
+                //ground.getCrossing().addCar(this);
+                needsGroundUpdate = 3;
                 atCross = true;
             } else {
                 checkCollision();
@@ -206,6 +211,7 @@ public class Car extends Thread{
             gc.fillRect(carX, carY, width, height);
         }
 
+
     }
 
     // Changes the current Ground object from the start lane to
@@ -241,7 +247,7 @@ public class Car extends Thread{
         // one to be on th piece so if a new car is created then it knows
         // it's lead
         ground.setLast(this);
-        needsGroundUpdate = true; // need to add the car to intersection's list
+        needsGroundUpdate = 1; // need to add the car to intersection's list
     }
 
 
@@ -271,7 +277,7 @@ public class Car extends Thread{
         // one to be on th piece so if a new car is created then it knows
         // it's lead
         ground.setLast(this);
-        needsGroundUpdate = true; // need to remove the car from intersection list
+        needsGroundUpdate = 1; // need to remove the car from intersection list
     }
 
     // Sets up the width, height, x, y, and carSignalDisplay for
@@ -381,8 +387,9 @@ public class Car extends Thread{
             if (side == Direction.NORTH) {
                 if (atCross && carY < ground.y + laneLength - 20){
                     System.out.println("off da cross north");
-                    ground.getCrossing().removeCar(this);
+                    //ground.getCrossing().removeCar(this);
                     atCross = false;
+                    needsGroundUpdate = 2;
                 } else if(carY < ground.y){
                     isMoving = false;
                     willSwitch = true;
@@ -392,7 +399,8 @@ public class Car extends Thread{
             if (side == Direction.SOUTH){
                 if (atCross && carY > ground.y + 20){
                     System.out.println("off da crosss south");
-                    ground.getCrossing().removeCar(this);
+                    //ground.getCrossing().removeCar(this);
+                    needsGroundUpdate = 2;
                     atCross = false;
                 } else if (carY > ground.y - height + laneLength){
                     isMoving = false;
@@ -402,7 +410,8 @@ public class Car extends Thread{
 
             if (side == Direction.EAST){
                 if (atCross && carX > ground.x + 20){
-                    ground.getCrossing().removeCar(this);
+                    //ground.getCrossing().removeCar(this);
+                    needsGroundUpdate = 2;
                     System.out.println("off da cross east");
                     atCross = false;
                 }else if (carX > ground.x - width + laneLength) {
@@ -412,7 +421,8 @@ public class Car extends Thread{
             }
             if (side == Direction.WEST){
                 if (atCross && carX < ground.x + laneLength -20){
-                    ground.getCrossing().removeCar(this);
+                    //ground.getCrossing().removeCar(this);
+                    needsGroundUpdate = 2;
                     System.out.println("off da cross west");
                     atCross = false;
                 }else if (carX < ground.x) {
@@ -429,7 +439,8 @@ public class Car extends Thread{
                 } else if (carY > ground.y - height + laneLength - 20 && !atCross){
                     atCross = true;
                     isMoving = false;
-                    ground.getCrossing().addCar(this);
+                    needsGroundUpdate = 3;
+                    //ground.getCrossing().addCar(this);
                 }
             }
 
@@ -440,7 +451,8 @@ public class Car extends Thread{
                 } else if (carY < ground.y + 20 && !atCross){
                     atCross = true;
                     isMoving = false;
-                    ground.getCrossing().addCar(this);
+                    needsGroundUpdate = 3;
+                    //ground.getCrossing().addCar(this);
                 }
             }
 
@@ -451,7 +463,8 @@ public class Car extends Thread{
                 } else if (carX < ground.x + 20 && !atCross){
                     atCross = true;
                     isMoving = false;
-                    ground.getCrossing().addCar(this);
+                    needsGroundUpdate = 3;
+                    //ground.getCrossing().addCar(this);
                 }
             }
             if (side == Direction.WEST) {
@@ -461,7 +474,8 @@ public class Car extends Thread{
                 } else if (carX > ground.x - width + laneLength - 20 && !atCross){
                     atCross = true;
                     isMoving = false;
-                    ground.getCrossing().addCar(this);
+                    needsGroundUpdate = 3;
+                    //ground.getCrossing().addCar(this);
                 }
             }
         }

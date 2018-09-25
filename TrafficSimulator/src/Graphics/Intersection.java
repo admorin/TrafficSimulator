@@ -19,6 +19,8 @@ class Intersection extends Ground {
         this.setPosition(gc.getCanvas().getWidth() /2 - (size/2), gc.getCanvas().getHeight() /2 - (size/2), 1);
     }
 
+
+
     // Draws the main square and all it's connecting roads
     //
     public void draw(){
@@ -123,19 +125,17 @@ class Intersection extends Ground {
     }
 
     public Pedestrian createPed(){
-        Random rn = new Random();
 
+        Random rn = new Random();
         int range = (crosswalks.size() - 1) + 1;
         int random =  rn.nextInt(range);
         //random = 1;
 
         Crossing c = crosswalks.get(random);
-
         Crossing dest = getPedDest(c);
-
         //Crossing dest = crosswalks.get(1);
-        System.out.println("spawning ped at corner " + random + " with dst " + dest.side);
 
+        System.out.println("spawning ped at corner " + random + " with dst " + dest.side);
         return crosswalks.get(random).spawn(dest);
     }
 

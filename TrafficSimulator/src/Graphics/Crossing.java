@@ -71,7 +71,7 @@ public class Crossing extends Ground {
 
 
     public void draw(){
-        gc.setFill(Paint.valueOf("#0f1e3e"));
+        gc.setFill(Paint.valueOf("#33334d"));
         // draws the base cover over the lane
 
         if (road.side == Direction.NORTH){

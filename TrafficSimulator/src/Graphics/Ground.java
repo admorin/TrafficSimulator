@@ -17,6 +17,7 @@ public class Ground {
     private Crossing crosswalk;
 
     private LinkedList<Car> cars = new LinkedList<>();
+    private LinkedList<Pedestrian> peds = new LinkedList<>();
 
 
 
@@ -64,6 +65,8 @@ public class Ground {
         while (!cars.isEmpty()){
             cars.remove();
         }
+
+        last = null;
     }
 
     public Crossing getCrossing(){
@@ -87,12 +90,33 @@ public class Ground {
         return result;
     }
 
+    public synchronized Boolean checkCollision(Pedestrian p){
+        Boolean result = false;
+        Boolean collision;
+        for (Car c : cars){
+            collision = checkBounds(c, p);
+            if (collision) result = true;
+        }
+
+        return result;
+
+    }
+
     // Takes in two cars and returns true if they are withing
     // 5 x and y of each other
     //
     private Boolean checkBounds(Car c1, Car c2){
         double yDif = Math.abs(c1.getCarY() - c2.getCarY());
         double xDif = Math.abs(c1.getCarX() - c2.getCarX());
+        return yDif < 5 && xDif < 5;
+    }
+
+    // Takes in two cars and returns true if they are withing
+    // 5 x and y of each other
+    //
+    private Boolean checkBounds(Car c, Pedestrian p){
+        double yDif = Math.abs(c.getCarY() -  p.getY());
+        double xDif = Math.abs(c.getCarX() - p.getX());
         return yDif < 5 && xDif < 5;
     }
 

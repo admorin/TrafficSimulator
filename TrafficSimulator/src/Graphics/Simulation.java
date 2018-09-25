@@ -1,5 +1,6 @@
 package Graphics;
 
+import Primary.Controller;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Paint;
 
@@ -28,11 +29,14 @@ public class Simulation {
     // Called in animation loop to notify cars they
     // can move again before being drawn
     public void freeTraffic(){
-        for (Car c : cars) {
-            if (c.running) c.free(); // running = false if the car has arrived
-        }
-        for (Pedestrian p : peds) {
-            if (p.running) p.free();
+        synchronized (Controller.simLock)
+        {
+            for (Car c : cars) {
+                if (c.running) c.free(); // running = false if the car has arrived
+            }
+            for (Pedestrian p : peds) {
+                if (p.running) p.free();
+            }
         }
     }
 
@@ -40,36 +44,40 @@ public class Simulation {
     // Car threads from the simulation
     //
     public void clear(){
-        needsRefresh = true;
-        while (!cars.isEmpty()){
-            cars.remove();
+        synchronized (Controller.simLock) {
+            needsRefresh = true;
+            while (!cars.isEmpty()){
+                cars.remove();
+            }
+            while (!peds.isEmpty()){
+                peds.remove();
+            }
+            intersection.clearOut();
+            endSim = false;
         }
-        while (!peds.isEmpty()){
-            peds.remove();
-        }
-        intersection.clearOut();
+
     }
 
     // Redraws the intersection on each animation loop a
     // and all the traffic in it's new positions
     //
     public void drawTraffic(){
-        drawInterSection();
-        for (Car c : cars) {
-            if (c.running){
-                c.drawCar();
+        synchronized (Controller.simLock) {
+            drawInterSection();
+            for (Car c : cars) {
+                if (c.running) c.drawCar();
             }
-        }
 
-        for (Pedestrian p : peds) {
-            p.draw();
+            for (Pedestrian p : peds) {
+                if (p.running) p.draw();
+            }
         }
     }
 
     public Boolean updateSpots(){
         for (Car c : cars) {
             if (c.collision) endSim = true;
-            if (c.running && c.needsGroundUpdate) c.updateGround();
+            if (c.running && c.needsGroundUpdate != 0) c.updateGround();
         }
         return  endSim;
     }
@@ -78,26 +86,29 @@ public class Simulation {
     // Spawns a new car on a random start lane with a
     // random destination lane
     //
-    public void spawnCar(){
-        Random rn = new Random();
-        LinkedList<RoadDisplay> roads = intersection.getRoads();
+    public synchronized void spawnCar(){
+        synchronized (Controller.simLock) {
+            Random rn = new Random();
+            LinkedList<RoadDisplay> roads = intersection.getRoads();
 
-        int range = (roads.size() - 1) + 1;
-        int randomStart =  rn.nextInt(range);
-        //randomStart = 3; // uncomment this line to spawn on specific road (0 = north, 1 = south, 2 = east, 3 = west)
-        RoadDisplay r = roads.get(randomStart);
-        LaneDisplay start = r.getRandomStart();
+            int range = (roads.size() - 1) + 1;
+            int randomStart =  rn.nextInt(range);
+            //randomStart = 3; // uncomment this line to spawn on specific road (0 = north, 1 = south, 2 = east, 3 = west)
+            RoadDisplay r = roads.get(randomStart);
+            LaneDisplay start = r.getRandomStart();
 
-        LaneDisplay dst = intersection.getRandomDest(start);
+            LaneDisplay dst = intersection.getRandomDest(start);
 
-        System.out.println("spawning car at lane " + start.count + " with dst " + dst.side + " with lane count " + dst.count);
-        Car c = new Car(r.getSide(), start, dst, gc);
-        cars.add(c);
+            Car c = new Car(r.getSide(), start, dst, gc);
+            cars.add(c);
+        }
+
     }
 
     public void spawnPed(){
-        System.out.println("spawning that pedder");
-        peds.add(intersection.createPed());
+        synchronized (Controller.simLock) {
+            peds.add(intersection.createPed());
+        }
     }
 
     public void showEnd(){
@@ -110,7 +121,7 @@ public class Simulation {
     // Draws the initial setup with no traffic
     //
     private void drawInterSection() {
-        gc.setFill(Paint.valueOf("#0f1e3e"));
+        gc.setFill(Paint.valueOf("#33334d"));
         intersection.draw();
     }
 
