@@ -57,7 +57,7 @@ public class Main extends Application {
         lightButton.setOnMousePressed(e -> controller.lightMode(controlLabel));
         spawnCarButton.setOnMousePressed(e -> controller.spawnCar());
         spawnPedButton.setOnMousePressed(e -> controller.spawnPed());
-        resetButton.setOnMousePressed(e -> controller.clearTraffic(controlLabel));
+        resetButton.setOnMousePressed(e -> controller.clearTraffic());
 
 
         // Setup the scene

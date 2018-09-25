@@ -101,11 +101,10 @@ public class Controller extends Thread{
 
     // Button press action to remove all the traffic threads
     //
-    public void clearTraffic(Label label){
-        label.setText("Modes:\n\n");
+    public void clearTraffic(){
+        gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
         spawnInterval.cancel(false);
         this.sim = new Simulation(gc);
-        //sim.clear();
     }
 
 
@@ -114,12 +113,15 @@ public class Controller extends Thread{
     class Animation extends AnimationTimer
     {
         private Boolean ending = false; // collision is true if any cars have collided in intersection
+        private Boolean willEnd = false;
 
         Animation(){}
 
         @Override
         public void handle(long now) // called by JavaFX at 60Hz
         {
+            if (ending) resetSim(); // check if we should remake the sim
+
             // threadCount will be 0 when every single car thread has moved
             // then the sim can redraw all traffic at the new positions and notify
             // each thread it can move again
@@ -129,7 +131,7 @@ public class Controller extends Thread{
                 // don't care about hitting each other
 
                 Boolean collision = sim.updateSpots(); // checks cars for collision
-                if (collision && !ending) end();
+                if (collision && !willEnd) end();
 
                 sim.drawTraffic(); // loop over all traffic and draw new positions
                 sim.freeTraffic(); // notify all
@@ -144,32 +146,37 @@ public class Controller extends Thread{
         // if they weren't involved and then stops 3s later
         //
         private void end(){
-            ending = true; // so this isn't called multiple times while updating Gui
-            //test.end(); // end their test controller
-            sim.showEnd(); // show super ugly end popup
+            willEnd = true; // so this isn't called multiple times while updating Gui
             spawnInterval.cancel(true);
+
+            // Timed task to set up a new simulation after collisions
+            //
+            TimerTask t = new TimerTask() {
+                @Override
+                public void run() {
+                    Platform.runLater(() -> {
+                        ending = true;
+                    });
+
+                }
+            };
 
             Timer timer = new Timer();
             timer.schedule(t, 3000);
+
+        }
+
+        // Calls the function that creates a new Simulation
+        // and then resets the ending vars to false
+        //
+        private void resetSim(){
+            System.out.println("resetting the sim");
+            clearTraffic();
+            ending = false;
+            willEnd = false;
         }
 
 
-        // Timed task to clear the traffic, draw it again
-        // and stop the animation updates
-        //
-        final TimerTask t = new TimerTask() {
-            @Override
-            public void run() {
-                Platform.runLater(() -> {
-
-                    sim.clear();
-                    //ending = false;
-                    sim.drawTraffic();
-                    Animation.super.stop();
-                });
-
-            }
-        };
     }
 
 }

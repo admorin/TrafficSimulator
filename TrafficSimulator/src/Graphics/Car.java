@@ -386,7 +386,6 @@ public class Car extends Thread{
         } else if (isLeaving) { // checks when to stop moving on arrival
             if (side == Direction.NORTH) {
                 if (atCross && carY < ground.y + laneLength - 20){
-                    System.out.println("off da cross north");
                     //ground.getCrossing().removeCar(this);
                     atCross = false;
                     needsGroundUpdate = 2;
@@ -398,7 +397,6 @@ public class Car extends Thread{
 
             if (side == Direction.SOUTH){
                 if (atCross && carY > ground.y + 20){
-                    System.out.println("off da crosss south");
                     //ground.getCrossing().removeCar(this);
                     needsGroundUpdate = 2;
                     atCross = false;
@@ -412,7 +410,6 @@ public class Car extends Thread{
                 if (atCross && carX > ground.x + 20){
                     //ground.getCrossing().removeCar(this);
                     needsGroundUpdate = 2;
-                    System.out.println("off da cross east");
                     atCross = false;
                 }else if (carX > ground.x - width + laneLength) {
                     isMoving = false;
@@ -423,7 +420,6 @@ public class Car extends Thread{
                 if (atCross && carX < ground.x + laneLength -20){
                     //ground.getCrossing().removeCar(this);
                     needsGroundUpdate = 2;
-                    System.out.println("off da cross west");
                     atCross = false;
                 }else if (carX < ground.x) {
                     isMoving = false;
