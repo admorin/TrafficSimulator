@@ -1,5 +1,7 @@
 package Primary;
 
+import java.util.LinkedList;
+
 class TestTCS extends Thread {
 
     private Boolean green = false;
@@ -10,17 +12,32 @@ class TestTCS extends Thread {
         // Added some simple testing behavior for the TC where it
         // just flips from green to red every loop
 
-        SignalColor color;
+        SignalColor color1, color2;
+        LinkedList<Lanes> northsouth = new LinkedList<>();
+        LinkedList<Lanes> eastwest = new LinkedList<>();
+        for(Lanes l: Lanes.values())
+        {
+            if(l.toString().contains("N") || l.toString().contains("S")) northsouth.add(l);
+            else eastwest.add(l);
+        }
         while(running){
 
             if (green){
-                color = SignalColor.GREEN;
+                color1 = SignalColor.GREEN;
+                color2 = SignalColor.RED;
             } else {
-                color = SignalColor.RED;
+                color1 = SignalColor.RED;
+                color2 = SignalColor.GREEN;
             }
 
-            for(Lanes i: Lanes.values()){
-                i.setColor(color);
+            for(Lanes l: northsouth)
+            {
+                l.setColor(color1);
+            }
+
+            for(Lanes l: eastwest)
+            {
+                l.setColor(color2);
             }
 
             green = !green;
