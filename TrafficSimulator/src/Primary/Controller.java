@@ -15,7 +15,8 @@ import java.util.concurrent.TimeUnit;
 
 public class Controller extends Thread{
 
-    private final Simulation sim;
+    private Simulation sim;
+    private GraphicsContext gc;
     private TestTCS test;
     public volatile static int threadCount = 0; // used to see how many threads need to move before draw update
     public static final Object countLock = new Object(); // Used to lock the threadCount when changed
@@ -24,6 +25,7 @@ public class Controller extends Thread{
     private ScheduledFuture<?> spawnInterval;
 
     public Controller(GraphicsContext gc){
+        this.gc = gc;
         this.sim = new Simulation(gc);
     }
 
@@ -97,7 +99,8 @@ public class Controller extends Thread{
     public void clearTraffic(Label label){
         label.setText("Modes:\n\n");
         spawnInterval.cancel(false);
-        sim.clear();
+        this.sim = new Simulation(gc);
+        //sim.clear();
     }
 
 
