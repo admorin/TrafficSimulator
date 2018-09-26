@@ -1,5 +1,6 @@
 package Graphics;
 
+import Primary.Lights;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Paint;
 
@@ -10,6 +11,9 @@ public class Corner extends Ground{
     private double roadLength;
     private int size = 40;
 
+    private Lights signalNS;
+    private Lights signalEW;
+
     public Corner(GraphicsContext gc, RoadDisplay road, double roadLength){
         this.gc = gc;
         this.road = road;
@@ -17,8 +21,37 @@ public class Corner extends Ground{
         this.roadLength = roadLength;
     }
 
+
     public Pedestrian spawnPed(Ground dst){
         return new Pedestrian(gc, this, dst);
+    }
+
+    public void setSignal(Lights signal){
+        if (side == Direction.NORTH){
+            if (signal == Lights.NORTH){
+                signalEW = signal;
+            } else {
+                signalNS = signal;
+            }
+        } else if (side == Direction.SOUTH){
+            if (signal == Lights.SOUTH){
+                signalEW = signal;
+            } else {
+                signalNS = signal;
+            }
+        } else if (side == Direction.EAST){
+            if (signal == Lights.EAST){
+                signalNS = signal;
+            } else {
+                signalEW = signal;
+            }
+        } else if (side == Direction.WEST){
+            if (signal == Lights.WEST){
+                signalNS = signal;
+            } else {
+                signalEW = signal;
+            }
+        }
     }
 
     public void draw(){
@@ -39,5 +72,47 @@ public class Corner extends Ground{
         }
 
         gc.fillRect(x, y, size, size);
+
+        if (signalEW != null && signalNS != null){
+            drawSignal(true);
+            drawSignal(false);
+        }
+
+    }
+
+    private void drawSignal(Boolean first){
+        double sigX = x;
+        double sigY = y;
+
+        Paint nsColor;
+        Paint ewColor;
+
+        if (signalNS.getIsGreen()){
+            nsColor = Paint.valueOf("#009900");
+        } else {
+            nsColor = Paint.valueOf("#990000");
+        }
+
+        if (signalEW.getIsGreen()){
+            ewColor = Paint.valueOf("#009900");
+        } else {
+            ewColor = Paint.valueOf("#990000");
+        }
+
+        if (first){
+            // always drawing the east west signal
+            gc.setFill(ewColor);
+            if (side == Direction.NORTH || side == Direction.WEST) sigX += size - 5;
+            if (side == Direction.WEST || side == Direction.SOUTH) sigY += size - 15;
+            gc.fillRect(sigX, sigY, 5, 15);
+        } else {
+            // always drawing the north south ped signal
+            gc.setFill(nsColor);
+            if (side == Direction.NORTH) sigY += size - 5;
+            if (side == Direction.EAST) sigY += size - 5;
+            if (side == Direction.EAST || side == Direction.SOUTH) sigX += size - 15;
+            gc.fillRect(sigX, sigY, 15, 5);
+        }
+
     }
 }

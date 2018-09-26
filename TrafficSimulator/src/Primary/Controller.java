@@ -56,7 +56,7 @@ public class Controller extends Thread{
     public void rushMode(Label label){
         label.setText("Modes:\nRush Hour\nVehicle & Pedestrian\nPeriod = 0.25s");
         spawnInterval.cancel(false);
-        spawnInterval = spawner.scheduleAtFixedRate(() -> spawnBoth(), 100, 250, TimeUnit.MILLISECONDS);
+        spawnInterval = spawner.scheduleAtFixedRate(() -> spawnBoth(), 100, 200, TimeUnit.MILLISECONDS);
     }
 
 
@@ -64,14 +64,14 @@ public class Controller extends Thread{
     {
         label.setText("Modes:\nHeavy traffic\nPeriod = 0.5s");
         spawnInterval.cancel(false);
-        spawnInterval = spawner.scheduleAtFixedRate(() -> spawnCar(), 100, 500, TimeUnit.MILLISECONDS);
+        spawnInterval = spawner.scheduleAtFixedRate(() -> spawnBoth(), 100, 500, TimeUnit.MILLISECONDS);
     }
 
     public void moderateMode(Label label)
     {
         label.setText("Modes:\nModerate traffic\nPeriod = 1s");
         spawnInterval.cancel(false);
-        spawnInterval = spawner.scheduleAtFixedRate(() -> spawnCar(), 100, 1000, TimeUnit.MILLISECONDS);
+        spawnInterval = spawner.scheduleAtFixedRate(() -> spawnPed(), 100, 1000, TimeUnit.MILLISECONDS);
     }
 
     public void lightMode(Label label)
@@ -132,7 +132,7 @@ public class Controller extends Thread{
                 // don't care about hitting each other
 
                 Boolean collision = sim.updateSpots(); // checks cars for collision
-                if (collision && !willEnd) end();
+                if (collision && !willEnd) end(); // comment out just this line and you can cause huge car pile up collisions
 
                 sim.drawTraffic(); // loop over all traffic and draw new positions
                 sim.freeTraffic(); // notify all

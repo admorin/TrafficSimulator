@@ -1,4 +1,5 @@
 package Graphics;
+import Primary.Lights;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Paint;
 
@@ -8,29 +9,49 @@ public class Crossing extends Ground {
     private GraphicsContext gc;
     private RoadDisplay road;
     private double roadLength;
-    private Corner corner;
+    private Corner start;
 
     private Corner dest;
+    private Lights signal;
 
-    public Crossing(GraphicsContext gc, RoadDisplay road){
+    public Crossing(GraphicsContext gc, RoadDisplay road, Corner start, Corner dest){
         this.gc = gc;
         this.road = road;
         this.side = road.side;
         this.roadLength = (gc.getCanvas().getWidth() - 100) / 2;
-        this.corner = new Corner(gc, road, roadLength);
+        this.start = start;
+        this.dest = dest;
+        setSignal();
+    }
+
+    public Lights getSignal(){
+        return signal;
+    }
+
+
+    private void setSignal(){
+        if (side == Direction.NORTH){
+            signal = Lights.NORTH;
+        } else if (side == Direction.SOUTH){
+            signal = Lights.SOUTH;
+        } else if (side == Direction.EAST){
+            signal = Lights.EAST;
+        } else if (side == Direction.WEST){
+            signal = Lights.WEST;
+        }
+
+        start.setSignal(signal);
+        dest.setSignal(signal);
     }
 
     public Pedestrian spawn(Ground dst){
-        return corner.spawnPed(dst);
+        return start.spawnPed(dst);
     }
 
     public Corner getCorner(){
-        return corner;
+        return start;
     }
 
-    public void setDest(Corner dest){
-        this.dest = dest;
-    }
 
     public Corner getDest(Direction dir){
 
@@ -94,7 +115,7 @@ public class Crossing extends Ground {
             gc.fillRect(road.x + roadLength - 15, road.y, 15, 100);
         }
         drawDashes();
-        corner.draw();
+        start.draw();
 
     }
 

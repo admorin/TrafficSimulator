@@ -36,15 +36,19 @@ class Intersection extends Ground {
     }
 
     private void setup(){
-        Crossing cNorth = new Crossing(gc, roads.get(0));
-        Crossing cSouth = new Crossing(gc, roads.get(1));
-        Crossing cEast = new Crossing(gc, roads.get(2));
-        Crossing cWest = new Crossing(gc, roads.get(3));
 
-        cNorth.setDest(cEast.getCorner());
-        cSouth.setDest(cWest.getCorner());
-        cEast.setDest(cSouth.getCorner());
-        cWest.setDest(cNorth.getCorner());
+        double roadLength = (gc.getCanvas().getWidth() - 100) / 2;
+
+        Corner north = new Corner(gc, roads.get(0), roadLength);
+        Corner south = new Corner(gc, roads.get(1), roadLength);
+        Corner east = new Corner(gc, roads.get(2), roadLength);
+        Corner west = new Corner(gc, roads.get(3), roadLength);
+
+
+        Crossing cNorth = new Crossing(gc, roads.get(0), north, east);
+        Crossing cSouth = new Crossing(gc, roads.get(1), south, west);
+        Crossing cEast = new Crossing(gc, roads.get(2), east, south);
+        Crossing cWest = new Crossing(gc, roads.get(3), west, north);
 
         crosswalks.add(cNorth);
         crosswalks.add(cSouth);
@@ -129,11 +133,11 @@ class Intersection extends Ground {
         Random rn = new Random();
         int range = (crosswalks.size() - 1) + 1;
         int random =  rn.nextInt(range);
-        //random = 1;
+        //random = 0; // corner being spawned on
 
         Crossing c = crosswalks.get(random);
         Crossing dest = getPedDest(c);
-        //Crossing dest = crosswalks.get(1);
+        // Crossing dest = crosswalks.get(0); // crosswalk its going to get on
 
         return crosswalks.get(random).spawn(dest);
     }

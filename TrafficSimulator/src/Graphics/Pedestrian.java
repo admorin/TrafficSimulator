@@ -1,6 +1,7 @@
 package Graphics;
 
 import Primary.Controller;
+import Primary.Lights;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Paint;
 
@@ -8,6 +9,7 @@ public class Pedestrian extends Thread{
 
     private GraphicsContext gc;
     private Ground ground;
+    private Lights signal;
     private Ground dst;
     public Boolean running = true;
     public  Boolean collision = false;
@@ -35,6 +37,7 @@ public class Pedestrian extends Thread{
         pedY = ground.y;
 
         setDir();
+        setSignal();
         this.start();
     }
 
@@ -46,35 +49,50 @@ public class Pedestrian extends Thread{
         return pedY;
     }
 
+    private void setSignal(){
+        Crossing c = (Crossing) dst;
+
+        signal = c.getSignal();
+        System.out.println("the ped signal is : " + c.getSignal());
+    }
+
     private void setDir(){
         if (ground.side == Direction.NORTH){
             if (dst.side == ground.side){
                 dir = Direction.EAST;
+                pedY += 25;
             } else {
                 dir = Direction.SOUTH;
+                pedX += 25;
             }
         } else if (ground.side == Direction.SOUTH){
 
             if (dst.side == ground.side){
                 dir = Direction.WEST;
                 pedX += 20;
+                pedY += 5;
             } else {
                 dir = Direction.NORTH;
                 pedY += 20;
+                pedX += 5;
             }
         } else if (ground.side == Direction.EAST){
             if (dst.side == ground.side){
                 dir = Direction.SOUTH;
+                pedX += 5;
             } else {
                 dir = Direction.WEST;
-                pedX += 20;
+                pedX += 25;
+                pedY += 25;
             }
         } else if (ground.side == Direction.WEST){
             if (dst.side == ground.side){
                 dir = Direction.NORTH;
-                pedY += 20;
+                pedY += 30;
+                pedX += 25;
             } else {
                 dir = Direction.EAST;
+                pedY += 5;
             }
         }
     }
@@ -125,13 +143,18 @@ public class Pedestrian extends Thread{
             move();
         } else {
             // else check signal
-            if (type == 2){
+            if (type == 2){ // ped has arrived
                 isMoving = false;
                 running = false;
-            } else if (collision){
+            } else if (collision){ // ped got nailed by a car
                 isMoving = false;
             } else if (!crossing){
-                switchToCross();
+                if (signal.getIsGreen()){
+                    switchToCross();
+                } else {
+                    isMoving = false;
+                }
+                //switchToCross();
             } else {
                 switchToDest();
             }
@@ -158,14 +181,15 @@ public class Pedestrian extends Thread{
 
     private synchronized void switchToDest(){
         ground = ((Crossing) ground).getDest(dir);
-        pedX = ground.x;
-        pedY = ground.y;
         type = 2;
         groundSize = 40;
 
-        if (dst.side == Direction.SOUTH && dir == Direction.WEST) pedX += groundSize;
-        if (dst.side == Direction.NORTH && dir == Direction.WEST) pedX += groundSize;
-        if (dst.side == Direction.EAST && dir == Direction.NORTH) pedY += groundSize;
+        if (dir == Direction.EAST || dir == Direction.WEST) pedX = ground.x;
+        if (dir == Direction.NORTH || dir == Direction.SOUTH) pedY = ground.y;
+
+        if (dst.side == Direction.SOUTH && dir == Direction.WEST) pedX += groundSize - height/2;
+        if (dst.side == Direction.NORTH && dir == Direction.WEST) pedX += groundSize - height/2;
+        if (dst.side == Direction.EAST && dir == Direction.NORTH) pedY += groundSize - height/2;
         if (dst.side == Direction.WEST && dir == Direction.NORTH) pedY += groundSize;
 
         isMoving = true;

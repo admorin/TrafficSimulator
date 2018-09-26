@@ -35,6 +35,11 @@ class TestTCS extends Thread {
                 l.setColor(color1);
             }
 
+            Lights.valueOf("NORTH").setColor(color2);
+            Lights.valueOf("SOUTH").setColor(color2);
+            Lights.valueOf("WEST").setColor(color1);
+            Lights.valueOf("EAST").setColor(color1);
+
             for(Lanes l: eastwest)
             {
                 l.setColor(color2);
