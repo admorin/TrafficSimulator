@@ -2,6 +2,7 @@ package Graphics;
 
 import Primary.Controller;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Paint;
 
 import java.io.FileNotFoundException;
@@ -85,7 +86,7 @@ public class Simulation {
     // Spawns a new car on a random start lane with a
     // random destination lane
     //
-    public synchronized void spawnCar(){
+    public synchronized void spawnCar(Boolean emergency){
         synchronized (Controller.simLock) {
             Random rn = new Random();
             LinkedList<RoadDisplay> roads = intersection.getRoads();
@@ -98,7 +99,7 @@ public class Simulation {
 
             LaneDisplay dst = intersection.getRandomDest(start);
 
-            Car c = new Car(r.getSide(), start, dst, gc);
+            Car c = new Car(r.getSide(), start, dst, emergency, gc);
             cars.add(c);
         }
 

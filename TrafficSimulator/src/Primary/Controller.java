@@ -91,7 +91,11 @@ public class Controller extends Thread{
     // Button press action to spawn a car
     //
     public void spawnCar(){
-        sim.spawnCar();
+        sim.spawnCar(false);
+    }
+
+    public void spawnEmergency(){
+        sim.spawnCar(true);
     }
 
     // Button press action to spawn a pedestrian

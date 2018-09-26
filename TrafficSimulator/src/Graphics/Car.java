@@ -11,6 +11,7 @@ public class Car extends Thread{
 
     private Ground ground; // keeps track of which Ground piece it's on, could be LaneDisplay or Intersection
     private final Ground dest; // Always the ground piece it's heading to
+    public Boolean emergency;
     private final GraphicsContext gc;
     private Boolean isMoving = true;
     private double laneLength;
@@ -49,11 +50,12 @@ public class Car extends Thread{
     };
 
 
-    public Car(Direction side, Ground ground, Ground dest, GraphicsContext gc){
+    public Car(Direction side, Ground ground, Ground dest, Boolean emergency, GraphicsContext gc){
         this.gc = gc;
         this.ground = ground;
         this.dest = dest;
         this.side = side;
+        this.emergency = emergency;
         this.color = randomColor();
 
         this.lead = ground.getLast(); // get Car to check for collision
@@ -63,6 +65,8 @@ public class Car extends Thread{
         this.carY = ground.y;
         this.laneLength = (gc.getCanvas().getWidth() - 100) / 2;
         this.destLength = laneLength;
+
+        if (emergency) triggerEmergencySensor(true);
 
         setUpCar(this.side); // set up x, y, width, height for car
         setPathType(); // set if going straight = 0, right = 1, left = 2
@@ -146,6 +150,11 @@ public class Car extends Thread{
         l.setCarOnSensor(on);
     }
 
+    private void triggerEmergencySensor(Boolean on){
+        LaneDisplay l = (LaneDisplay) ground;
+        l.setEmergencySensor(on);
+    }
+
 
 
     /*
@@ -165,7 +174,6 @@ public class Car extends Thread{
             if (ground.type == 0 && !isLeaving && willSwitch) {
                 atCross = false;
                 ground.getCrossing().removeCar(this); // remove car from crosswalk
-                onLaneSensor(false); // set lane sensor to false
                 switchToIntersection();
             } else if (atCross){
                 if (!carSignalDisplay.isRed()) { // check if light is green
@@ -194,11 +202,21 @@ public class Car extends Thread{
             width = 8;
             height = 16;
             carX += 2;
+            if (emergency){
+                width += 2;
+                height += 5;
+            }
         } else {
             width = 16;
             height = 8;
             carY += 2;
+            if (emergency){
+                width += 5;
+                height += 2;
+            }
         }
+
+
     }
 
     // Called by animation timer to draw the car -- this Boolean used t
@@ -206,19 +224,39 @@ public class Car extends Thread{
     // if one of the cars needed it but that's not being used now
     //
     public void drawCar(){
+        if (emergency){
+            drawEmergency();
+        } else {
+            gc.setFill(color);
 
-        gc.setFill(color);
+            if ((pathType == 1 || pathType == 2) && ground.type == 1) {
+                if (!collision)rotation += rotationRate;
+                gc.save();
+                gc.transform(new Affine(new Rotate(rotation, carX + width/2, carY + height/2)));
+                gc.fillRect(carX, carY, width, height);
+                gc.restore();
+            } else {
+                gc.fillRect(carX, carY, width, height);
+            }
+        }
+    }
+
+    private void drawEmergency(){
+        gc.setFill(Paint.valueOf("#ff0000"));
 
         if ((pathType == 1 || pathType == 2) && ground.type == 1) {
             if (!collision)rotation += rotationRate;
             gc.save();
             gc.transform(new Affine(new Rotate(rotation, carX + width/2, carY + height/2)));
             gc.fillRect(carX, carY, width, height);
+            gc.setFill(Paint.valueOf("#ffffff"));
+            gc.fillOval(carX + width/2 - 1, carY + height/2 - 1, 2, 2);
             gc.restore();
         } else {
             gc.fillRect(carX, carY, width, height);
+            gc.setFill(Paint.valueOf("#ffffff"));
+            gc.fillOval(carX + width/2 - 1, carY + height/2 - 1, 2, 2);
         }
-
 
     }
 
@@ -226,6 +264,10 @@ public class Car extends Thread{
     // the Intersection object that is the neighbor of it
     //
     private synchronized void switchToIntersection() {
+
+        onLaneSensor(false); // set lane sensor to false
+        if (emergency) triggerEmergencySensor(false);
+
         Ground old = ground;
         ground = ground.getIntersection(); // sets current Ground object to be intersection
         laneLength = 100; // very important must match intersection size

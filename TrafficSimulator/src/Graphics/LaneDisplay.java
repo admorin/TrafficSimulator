@@ -4,6 +4,12 @@ import Primary.Lanes;
 import Primary.SignalColor;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Paint;
+import javafx.scene.image.Image;
+import javafx.scene.shape.ArcType;
+import javafx.scene.shape.Path;
+
+import java.awt.*;
+import java.util.ArrayList;
 
 public class LaneDisplay extends Ground{
 
@@ -39,6 +45,10 @@ public class LaneDisplay extends Ground{
 
     public void setCarOnSensor(Boolean val){
         if (lane.getCarOnLane() != val) lane.setCarOnLane(val);
+    }
+
+    public void setEmergencySensor(Boolean on){
+        if (lane.getEmergencyOnLane() != on) lane.setEmergencyOnLane(on);
     }
 
 
@@ -164,6 +174,8 @@ public class LaneDisplay extends Ground{
     //
     private void drawDashes(double x , double y, double s1, double s2)  {
 
+        if (in) drawArrows(x, y);
+
         if (isMid) { // if mid lane draw the double yellows
             drawMidLine(x, y);
         } else{
@@ -182,6 +194,74 @@ public class LaneDisplay extends Ground{
                     gc.fillRect((x  + (20 * i) + 8), y , 10, 2);
                 }
             }
+        }
+
+    }
+
+    private void drawArrows(double x, double y){
+
+        double width = 1.5;
+        double height = 14;
+
+        if (side == Direction.NORTH){
+            y += laneLength - 50;
+            x += 10;
+            if (count == 1){
+                drawStraight(x, y, width, height);
+            }
+
+        } else if (side == Direction.SOUTH){
+            x += 10;
+            y+= 50;
+            if (count == 3){
+                drawStraight(x, y, width, height);
+            }
+        } else if (side == Direction.EAST){
+            width = 14;
+            height = 1.5;
+            x += 50;
+            y += 10;
+            if (count == 1){
+                drawStraight(x, y, width, height);
+            }
+        } else if (side == Direction.WEST){
+            width = 14;
+            height = 1.5;
+            x += laneLength - 50;
+            y += 10;
+            if (count == 3){
+                drawStraight(x, y, width, height);
+            }
+        }
+
+    }
+
+    private void drawStraight(double x, double y, double width, double height){
+        gc.setFill(Paint.valueOf("#ffffff"));
+        gc.fillRect(x, y, width, height);
+
+        if (side == Direction.NORTH) y += height;
+        if (side == Direction.WEST) x += width;
+        drawTriangle(x, y);
+    }
+
+    public void drawTriangle(double x, double y) {
+        if (side == Direction.NORTH){
+            double [] xs = {x - 4, x + 1, x + 6};
+            double [] ys = {y, y + 7, y};
+            gc.fillPolygon(xs, ys, 3);
+        } else if (side == Direction.EAST){
+            double [] xs = {x, x - 7, x};
+            double [] ys = {y - 4, y + 1, y + 6};
+            gc.fillPolygon(xs, ys, 3);
+        } else if (side == Direction.SOUTH){
+            double [] xs = {x - 4, x + 1, x + 6};
+            double [] ys = {y, y - 7, y};
+            gc.fillPolygon(xs, ys, 3);
+        } else if (side == Direction.WEST){
+            double [] xs = {x, x + 7, x};
+            double [] ys = {y - 4, y + 1, y + 6};
+            gc.fillPolygon(xs, ys, 3);
         }
 
     }
