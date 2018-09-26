@@ -39,7 +39,7 @@ public class Main extends Application {
         Label controlLabel = new Label("Modes:\n\n");
         controlLabel.setPrefSize(150, 50);
 
-        Button extremeButton = new Button("Extreme Traffic");
+        Button rushButton = new Button("Rush Hour Traffic");
         Button heavyButton = new Button("Heavy Traffic");
         Button moderateButton = new Button("Moderate Traffic");
         Button lightButton = new Button("Light Traffic");
@@ -51,17 +51,17 @@ public class Main extends Application {
         controller.start();
 
         // Handle button press actions
-        extremeButton.setOnMousePressed(e -> controller.extremeMode(controlLabel));
+        rushButton.setOnMousePressed(e -> controller.rushMode(controlLabel));
         heavyButton.setOnMousePressed(e -> controller.heavyMode(controlLabel));
         moderateButton.setOnMousePressed(e -> controller.moderateMode(controlLabel));
         lightButton.setOnMousePressed(e -> controller.lightMode(controlLabel));
         spawnCarButton.setOnMousePressed(e -> controller.spawnCar());
         spawnPedButton.setOnMousePressed(e -> controller.spawnPed());
-        resetButton.setOnMousePressed(e -> controller.clearTraffic());
+        resetButton.setOnMousePressed(e -> controller.reset());
 
 
         // Setup the scene
-        controlBox.getChildren().addAll(controlLabel, extremeButton, heavyButton, moderateButton, lightButton, spawnCarButton, spawnPedButton, resetButton);
+        controlBox.getChildren().addAll(controlLabel, rushButton, heavyButton, moderateButton, lightButton, spawnCarButton, spawnPedButton, resetButton);
         root.setRight(controlBox);
         root.setLeft(canvas);
 

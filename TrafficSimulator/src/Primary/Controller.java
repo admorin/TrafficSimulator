@@ -53,33 +53,34 @@ public class Controller extends Thread{
         }
     }
 
-    public void extremeMode(Label label){
-        label.setText("Modes:\nHeavy traffic\nPeriod = 0.2s");
+    public void rushMode(Label label){
+        label.setText("Modes:\nRush Hour\nVehicle & Pedestrian\nPeriod = 0.25s");
         spawnInterval.cancel(false);
-        spawnInterval = spawner.scheduleAtFixedRate(() -> spawnBoth(), 0, 200, TimeUnit.MILLISECONDS);
+        spawnInterval = spawner.scheduleAtFixedRate(() -> spawnBoth(), 100, 250, TimeUnit.MILLISECONDS);
     }
 
 
     public void heavyMode(Label label)
     {
-        label.setText("Modes:\nHeavy traffic\nPeriod = 1s");
+        label.setText("Modes:\nHeavy traffic\nPeriod = 0.5s");
         spawnInterval.cancel(false);
-        spawnInterval = spawner.scheduleAtFixedRate(() -> spawnBoth(), 0, 1, TimeUnit.SECONDS);
+        spawnInterval = spawner.scheduleAtFixedRate(() -> spawnCar(), 100, 500, TimeUnit.MILLISECONDS);
     }
 
     public void moderateMode(Label label)
     {
-        label.setText("Modes:\nModerate traffic\nPeriod = 2s");
+        label.setText("Modes:\nModerate traffic\nPeriod = 1s");
         spawnInterval.cancel(false);
-        spawnInterval = spawner.scheduleAtFixedRate(() -> spawnBoth(), 0, 2, TimeUnit.SECONDS);
+        spawnInterval = spawner.scheduleAtFixedRate(() -> spawnCar(), 100, 1000, TimeUnit.MILLISECONDS);
     }
 
     public void lightMode(Label label)
     {
-        label.setText("Modes:\nLight traffic\nPeriod = 4s");
+        label.setText("Modes:\nLight traffic\nPeriod = 2s");
         spawnInterval.cancel(false);
-        spawnInterval = spawner.scheduleAtFixedRate(() -> spawnBoth(), 0, 4, TimeUnit.SECONDS);
+        spawnInterval = spawner.scheduleAtFixedRate(() -> spawnCar(), 100, 2000, TimeUnit.MILLISECONDS);
     }
+
 
     public void spawnBoth()
     {
@@ -101,7 +102,7 @@ public class Controller extends Thread{
 
     // Button press action to remove all the traffic threads
     //
-    public void clearTraffic(){
+    public void reset(){
         gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
         spawnInterval.cancel(false);
         this.sim = new Simulation(gc);
@@ -171,7 +172,7 @@ public class Controller extends Thread{
         //
         private void resetSim(){
             System.out.println("resetting the sim");
-            clearTraffic();
+            reset();
             ending = false;
             willEnd = false;
         }
