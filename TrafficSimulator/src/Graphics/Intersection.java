@@ -135,7 +135,6 @@ class Intersection extends Ground {
         Crossing dest = getPedDest(c);
         //Crossing dest = crosswalks.get(1);
 
-        System.out.println("spawning ped at corner " + random + " with dst " + dest.side);
         return crosswalks.get(random).spawn(dest);
     }
 
@@ -166,6 +165,4 @@ class Intersection extends Ground {
         return dst;
 
     }
-
-
 }

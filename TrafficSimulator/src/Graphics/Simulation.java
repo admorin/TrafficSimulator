@@ -11,7 +11,6 @@ import java.util.Random;
 public class Simulation {
 
     private final GraphicsContext gc;
-    private Boolean needsRefresh = true;
     private final Intersection intersection;
     private final int size = 100;
 
@@ -45,7 +44,6 @@ public class Simulation {
     //
     public void clear(){
         synchronized (Controller.simLock) {
-            needsRefresh = true;
             while (!cars.isEmpty()){
                 cars.remove();
             }
@@ -55,7 +53,6 @@ public class Simulation {
             intersection.clearOut();
             endSim = false;
         }
-
     }
 
     // Redraws the intersection on each animation loop a
@@ -75,9 +72,11 @@ public class Simulation {
     }
 
     public Boolean updateSpots(){
-        for (Car c : cars) {
-            if (c.collision) endSim = true;
-            if (c.running && c.needsGroundUpdate != 0) c.updateGround();
+        synchronized (Controller.simLock) {
+            for (Car c : cars) {
+                if (c.collision) endSim = true;
+                if (c.running && c.needsGroundUpdate != 0) c.updateGround();
+            }
         }
         return  endSim;
     }

@@ -37,6 +37,10 @@ public class LaneDisplay extends Ground{
         return this.carSignalDisplay;
     }
 
+    public void setCarOnSensor(Boolean val){
+        if (lane.getCarOnLane() != val) lane.setCarOnLane(val);
+    }
+
 
     // Draw the lane and it's carSignalDisplay if ingoing traffic
     //

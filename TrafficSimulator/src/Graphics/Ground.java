@@ -17,7 +17,6 @@ public class Ground {
     private Crossing crosswalk;
 
     private LinkedList<Car> cars = new LinkedList<>();
-    private LinkedList<Pedestrian> peds = new LinkedList<>();
 
 
 

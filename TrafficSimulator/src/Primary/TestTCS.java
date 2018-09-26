@@ -77,6 +77,10 @@ class TestTCS extends Thread {
             }
             */
 
+            for(Lanes m : Lanes.values()){
+                System.out.println("Car on lane " + m + " - " + m.getCarOnLane());
+            }
+
             System.out.println("Loop Done...");
             try {
                 sleep(3000);

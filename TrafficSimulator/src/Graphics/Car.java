@@ -31,6 +31,7 @@ public class Car extends Thread{
     private double rotationRate = 0;
 
     public Boolean running = true; // running is true if car hasn't arrived at destination
+    private Boolean triggered = false;
 
     private Boolean isLeaving = false; // is true when car has passed through intersection
     private Boolean willSwitch = false; // is true when car is about to switch Ground components
@@ -124,33 +125,38 @@ public class Car extends Thread{
     }
 
     // Called in animation loop for each car that
-    // needsGroundUpdate and will do one of two things
-    // 1 ) Add car to intersection's list of cars to check for collision
-    // 2 ) Remove car from the intersection's list of cars once it reaches destination lane
+    // needsGroundUpdate and will do one of four things
     //
     public void updateGround(){
-        if (needsGroundUpdate == 2){
+        if (needsGroundUpdate == 2){ // remove car from crosswalk
             ground.getCrossing().removeCar(this);
-        } else if (needsGroundUpdate == 3){
+        } else if (needsGroundUpdate == 3){ // add car to crosswalk
             ground.getCrossing().addCar(this);
-        } else if (ground.type == 1){ // 1 type = intersection
+        } else if (ground.type == 1){ // 1 type = intersection, add car to intersection
             ground.addCar(this);
             needsGroundUpdate = 0;
-        } else if (ground.type == 0){ // 0 type = lane
+        } else if (ground.type == 0){ // 0 type = lane, remove car from intersection
             ground.getIntersection().removeCar(this);
             needsGroundUpdate = 0;
         }
     }
 
+    private void onLaneSensor(Boolean on){
+        LaneDisplay l = (LaneDisplay) ground;
+        l.setCarOnSensor(on);
+    }
+
+
 
     /*
     Keep going unless stopped then check five different scenarios --
 
-    1 ) if ground is a LaneDisplay type ( 0 ) and car is incoming then if the carSignalDisplay isn't red switch into intersection
-    2 ) if car is leaving and it's out of bounds of current component then it must've arrived so stop running
-    3 ) if car has crashed then stop it and wait for end
-    4 ) if ground type is 1 then it's on the intersection so switch to destination lane
-    5 ) else just check if the lead car it stopped for has moved yet
+    1 ) if ground is a LaneDisplay type ( 0 ) and car is incoming then switch to intersection and remove from crossing and sensor
+    2 ) if car is at the crosswalk then check if light is green then move else trigger the lane sensor
+    3 ) if car is leaving then it must've arrived so stop running
+    4 ) if collision then stop the car
+    5 ) if ground type is intersection then switch to destination lane and add to crosswalk on dest road
+    6 ) else check if car in lead has moved yet
     */
     private void updatePosition() {
         if (isMoving) {
@@ -158,23 +164,25 @@ public class Car extends Thread{
         } else {
             if (ground.type == 0 && !isLeaving && willSwitch) {
                 atCross = false;
-                ground.getCrossing().removeCar(this);
+                ground.getCrossing().removeCar(this); // remove car from crosswalk
+                onLaneSensor(false); // set lane sensor to false
                 switchToIntersection();
             } else if (atCross){
-                if (!carSignalDisplay.isRed()) {
+                if (!carSignalDisplay.isRed()) { // check if light is green
                     isMoving = true;
+                } else if (!triggered){ // trigger the lane sensor that we're waiting
+                    onLaneSensor(true);
+                    triggered = true;
                 }
-            } else if (isLeaving){
+            } else if (isLeaving){ // arrived so stop running
                 running = false;
-            } else if(collision){
+            } else if(collision){ // collided so stop moving
                 isMoving = false;
-            } else if (ground.type == 1){
-                System.out.println("switching to dest");
+            } else if (ground.type == 1){ // leaving intersection to dest lane
                 switchToDest();
-                //ground.getCrossing().addCar(this);
-                needsGroundUpdate = 3;
+                needsGroundUpdate = 3; // triggers the car to be added to the crosswalk
                 atCross = true;
-            } else {
+            } else { // car must be just stopped behind another so check if that one moved
                 checkCollision();
             }
         }
@@ -386,7 +394,6 @@ public class Car extends Thread{
         } else if (isLeaving) { // checks when to stop moving on arrival
             if (side == Direction.NORTH) {
                 if (atCross && carY < ground.y + laneLength - 20){
-                    //ground.getCrossing().removeCar(this);
                     atCross = false;
                     needsGroundUpdate = 2;
                 } else if(carY < ground.y){
@@ -397,7 +404,6 @@ public class Car extends Thread{
 
             if (side == Direction.SOUTH){
                 if (atCross && carY > ground.y + 20){
-                    //ground.getCrossing().removeCar(this);
                     needsGroundUpdate = 2;
                     atCross = false;
                 } else if (carY > ground.y - height + laneLength){
@@ -408,7 +414,6 @@ public class Car extends Thread{
 
             if (side == Direction.EAST){
                 if (atCross && carX > ground.x + 20){
-                    //ground.getCrossing().removeCar(this);
                     needsGroundUpdate = 2;
                     atCross = false;
                 }else if (carX > ground.x - width + laneLength) {
@@ -418,7 +423,6 @@ public class Car extends Thread{
             }
             if (side == Direction.WEST){
                 if (atCross && carX < ground.x + laneLength -20){
-                    //ground.getCrossing().removeCar(this);
                     needsGroundUpdate = 2;
                     atCross = false;
                 }else if (carX < ground.x) {
@@ -436,7 +440,6 @@ public class Car extends Thread{
                     atCross = true;
                     isMoving = false;
                     needsGroundUpdate = 3;
-                    //ground.getCrossing().addCar(this);
                 }
             }
 
@@ -448,7 +451,6 @@ public class Car extends Thread{
                     atCross = true;
                     isMoving = false;
                     needsGroundUpdate = 3;
-                    //ground.getCrossing().addCar(this);
                 }
             }
 
@@ -460,7 +462,6 @@ public class Car extends Thread{
                     atCross = true;
                     isMoving = false;
                     needsGroundUpdate = 3;
-                    //ground.getCrossing().addCar(this);
                 }
             }
             if (side == Direction.WEST) {
@@ -471,7 +472,6 @@ public class Car extends Thread{
                     atCross = true;
                     isMoving = false;
                     needsGroundUpdate = 3;
-                    //ground.getCrossing().addCar(this);
                 }
             }
         }
