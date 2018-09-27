@@ -36,6 +36,9 @@ public class Main extends Application {
         controlBox.setPrefSize(150, 550);
         controlBox.setStyle("-fx-background-color: #e0e0e0;");
 
+        Label resultLabel = new Label("");
+        resultLabel.setPrefSize(150, 50);
+
         Label controlLabel = new Label("Modes:\n\n");
         controlLabel.setPrefSize(150, 50);
 
@@ -47,6 +50,15 @@ public class Main extends Application {
         Button spawnEmergencyButton = new Button("Spawn Emergency");
         Button spawnPedButton = new Button("Spawn Pedestrian");
         Button resetButton = new Button("Reset");
+
+        rushButton.setPrefSize(140, 30);
+        heavyButton.setPrefSize(140, 30);
+        moderateButton.setPrefSize(140, 30);
+        lightButton.setPrefSize(140, 30);
+        spawnCarButton.setPrefSize(140, 30);
+        spawnEmergencyButton.setPrefSize(140, 30);
+        spawnPedButton.setPrefSize(140, 30);
+        resetButton.setPrefSize(140, 30);
 
         Controller controller = new Controller(gc);
         controller.start();
@@ -63,7 +75,7 @@ public class Main extends Application {
 
 
         // Setup the scene
-        controlBox.getChildren().addAll(controlLabel, rushButton, heavyButton, moderateButton, lightButton, spawnCarButton, spawnEmergencyButton, spawnPedButton, resetButton);
+        controlBox.getChildren().addAll(controlLabel, rushButton, heavyButton, moderateButton, lightButton, spawnCarButton, spawnEmergencyButton, spawnPedButton, resetButton, resultLabel);
         root.setRight(controlBox);
         root.setLeft(canvas);
 

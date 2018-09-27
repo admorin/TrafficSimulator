@@ -16,6 +16,7 @@ public class Ground {
     // keeps track of the last Car in line on the component so if a
     // new one is spawned it knows the lead Car in front of it
     private Car last;
+    private Pedestrian pedLast;
     private Crossing crosswalk;
 
     private LinkedList<Car> cars = new LinkedList<>();
@@ -43,11 +44,19 @@ public class Ground {
         this.last = last;
     }
 
+    public void setLast(Pedestrian last){
+        pedLast = last;
+    }
+
     // Used on Car creation to ask the object the last car in the lane
     // so it knows which car to check for collision
     //
     public Car getLast(){
         return last;
+    }
+
+    public Pedestrian getLastPed(){
+        return pedLast;
     }
 
     public void setCrosswalk(Crossing crosswalk){

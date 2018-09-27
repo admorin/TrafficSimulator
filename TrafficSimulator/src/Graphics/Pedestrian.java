@@ -14,6 +14,7 @@ public class Pedestrian extends Thread{
     private Ground ground;
     private Lights signal;
     private Ground dst;
+    private Pedestrian lead;
 
     public Boolean running = true;
     public  Boolean collision = false;
@@ -36,6 +37,9 @@ public class Pedestrian extends Thread{
         this.gc = gc;
         this.ground = ground;
         this.dst = dst;
+
+        this.lead = ground.getLastPed(); // get Ped to check for collision
+        this.ground.setLast(this); // set this Ped as last on the current Ground piece
 
         pedX = ground.x;
         pedY = ground.y;
@@ -121,7 +125,6 @@ public class Pedestrian extends Thread{
                 } else {
                     isMoving = false;
                 }
-                //switchToCross();
             } else {
                 switchToDest();
             }
@@ -173,12 +176,14 @@ public class Pedestrian extends Thread{
     //
     private void checkCollision(){
         synchronized (Controller.simLock) {
-            Boolean result = ground.checkCollision(this); // then check all other cars on it
-            if (result){ // result = true when car has crashed
-                color = Paint.valueOf("#ff0000");
-                isMoving = false;
-                collision = true;
-                //running = false;
+            if (type == 1){
+                Boolean result = ground.checkCollision(this); // then check all other cars on it
+                if (result){ // result = true when car has crashed
+                    color = Paint.valueOf("#ff0000");
+                    isMoving = false;
+                    collision = true;
+                    //running = false;
+                }
             }
         }
 
@@ -188,6 +193,7 @@ public class Pedestrian extends Thread{
     // checks for bounds on the component its walking on
     //
     private void move(){
+
         checkBounds();
         if (type == 1) checkCollision();
 

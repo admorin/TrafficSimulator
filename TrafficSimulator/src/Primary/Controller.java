@@ -18,9 +18,11 @@ public class Controller extends Thread{
     private Simulation sim;
     private GraphicsContext gc;
     private TestTCS test;
+
     public volatile static int threadCount = 0; // used to see how many threads need to move before draw update
     public static final Object countLock = new Object(); // Used to lock the threadCount when changed
     public static final Object simLock = new Object(); // Used to lock the threadCount when changed
+
     private ScheduledExecutorService spawner;
     private ScheduledFuture<?> spawnInterval;
 
@@ -56,7 +58,7 @@ public class Controller extends Thread{
     public void rushMode(Label label){
         label.setText("Modes:\nRush Hour\nVehicle & Pedestrian\nPeriod = 0.25s");
         spawnInterval.cancel(false);
-        spawnInterval = spawner.scheduleAtFixedRate(() -> spawnBoth(), 100, 200, TimeUnit.MILLISECONDS);
+        spawnInterval = spawner.scheduleAtFixedRate(() -> spawnBoth(), 100, 150, TimeUnit.MILLISECONDS);
     }
 
 
@@ -136,13 +138,14 @@ public class Controller extends Thread{
                 // don't care about hitting each other
 
                 Boolean collision = sim.updateSpots(); // checks cars for collision
-                if (collision && !willEnd) end(); // comment out just this line and you can cause huge car pile up collisions
+                //if (collision && !willEnd) end(); // comment out just this line and you can cause huge car pile up collisions
 
                 sim.drawTraffic(); // loop over all traffic and draw new positions
                 sim.freeTraffic(); // notify all
             } else {
                 // this shouldn't happen
                 System.out.println("threads count at " + threadCount);
+                //reset();
             }
         }
 

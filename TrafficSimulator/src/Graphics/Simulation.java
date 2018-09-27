@@ -93,7 +93,7 @@ public class Simulation {
 
             int range = (roads.size() - 1) + 1;
             int randomStart =  rn.nextInt(range);
-            //randomStart = 3; // uncomment this line to spawn on specific road (0 = north, 1 = south, 2 = east, 3 = west)
+            //randomStart = 0; // uncomment this line to spawn on specific road (0 = north, 1 = south, 2 = east, 3 = west)
             RoadDisplay r = roads.get(randomStart);
             LaneDisplay start = r.getRandomStart();
 

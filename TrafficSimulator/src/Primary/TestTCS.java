@@ -90,11 +90,6 @@ class TestTCS extends Thread {
             }
             */
 
-
-            for(Lanes n : Lanes.values()){
-                System.out.println("Emergency on lane " + n + " - " + n.getEmergencyOnLane());
-            }
-
             System.out.println("Loop Done...");
             try {
                 sleep(3000);

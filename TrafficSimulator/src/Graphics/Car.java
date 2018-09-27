@@ -445,7 +445,7 @@ public class Car extends Thread{
             } else if (side == Direction.NORTH && carY > dest.y){
                 isMoving = false;
                 willSwitch = true;
-            } else if (side == Direction.EAST && carX < dest.x + destLength){
+            } else if (side == Direction.EAST && carX < dest.x + destLength - width){
                 isMoving = false;
                 willSwitch = true;
             } else if (side == Direction.WEST && carX > dest.x){
@@ -526,7 +526,7 @@ public class Car extends Thread{
                 }
             }
             if (side == Direction.WEST) {
-                if (carX > ground.x - width + laneLength) {
+                if (carX > ground.x + laneLength) {
                     isMoving = false;
                     willSwitch = true;
                 } else if (carX > ground.x - width + laneLength - 20 && !atCross){
@@ -542,6 +542,7 @@ public class Car extends Thread{
 
     // Checks if the car needs to switch Ground component then
     // moves a direction depending on the road it's on and if outgoing
+    //
     private void move(){
 
         if (!isLeaving) checkCollision();
