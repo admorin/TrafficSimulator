@@ -7,10 +7,14 @@ import javafx.scene.paint.Paint;
 
 public class Pedestrian extends Thread{
 
+    // Very similar to Car traffic thread, starts on Corner with a destination crosswalk to take
+    // and only moves of the Corner if the signal is green for peds
+
     private GraphicsContext gc;
     private Ground ground;
     private Lights signal;
     private Ground dst;
+
     public Boolean running = true;
     public  Boolean collision = false;
 
@@ -41,6 +45,8 @@ public class Pedestrian extends Thread{
         this.start();
     }
 
+    // Used to check for car collisions
+    //
     public double getX(){
         return pedX;
     }
@@ -51,50 +57,7 @@ public class Pedestrian extends Thread{
 
     private void setSignal(){
         Crossing c = (Crossing) dst;
-
         signal = c.getSignal();
-        System.out.println("the ped signal is : " + c.getSignal());
-    }
-
-    private void setDir(){
-        if (ground.side == Direction.NORTH){
-            if (dst.side == ground.side){
-                dir = Direction.EAST;
-                pedY += 25;
-            } else {
-                dir = Direction.SOUTH;
-                pedX += 25;
-            }
-        } else if (ground.side == Direction.SOUTH){
-
-            if (dst.side == ground.side){
-                dir = Direction.WEST;
-                pedX += 20;
-                pedY += 5;
-            } else {
-                dir = Direction.NORTH;
-                pedY += 20;
-                pedX += 5;
-            }
-        } else if (ground.side == Direction.EAST){
-            if (dst.side == ground.side){
-                dir = Direction.SOUTH;
-                pedX += 5;
-            } else {
-                dir = Direction.WEST;
-                pedX += 25;
-                pedY += 25;
-            }
-        } else if (ground.side == Direction.WEST){
-            if (dst.side == ground.side){
-                dir = Direction.NORTH;
-                pedY += 30;
-                pedX += 25;
-            } else {
-                dir = Direction.EAST;
-                pedY += 5;
-            }
-        }
     }
 
     @Override
@@ -138,6 +101,10 @@ public class Pedestrian extends Thread{
         }
     }
 
+    // Moves if the ped is moving else checks if it has arrived or
+    // has collided with a car to stop  or if the signal has changed
+    // and it can switch to the crosswalk else it must be ready to switch to dest
+    //
     private void updatePosition(){
         if (isMoving) {
             move();
@@ -161,6 +128,10 @@ public class Pedestrian extends Thread{
         }
     }
 
+
+    // Switches current ground piece from start Corner
+    // to crosswalk destination
+    //
     private synchronized void switchToCross(){
         ground = dst;
         pedX = dst.x;
@@ -179,6 +150,8 @@ public class Pedestrian extends Thread{
 
     }
 
+    // Switches current ground component to the destination Corner
+    // and keeps moving
     private synchronized void switchToDest(){
         ground = ((Crossing) ground).getDest(dir);
         type = 2;
@@ -196,17 +169,24 @@ public class Pedestrian extends Thread{
         crossing = false;
     }
 
+    // Checks for collisions with cars within the crosswalk
+    //
     private void checkCollision(){
-        Boolean result = ground.checkCollision(this); // then check all other cars on it
-        if (result){ // result = true when car has crashed
-            System.out.println("oohhh ped collision");
-            color = Paint.valueOf("#ff0000");
-            isMoving = false;
-            collision = true;
-            //running = false;
+        synchronized (Controller.simLock) {
+            Boolean result = ground.checkCollision(this); // then check all other cars on it
+            if (result){ // result = true when car has crashed
+                color = Paint.valueOf("#ff0000");
+                isMoving = false;
+                collision = true;
+                //running = false;
+            }
         }
+
     }
 
+    // moves the ped depending on the dir and
+    // checks for bounds on the component its walking on
+    //
     private void move(){
         checkBounds();
         if (type == 1) checkCollision();
@@ -222,6 +202,8 @@ public class Pedestrian extends Thread{
         }
     }
 
+    // stops the ped if it needs to switch components
+    //
     private void checkBounds(){
 
         if (dir == Direction.WEST){
@@ -242,6 +224,49 @@ public class Pedestrian extends Thread{
             }
         }
 
+    }
+
+    // Sets the direction the ped is heading based on its start ground and dest
+    //
+    private void setDir(){
+        if (ground.side == Direction.NORTH){
+            if (dst.side == ground.side){
+                dir = Direction.EAST;
+                pedY += 25;
+            } else {
+                dir = Direction.SOUTH;
+                pedX += 25;
+            }
+        } else if (ground.side == Direction.SOUTH){
+
+            if (dst.side == ground.side){
+                dir = Direction.WEST;
+                pedX += 20;
+                pedY += 5;
+            } else {
+                dir = Direction.NORTH;
+                pedY += 20;
+                pedX += 5;
+            }
+        } else if (ground.side == Direction.EAST){
+            if (dst.side == ground.side){
+                dir = Direction.SOUTH;
+                pedX += 5;
+            } else {
+                dir = Direction.WEST;
+                pedX += 25;
+                pedY += 25;
+            }
+        } else if (ground.side == Direction.WEST){
+            if (dst.side == ground.side){
+                dir = Direction.NORTH;
+                pedY += 30;
+                pedX += 25;
+            } else {
+                dir = Direction.EAST;
+                pedY += 5;
+            }
+        }
     }
 
     public void draw(){

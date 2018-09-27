@@ -26,38 +26,15 @@ class RoadDisplay extends Ground {
         setLanes(neighbor); // Set up the amount of lanes within each road
     }
 
-    // Draws the road by giving each lane an x,y coordinate
-    // and then telling them to draw themselves
-    //
-    public void drawRoad() {
-
-        double screenWidth = gc.getCanvas().getWidth();
-
-        double laneLength = (screenWidth - size) / 2; // just randomly came up with this width to take up screen
-        double laneWidth = size / lanes.size(); // size / num lanes
-
-        double x = screenWidth / 2 - (size/2);
-        double y = x;
-
-        if (side == Direction.NORTH ){
-            y -= laneLength;
-        } else if (side == Direction.SOUTH) {
-            y += size;
-        } else if (side == Direction.EAST) {
-            x += size;
-        } else if (side == Direction.WEST) {
-            x -= laneLength;
-        }
-
-        this.x = x;
-        this.y = y;
-
-        for (LaneDisplay l : lanes) {
-            l.setPosition(x, y, 0);
-            l.drawLane(x, y, laneWidth);
-        }
+    public Direction getSide(){
+        return side;
     }
 
+    public void setCrosswalk(Crossing c){
+        for (LaneDisplay l : lanes){
+            l.setCrosswalk(c);
+        }
+    }
 
     // Gets a random start lane from three two ingoing lanes
     //
@@ -92,13 +69,35 @@ class RoadDisplay extends Ground {
     }
 
 
-    public Direction getSide(){
-        return side;
-    }
+    // Draws the road by giving each lane an x,y coordinate
+    // and then telling them to draw themselves
+    //
+    public void drawRoad() {
 
-    public void setCrosswalk(Crossing c){
-        for (LaneDisplay l : lanes){
-            l.setCrosswalk(c);
+        double screenWidth = gc.getCanvas().getWidth();
+
+        double laneLength = (screenWidth - size) / 2; // just randomly came up with this width to take up screen
+        double laneWidth = size / lanes.size(); // size / num lanes
+
+        double x = screenWidth / 2 - (size/2);
+        double y = x;
+
+        if (side == Direction.NORTH ){
+            y -= laneLength;
+        } else if (side == Direction.SOUTH) {
+            y += size;
+        } else if (side == Direction.EAST) {
+            x += size;
+        } else if (side == Direction.WEST) {
+            x -= laneLength;
+        }
+
+        this.x = x;
+        this.y = y;
+
+        for (LaneDisplay l : lanes) {
+            l.setPosition(x, y, 0);
+            l.drawLane(x, y, laneWidth);
         }
     }
 

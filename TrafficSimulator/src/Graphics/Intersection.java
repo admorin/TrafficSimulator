@@ -35,6 +35,8 @@ class Intersection extends Ground {
        }
     }
 
+    // Initialize all the corners for pedestrians and the crosswalks that connect them
+    //
     private void setup(){
 
         double roadLength = (gc.getCanvas().getWidth() - 100) / 2;
@@ -77,7 +79,7 @@ class Intersection extends Ground {
                 possible.add(roads.get(2)); // left lane so has to turn east
             } else if (start.count == 0){
                 possible.add(roads.get(1)); // right lane so it has two options
-                possible.add(roads.get(3));
+                //possible.add(roads.get(3)); // uncomment for right turns
             } else {
                 possible.add(roads.get(1)); // mid lane so must head south
             }
@@ -86,14 +88,14 @@ class Intersection extends Ground {
             if (start.count == 2){
                 possible.add(roads.get(1));
             } else if (start.count == 0){
-                possible.add(roads.get(0));
+                //possible.add(roads.get(0)); // uncomment for right turns
                 possible.add(roads.get(3));
             } else {
                 possible.add(roads.get(3));
             }
         } else if (start.side == Direction.SOUTH){
             if (start.count == 4 ){
-                possible.add(roads.get(2));
+                //possible.add(roads.get(2)); // uncomment for right turns
                 possible.add(roads.get(0));
             } else if (start.count == 2){
                 possible.add(roads.get(3));
@@ -107,7 +109,7 @@ class Intersection extends Ground {
                 possible.add(roads.get(2));
             } else {
                 possible.add(roads.get(2));
-                possible.add(roads.get(1));
+                //possible.add(roads.get(1)); // uncomment for right turns
             }
         }
 
@@ -128,6 +130,8 @@ class Intersection extends Ground {
         return roads;
     }
 
+    // Creates a pedestrian at random corner with random destination
+    //
     public Pedestrian createPed(){
 
         Random rn = new Random();
@@ -142,6 +146,8 @@ class Intersection extends Ground {
         return crosswalks.get(random).spawn(dest);
     }
 
+    // Gets a random ped destination that's possible from it's starting corner
+    //
     private Crossing getPedDest(Crossing c){
         LinkedList<Crossing> possibilities = new LinkedList<>();
         if (c.side == Direction.NORTH){

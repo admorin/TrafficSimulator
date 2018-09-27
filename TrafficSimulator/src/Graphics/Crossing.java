@@ -7,7 +7,7 @@ import javafx.scene.paint.Paint;
 public class Crossing extends Ground {
 
     private GraphicsContext gc;
-    private RoadDisplay road;
+    private RoadDisplay road; // Reference to the road the crosswalks over
     private double roadLength;
     private Corner start;
 
@@ -29,6 +29,9 @@ public class Crossing extends Ground {
     }
 
 
+    // Set up reference to the signal the crosswalk needs
+    // to check to see if peds can use it
+    //
     private void setSignal(){
         if (side == Direction.NORTH){
             signal = Lights.NORTH;
@@ -44,27 +47,33 @@ public class Crossing extends Ground {
         dest.setSignal(signal);
     }
 
+    // Returns a pedestrian spawned from the start Corner
+    //
     public Pedestrian spawn(Ground dst){
         return start.spawnPed(dst);
     }
+
 
     public Corner getCorner(){
         return start;
     }
 
 
+    // Used by pedestrians to check which Corner is the destination
+    // depending on the direction it's going
+    //
     public Corner getDest(Direction dir){
 
         if (side == Direction.NORTH){
             if (dir == Direction.EAST){
                 return dest;
             } else {
-                return getCorner();
+                return start;
             }
         }
         if (side == Direction.WEST){
             if (dir == Direction.SOUTH){
-                return getCorner();
+                return start;
             } else {
                 return dest;
             }
@@ -72,7 +81,7 @@ public class Crossing extends Ground {
 
         if (side == Direction.EAST){
             if (dir == Direction.NORTH){
-                return getCorner();
+                return start;
             } else {
                 return dest;
             }
@@ -80,7 +89,7 @@ public class Crossing extends Ground {
 
         if (side == Direction.SOUTH){
             if (dir == Direction.EAST){
-                return getCorner();
+                return start;
             } else {
                 return dest;
             }
@@ -91,9 +100,9 @@ public class Crossing extends Ground {
 
 
 
+    // Draws the crosswalk and it's dashes
     public void draw(){
         gc.setFill(Paint.valueOf("#33334d"));
-        // draws the base cover over the lane
 
         if (road.side == Direction.NORTH){
             this.x = road.x;
@@ -122,7 +131,7 @@ public class Crossing extends Ground {
     private void drawDashes(){
         gc.setFill(Paint.valueOf("#ffffff"));
 
-        // draws the actual crossing dashes
+        // draws the crossing dashes
         for (int i = 0; i < 10; i ++) {
             if (road.side == Direction.NORTH){
                 gc.fillRect((road.x + (10 * i) + 4), road.y + roadLength - 15, 3, 15);

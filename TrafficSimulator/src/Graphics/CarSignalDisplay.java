@@ -1,24 +1,14 @@
 package Graphics;
 
 import Primary.SignalColor;
-import javafx.scene.canvas.GraphicsContext;
 
 public class CarSignalDisplay {
 
-    // LaneDisplay the light's on I'm guessing will be needed for each light to know
-    // how many cars are waiting for it in a laneDisplay from a sensor
-    private final LaneDisplay laneDisplay;
+    private SignalColor color;  // just holds an x, y, and color
+    public double x;           // to draw light on gui dending
+    public double y;           // on enum value
 
-    private final GraphicsContext gc;
-    private Boolean isRed = true;
-    private SignalColor color;
-    public double x;
-    public double y;
-
-    public CarSignalDisplay(LaneDisplay laneDisplay, GraphicsContext gc) {
-        this.laneDisplay = laneDisplay;
-        this.gc = gc;
-    }
+    public CarSignalDisplay(){}
 
     // Used by cars to check if red
     //

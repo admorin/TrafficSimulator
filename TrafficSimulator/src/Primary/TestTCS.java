@@ -22,7 +22,7 @@ class TestTCS extends Thread {
         }
         while(running){
 
-            if (count %  4 ==  0){ // exacmple of tc phases
+            if (count %  4 ==  0){
                 color1 = SignalColor.GREEN;
                 color2 = SignalColor.RED;
             } else if (count % 4 == 1){
@@ -45,8 +45,6 @@ class TestTCS extends Thread {
             {
                 l.setColor(color2);
             }
-
-            if (count %4 == 3)Lanes.valueOf("N1").setColor(SignalColor.YELLOW); // Example of setting specific light yellow
 
             Lights.valueOf("NORTH").setColor(color2);
             Lights.valueOf("SOUTH").setColor(color2);

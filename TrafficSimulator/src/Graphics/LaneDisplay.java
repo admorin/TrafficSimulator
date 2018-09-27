@@ -4,13 +4,7 @@ import Primary.Lanes;
 import Primary.SignalColor;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Paint;
-import javafx.scene.image.Image;
-import javafx.scene.shape.ArcType;
-import javafx.scene.shape.Path;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.WeakHashMap;
 
 public class LaneDisplay extends Ground{
 
@@ -25,7 +19,7 @@ public class LaneDisplay extends Ground{
     public double laneLength;
     private double laneWidth;
 
-    private Lanes lane; // reference to the actual enum lane that the Test TCS will control
+    private Lanes lane; // reference to the  enum lane that the Test TCS will control
 
 
     public LaneDisplay(GraphicsContext gc, Boolean isVert, int count, Direction side) {
@@ -34,7 +28,7 @@ public class LaneDisplay extends Ground{
         this.side = side;
         this.count = count;
         this.laneLength = (this.gc.getCanvas().getWidth() - 100) / 2;
-        this.carSignalDisplay = new CarSignalDisplay(this, gc); // each lane get's a carSignalDisplay but not drawn unless it's incoming
+        this.carSignalDisplay = new CarSignalDisplay(); // each lane get's a carSignalDisplay but not drawn unless it's incoming
 
         setIncoming(); // determine whether incoming or leaving lane
         setLanes(); // assign each LaneDisplay object a reference to the proper Lanes enum object
@@ -92,10 +86,10 @@ public class LaneDisplay extends Ground{
         Paint color = Paint.valueOf("#990000");
         SignalColor c = lane.getSignal(); // Checks what the TC set this lane's signal as
 
-        if (c == SignalColor.GREEN){ // would need to react if the carSignalDisplay is yellow still
+        if (c == SignalColor.GREEN){
            color = Paint.valueOf("#009900");
         } else if (c == SignalColor.YELLOW){
-            color = Paint.valueOf("#ffff00");
+            color = Paint.valueOf("#ffff4d");
         }
 
         gc.setFill(color);
@@ -199,6 +193,8 @@ public class LaneDisplay extends Ground{
 
     }
 
+    // Draw the turn indication arrows on each lane depending on the count
+    //
     private void drawArrows(double x, double y){
 
         double width = 1.5;
@@ -257,6 +253,8 @@ public class LaneDisplay extends Ground{
 
     }
 
+    // Draws a right turn arrow on lane
+    //
     private void drawRight(double x, double y, double width, double height){
 
         gc.setFill(Paint.valueOf("#ffffff"));
@@ -281,11 +279,10 @@ public class LaneDisplay extends Ground{
             drawTriangle(x, y + 4, Direction.SOUTH);
         }
 
-
-        //drawTriangle(x, y);
-
     }
 
+    // Draws a left turn arrow on lane
+    //
     private void drawLeft(double x, double y, double width, double height){
         gc.setFill(Paint.valueOf("#ffffff"));
 
@@ -311,13 +308,13 @@ public class LaneDisplay extends Ground{
             gc.fillRect(x + width, y - (5 - height), height, 5);
             drawTriangle(x + width, y - (5 - height), Direction.NORTH);
         }
-
-        //drawTriangle(x, y);
     }
 
 
 
 
+    // Draws a straight arrow on lane
+    //
     private void drawStraight(double x, double y, double width, double height){
         gc.setFill(Paint.valueOf("#ffffff"));
         gc.fillRect(x, y, width, height);
@@ -340,9 +337,10 @@ public class LaneDisplay extends Ground{
             drawTriangle(x, y, Direction.WEST);
         }
 
-
     }
 
+    // Draw the point of the arrow on the lane
+    //
     public void drawTriangle(double x, double y, Direction pointing) {
         if (pointing == Direction.SOUTH){
             double [] xs = {x - 3, x + 1, x + 5};

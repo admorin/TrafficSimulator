@@ -27,18 +27,18 @@ public class Car extends Thread{
     private double carY;
     private int width;
     private int height;
-    private Direction side; // North = top road, East = right road, South = bottom road, West = left road
+    private Direction side;
 
     private int pathType; // 0 = straight, 1 = right, 2 = left
     private int rotation = 0; // keeps track of rotation angle when turning
-    private double rotationRate = 0; // determines how fast a car drifts while turning
+    private double rotationRate = 0;
 
     public Boolean running = true; // running is true if car hasn't arrived at destination
-    private Boolean triggered = false; // true if car has triggered the lane sensor
+    private Boolean triggered = false;  // true if car has triggered the lane sensor
 
     private Boolean isLeaving = false; // is true when car has passed through intersection
     private Boolean willSwitch = false; // is true when car is about to switch Ground components
-    private Boolean atCross = false; // true when car is waiting at crosswalk for light
+    private Boolean atCross = false; // true when car is waiting at crosswalk waitng for light
 
     public Boolean collision = false; // is true when collided within intersection and stopped
     public int needsGroundUpdate = 0; // is true when it has entered or exited the intersection
@@ -68,7 +68,7 @@ public class Car extends Thread{
         this.laneLength = (gc.getCanvas().getWidth() - 100) / 2;
         this.destLength = laneLength;
 
-        if (emergency) triggerEmergencySensor(true); // tells the lane an emergency vehicle spawned on it
+        if (emergency) triggerEmergencySensor(true);
 
         setUpCar(this.side); // set up x, y, width, height for car
         setPathType(); // set if going straight = 0, right = 1, left = 2
@@ -134,24 +134,6 @@ public class Car extends Thread{
     // needsGroundUpdate and will do one of four things
     //
     public void updateGround(){
-        switch (needsGroundUpdate){
-            case 2:
-                ground.getCrossing().removeCar(this);
-                break;
-            case 3:
-                ground.getCrossing().addCar(this);
-                break;
-            case 1:
-                ground.addCar(this);
-                needsGroundUpdate = 0;
-                break;
-            case 0:
-                ground.getIntersection().removeCar(this);
-                needsGroundUpdate = 0;
-                break;
-        }
-
-        /*
         if (needsGroundUpdate == 2){ // remove car from crosswalk
             ground.getCrossing().removeCar(this);
         } else if (needsGroundUpdate == 3){ // add car to crosswalk
@@ -163,14 +145,17 @@ public class Car extends Thread{
             ground.getIntersection().removeCar(this);
             needsGroundUpdate = 0;
         }
-        */
     }
 
+    // Triggers the lane sensor when a car is waiting at a red light
+    //
     private void onLaneSensor(Boolean on){
         LaneDisplay l = (LaneDisplay) ground;
         l.setCarOnSensor(on);
     }
 
+    // Triggers the emergency sensor when a new emergency vehicle is spawned on lane
+    //
     private void triggerEmergencySensor(Boolean on){
         LaneDisplay l = (LaneDisplay) ground;
         l.setEmergencySensor(on);
@@ -194,7 +179,9 @@ public class Car extends Thread{
         } else {
             if (ground.type == 0 && !isLeaving && willSwitch) {
                 atCross = false;
-                ground.getCrossing().removeCar(this); // remove car from crosswalk
+                synchronized (Controller.simLock) {
+                    ground.getCrossing().removeCar(this); // remove car from crosswalk
+                }
                 switchToIntersection();
             } else if (atCross){
                 if (carSignalDisplay.getColor() == SignalColor.GREEN) { // check if light is green
@@ -217,12 +204,14 @@ public class Car extends Thread{
         }
     }
 
+    // Setup car width, height, x, ,and y offsets depending on road
+    //
     private void renderCar(Direction side)
     {
         if (side == Direction.NORTH || side == Direction.SOUTH) {
             width = 8;
             height = 16;
-            carX += 2;
+            carX += 5;
             if (emergency){
                 width += 2;
                 height += 5;
@@ -230,7 +219,7 @@ public class Car extends Thread{
         } else {
             width = 16;
             height = 8;
-            carY += 2;
+            carY += 5;
             if (emergency){
                 width += 5;
                 height += 2;
@@ -262,6 +251,10 @@ public class Car extends Thread{
         }
     }
 
+
+    // Draws a slightly bigger emergency car with different color
+    // and small light on top
+    //
     private void drawEmergency(){
         gc.setFill(Paint.valueOf("#ff0000"));
 
@@ -297,11 +290,12 @@ public class Car extends Thread{
         if (side == Direction.NORTH || side == Direction.SOUTH) {
             carY = ground.y;
             carX = old.x ;
-            carX += 2;
+            carX += 5;
+            carY -= height;
         } else {
             carX = ground.x;
             carY = old.y;
-            carY += 2;
+            carY += 5;
         }
 
 
@@ -384,6 +378,9 @@ public class Car extends Thread{
         }
     }
 
+    // Determine if car is heading straight, right, or left
+    // and set the rotation rates if turning
+    //
     private void setPathType(){
         if (side == Direction.NORTH){
             if (dest.side == Direction.EAST){
@@ -563,19 +560,19 @@ public class Car extends Thread{
         } else {
             if (side == Direction.NORTH) {
                 if (ground.type == 1 && pathType == 1)carX -= 0.3;
-                if (ground.type == 1 && pathType == 2) carX += 0.5;
+                if (ground.type == 1 && pathType == 2) carX += 0.65;
                 carY += 1;
             } else if (side == Direction.SOUTH) {
                 if (ground.type == 1 && pathType == 1)carX += 0.3;
-                if (ground.type == 1 && pathType == 2) carX -= 0.5;
+                if (ground.type == 1 && pathType == 2) carX -= 0.65;
                 carY -= 1;
             }else if (side == Direction.EAST) {
                 if (ground.type == 1 && pathType == 1)carY -= 0.3;
-                if (ground.type == 1 && pathType == 2) carY += 0.5;
+                if (ground.type == 1 && pathType == 2) carY += 0.65;
                 carX -= 1;
             } else if (side == Direction.WEST) {
                 if (ground.type == 1 && pathType == 1)carY += 0.3;
-                if (ground.type == 1 && pathType == 2) carY -= 0.5;
+                if (ground.type == 1 && pathType == 2) carY -= 0.65;
                 carX += 1;
             }
         }

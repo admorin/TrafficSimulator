@@ -2,7 +2,6 @@ package Graphics;
 
 import Primary.Controller;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 
 public class Ground {
@@ -95,13 +94,10 @@ public class Ground {
     public synchronized Boolean checkCollision(Pedestrian p){
         Boolean result = false;
         Boolean collision;
-        synchronized (Controller.simLock){
-            for (Iterator<Car> i = cars.iterator(); i.hasNext();) {
-                Car c = i.next();
-                if (c.running && !c.collision) {
-                    collision = checkBounds(c, p);
-                    if (collision) result = true;
-                }
+        synchronized (Controller.simLock) {
+            for (Car c : cars){
+                collision = checkBounds(c, p);
+                if (collision) result = true;
             }
         }
 
@@ -118,17 +114,13 @@ public class Ground {
         return yDif < 5 && xDif < 5;
     }
 
-    // Takes in two cars and returns true if they are withing
-    // 5 x and y of each other
+    // Takes in a car and a ped and returns true if they are withing
+    // 7 x and y of each other
     //
     private Boolean checkBounds(Car c, Pedestrian p){
-        if (c != null && p != null){
-            double yDif = Math.abs(c.getCarY() -  p.getY());
-            double xDif = Math.abs(c.getCarX() - p.getX());
-            return yDif < 5 && xDif < 5;
-        }
-
-        return true;
+        double yDif = Math.abs(c.getCarY() -  p.getY());
+        double xDif = Math.abs(c.getCarX() - p.getX());
+        return yDif < 5 && xDif < 5;
     }
 
 

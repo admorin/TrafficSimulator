@@ -6,7 +6,6 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Paint;
 
 import java.io.FileNotFoundException;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -83,24 +82,6 @@ public class Simulation {
         return  endSim;
     }
 
-    public void removeArrived(){
-        synchronized (Controller.simLock) {
-            for (Iterator<Car> i = cars.iterator(); i.hasNext();) {
-                Car c = i.next();
-                if (!c.running) {
-                    i.remove();
-                }
-            }
-
-            for (Iterator<Pedestrian> p = peds.iterator(); p.hasNext();) {
-                Pedestrian ped = p.next();
-                if (!ped.running) {
-                    p.remove();
-                }
-            }
-        }
-    }
-
 
     // Spawns a new car on a random start lane with a
     // random destination lane
@@ -132,7 +113,7 @@ public class Simulation {
 
     private void showEnd(){
         gc.setFill(Paint.valueOf("#4f4f4f"));
-        gc.strokeText("12 dead. Sim failed.", gc.getCanvas().getWidth() * .70 , 50, 250);
+        gc.strokeText("Resetting sim...", gc.getCanvas().getWidth() * .70 , 50, 250);
     }
 
 

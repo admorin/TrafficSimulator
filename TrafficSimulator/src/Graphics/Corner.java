@@ -11,8 +11,8 @@ public class Corner extends Ground{
     private double roadLength;
     private int size = 40;
 
-    private Lights signalNS;
-    private Lights signalEW;
+    private Lights signalNS; // corner crosswalk signal for north south traffic
+    private Lights signalEW; // corner crosswalk signal for east west traffic
 
     public Corner(GraphicsContext gc, RoadDisplay road, double roadLength){
         this.gc = gc;
@@ -22,10 +22,14 @@ public class Corner extends Ground{
     }
 
 
+    // returns a pedestrian spawned at this corner with a crosswalk destination
+    //
     public Pedestrian spawnPed(Ground dst){
         return new Pedestrian(gc, this, dst);
     }
 
+    // Give corner reference to the TC ped light it should be checking for changes
+    //
     public void setSignal(Lights signal){
         if (side == Direction.NORTH){
             if (signal == Lights.NORTH){
@@ -54,30 +58,12 @@ public class Corner extends Ground{
         }
     }
 
+    // Draw the corner and the signals it has
+    //
     public void draw(){
         gc.setFill(Paint.valueOf("#d9d9d9"));
         x = road.x;
         y = road.y;
-
-        switch (road.side){
-            case NORTH:
-                y += roadLength - size;
-                x -= size;
-                break;
-            case EAST:
-                y -= size;
-                break;
-            case SOUTH:
-                x += 100; // size of intersection square
-                break;
-            case WEST:
-                x += roadLength - size;
-                y += 100;
-                break;
-
-        }
-
-        /*
 
         if (road.side == Direction.NORTH){
             y += roadLength - size;
@@ -90,7 +76,6 @@ public class Corner extends Ground{
             x += roadLength - size;
             y += 100;
         }
-        */
 
         gc.fillRect(x, y, size, size);
 
@@ -101,6 +86,8 @@ public class Corner extends Ground{
 
     }
 
+    // Draw corner light signals for crosswalks
+    //
     private void drawSignal(Boolean first){
         double sigX = x;
         double sigY = y;
