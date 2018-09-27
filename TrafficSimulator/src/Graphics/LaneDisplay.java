@@ -128,12 +128,12 @@ public class LaneDisplay extends Ground{
                 }
             } else if (side == Direction.SOUTH){
                 if (count == 2){
-                    lane = Lanes.S1;
+                    lane = Lanes.S3;
                     isMid = true;
                 } else if (count == 3) {
                     lane = Lanes.S2;
                 } else if(count == 4){
-                    lane = Lanes.S3;
+                    lane = Lanes.S1;
                 }
             } else if (side == Direction.EAST){
                 if (count == 0){
@@ -147,12 +147,12 @@ public class LaneDisplay extends Ground{
 
             } else if (side == Direction.WEST){
                 if (count == 2){
-                    lane = Lanes.W1;
+                    lane = Lanes.W3;
                     isMid = true;
                 } else if (count == 3) {
                     lane = Lanes.W2;
                 } else if(count == 4){
-                    lane = Lanes.W3;
+                    lane = Lanes.W1;
                 }
             }
         }
