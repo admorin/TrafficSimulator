@@ -59,6 +59,26 @@ public class Corner extends Ground{
         x = road.x;
         y = road.y;
 
+        switch (road.side){
+            case NORTH:
+                y += roadLength - size;
+                x -= size;
+                break;
+            case EAST:
+                y -= size;
+                break;
+            case SOUTH:
+                x += 100; // size of intersection square
+                break;
+            case WEST:
+                x += roadLength - size;
+                y += 100;
+                break;
+
+        }
+
+        /*
+
         if (road.side == Direction.NORTH){
             y += roadLength - size;
             x -= size;
@@ -70,6 +90,7 @@ public class Corner extends Ground{
             x += roadLength - size;
             y += 100;
         }
+        */
 
         gc.fillRect(x, y, size, size);
 

@@ -95,7 +95,7 @@ public class LaneDisplay extends Ground{
         if (c == SignalColor.GREEN){ // would need to react if the carSignalDisplay is yellow still
            color = Paint.valueOf("#009900");
         } else if (c == SignalColor.YELLOW){
-            color = Paint.valueOf("#ffff4d");
+            color = Paint.valueOf("#ffff00");
         }
 
         gc.setFill(color);
@@ -119,40 +119,40 @@ public class LaneDisplay extends Ground{
         if (in){
             if (side == Direction.NORTH){
                 if (count == 0){
-                    lane = Lanes.N1;
+                    lane = Lanes.S3;
                 } else if (count == 1) {
-                    lane = Lanes.N2;
+                    lane = Lanes.S2;
                 } else if(count == 2){
-                    lane = Lanes.N3;
+                    lane = Lanes.S1;
                     isMid = true;
                 }
             } else if (side == Direction.SOUTH){
                 if (count == 2){
-                    lane = Lanes.S3;
+                    lane = Lanes.N1;
                     isMid = true;
                 } else if (count == 3) {
-                    lane = Lanes.S2;
+                    lane = Lanes.N2;
                 } else if(count == 4){
-                    lane = Lanes.S1;
+                    lane = Lanes.N3;
                 }
             } else if (side == Direction.EAST){
                 if (count == 0){
-                    lane = Lanes.E1;
+                    lane = Lanes.W3;
                 } else if (count == 1) {
-                    lane = Lanes.E2;
+                    lane = Lanes.W2;
                 } else if (count == 2){
-                    lane = Lanes.E3;
+                    lane = Lanes.W1;
                     isMid = true;
                 }
 
             } else if (side == Direction.WEST){
                 if (count == 2){
-                    lane = Lanes.W3;
+                    lane = Lanes.E1;
                     isMid = true;
                 } else if (count == 3) {
-                    lane = Lanes.W2;
+                    lane = Lanes.E2;
                 } else if(count == 4){
-                    lane = Lanes.W1;
+                    lane = Lanes.E3;
                 }
             }
         }
