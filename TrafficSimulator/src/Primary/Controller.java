@@ -138,7 +138,7 @@ public class Controller extends Thread{
                 // don't care about hitting each other
 
                 Boolean collision = sim.updateSpots(); // checks cars for collision
-                //if (collision && !willEnd) end(); // comment out just this line and you can cause huge car pile up collisions
+                if (collision && !willEnd) end(); // comment out just this line and you can cause huge car pile up collisions
 
                 sim.drawTraffic(); // loop over all traffic and draw new positions
                 sim.freeTraffic(); // notify all
