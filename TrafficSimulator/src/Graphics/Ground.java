@@ -1,5 +1,8 @@
 package Graphics;
 
+import Primary.Controller;
+
+import java.util.Iterator;
 import java.util.LinkedList;
 
 public class Ground {
@@ -92,9 +95,14 @@ public class Ground {
     public synchronized Boolean checkCollision(Pedestrian p){
         Boolean result = false;
         Boolean collision;
-        for (Car c : cars){
-            collision = checkBounds(c, p);
-            if (collision) result = true;
+        synchronized (Controller.simLock){
+            for (Iterator<Car> i = cars.iterator(); i.hasNext();) {
+                Car c = i.next();
+                if (c.running && !c.collision) {
+                    collision = checkBounds(c, p);
+                    if (collision) result = true;
+                }
+            }
         }
 
         return result;
@@ -114,9 +122,13 @@ public class Ground {
     // 5 x and y of each other
     //
     private Boolean checkBounds(Car c, Pedestrian p){
-        double yDif = Math.abs(c.getCarY() -  p.getY());
-        double xDif = Math.abs(c.getCarX() - p.getX());
-        return yDif < 5 && xDif < 5;
+        if (c != null && p != null){
+            double yDif = Math.abs(c.getCarY() -  p.getY());
+            double xDif = Math.abs(c.getCarX() - p.getX());
+            return yDif < 5 && xDif < 5;
+        }
+
+        return true;
     }
 
 

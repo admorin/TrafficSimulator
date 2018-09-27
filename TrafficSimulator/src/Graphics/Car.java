@@ -12,7 +12,8 @@ public class Car extends Thread{
 
     private Ground ground; // keeps track of which Ground piece it's on, could be LaneDisplay or Intersection
     private final Ground dest; // Always the ground piece it's heading to
-    public Boolean emergency;
+    public Boolean emergency; // if emergency vehicle then true
+
     private final GraphicsContext gc;
     private Boolean isMoving = true;
     private double laneLength;
@@ -26,18 +27,18 @@ public class Car extends Thread{
     private double carY;
     private int width;
     private int height;
-    private Direction side;
+    private Direction side; // North = top road, East = right road, South = bottom road, West = left road
 
     private int pathType; // 0 = straight, 1 = right, 2 = left
     private int rotation = 0; // keeps track of rotation angle when turning
-    private double rotationRate = 0;
+    private double rotationRate = 0; // determines how fast a car drifts while turning
 
     public Boolean running = true; // running is true if car hasn't arrived at destination
-    private Boolean triggered = false;
+    private Boolean triggered = false; // true if car has triggered the lane sensor
 
     private Boolean isLeaving = false; // is true when car has passed through intersection
     private Boolean willSwitch = false; // is true when car is about to switch Ground components
-    private Boolean atCross = false;
+    private Boolean atCross = false; // true when car is waiting at crosswalk for light
 
     public Boolean collision = false; // is true when collided within intersection and stopped
     public int needsGroundUpdate = 0; // is true when it has entered or exited the intersection
@@ -67,7 +68,7 @@ public class Car extends Thread{
         this.laneLength = (gc.getCanvas().getWidth() - 100) / 2;
         this.destLength = laneLength;
 
-        if (emergency) triggerEmergencySensor(true);
+        if (emergency) triggerEmergencySensor(true); // tells the lane an emergency vehicle spawned on it
 
         setUpCar(this.side); // set up x, y, width, height for car
         setPathType(); // set if going straight = 0, right = 1, left = 2
@@ -133,6 +134,24 @@ public class Car extends Thread{
     // needsGroundUpdate and will do one of four things
     //
     public void updateGround(){
+        switch (needsGroundUpdate){
+            case 2:
+                ground.getCrossing().removeCar(this);
+                break;
+            case 3:
+                ground.getCrossing().addCar(this);
+                break;
+            case 1:
+                ground.addCar(this);
+                needsGroundUpdate = 0;
+                break;
+            case 0:
+                ground.getIntersection().removeCar(this);
+                needsGroundUpdate = 0;
+                break;
+        }
+
+        /*
         if (needsGroundUpdate == 2){ // remove car from crosswalk
             ground.getCrossing().removeCar(this);
         } else if (needsGroundUpdate == 3){ // add car to crosswalk
@@ -144,6 +163,7 @@ public class Car extends Thread{
             ground.getIntersection().removeCar(this);
             needsGroundUpdate = 0;
         }
+        */
     }
 
     private void onLaneSensor(Boolean on){

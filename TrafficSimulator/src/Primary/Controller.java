@@ -110,6 +110,7 @@ public class Controller extends Thread{
         gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
         spawnInterval.cancel(false);
         this.sim = new Simulation(gc);
+        threadCount = 0;
     }
 
 
@@ -135,14 +136,16 @@ public class Controller extends Thread{
                 // comment out the next two collision lines and you can test while cars
                 // don't care about hitting each other
 
+                sim.removeArrived();
                 Boolean collision = sim.updateSpots(); // checks cars for collision
-                if (collision && !willEnd) end(); // comment out just this line and you can cause huge car pile up collisions
+                //if (collision && !willEnd) end(); // comment out just this line and you can cause huge car pile up collisions
 
                 sim.drawTraffic(); // loop over all traffic and draw new positions
                 sim.freeTraffic(); // notify all
             } else {
                 // this shouldn't happen
                 System.out.println("threads count at " + threadCount);
+                reset();
             }
         }
 

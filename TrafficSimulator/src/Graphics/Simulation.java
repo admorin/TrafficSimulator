@@ -6,6 +6,7 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Paint;
 
 import java.io.FileNotFoundException;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -80,6 +81,24 @@ public class Simulation {
             }
         }
         return  endSim;
+    }
+
+    public void removeArrived(){
+        synchronized (Controller.simLock) {
+            for (Iterator<Car> i = cars.iterator(); i.hasNext();) {
+                Car c = i.next();
+                if (!c.running) {
+                    i.remove();
+                }
+            }
+
+            for (Iterator<Pedestrian> p = peds.iterator(); p.hasNext();) {
+                Pedestrian ped = p.next();
+                if (!ped.running) {
+                    p.remove();
+                }
+            }
+        }
     }
 
 
