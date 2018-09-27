@@ -71,7 +71,7 @@ public class Controller extends Thread{
     {
         label.setText("Modes:\nModerate traffic\nPeriod = 1s");
         spawnInterval.cancel(false);
-        spawnInterval = spawner.scheduleAtFixedRate(() -> spawnPed(), 100, 1000, TimeUnit.MILLISECONDS);
+        spawnInterval = spawner.scheduleAtFixedRate(() -> spawnBoth(), 100, 1000, TimeUnit.MILLISECONDS);
     }
 
     public void lightMode(Label label)

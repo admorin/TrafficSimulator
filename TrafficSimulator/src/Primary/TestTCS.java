@@ -4,7 +4,7 @@ import java.util.LinkedList;
 
 class TestTCS extends Thread {
 
-    private Boolean green = false;
+    private int count = 0;
     private Boolean running = true;
 
     public void begin(){
@@ -22,12 +22,18 @@ class TestTCS extends Thread {
         }
         while(running){
 
-            if (green){
+            if (count %  4 ==  0){
                 color1 = SignalColor.GREEN;
                 color2 = SignalColor.RED;
-            } else {
+            } else if (count % 4 == 1){
+                color1 = SignalColor.YELLOW;
+                color2 = SignalColor.RED;
+            } else if (count % 4 == 2){
                 color1 = SignalColor.RED;
                 color2 = SignalColor.GREEN;
+            } else {
+                color1 = SignalColor.RED;
+                color2 = SignalColor.YELLOW;
             }
 
             for(Lanes l: northsouth)
@@ -35,17 +41,19 @@ class TestTCS extends Thread {
                 l.setColor(color1);
             }
 
-            Lights.valueOf("NORTH").setColor(color2);
-            Lights.valueOf("SOUTH").setColor(color2);
-            Lights.valueOf("WEST").setColor(color1);
-            Lights.valueOf("EAST").setColor(color1);
-
             for(Lanes l: eastwest)
             {
                 l.setColor(color2);
             }
 
-            green = !green;
+            Lights.valueOf("NORTH").setColor(color2);
+            Lights.valueOf("SOUTH").setColor(color2);
+            Lights.valueOf("WEST").setColor(color1);
+            Lights.valueOf("EAST").setColor(color1);
+
+
+
+            count ++;
 
             /*
 

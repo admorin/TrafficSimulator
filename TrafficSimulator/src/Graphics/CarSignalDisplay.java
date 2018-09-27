@@ -1,5 +1,6 @@
 package Graphics;
 
+import Primary.SignalColor;
 import javafx.scene.canvas.GraphicsContext;
 
 public class CarSignalDisplay {
@@ -10,6 +11,7 @@ public class CarSignalDisplay {
 
     private final GraphicsContext gc;
     private Boolean isRed = true;
+    private SignalColor color;
     public double x;
     public double y;
 
@@ -20,8 +22,8 @@ public class CarSignalDisplay {
 
     // Used by cars to check if red
     //
-    public Boolean isRed(){
-        return isRed;
+    public SignalColor getColor(){
+        return color;
     }
 
     // Each light is given a position based off the laneDisplay it's for
@@ -38,7 +40,8 @@ public class CarSignalDisplay {
 
     // Needs to change to handle yellow later too, not just green n red
     //
-    public void changeColor(Boolean isRed) {
-        this.isRed = isRed;
+    public void changeColor(SignalColor color)
+    {
+        this.color = color;
     }
 }

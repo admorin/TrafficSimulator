@@ -1,6 +1,7 @@
 package Graphics;
 
 import Primary.Controller;
+import Primary.SignalColor;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Paint;
 import java.util.Random;
@@ -19,7 +20,7 @@ public class Car extends Thread{
     private Paint color;
 
     private CarSignalDisplay carSignalDisplay; // CarSignalDisplay it's checking for when it can go
-    private final Car lead; // Reference to the car in front of it in each lane (could be null if first)
+    private Car lead; // Reference to the car in front of it in each lane (could be null if first)
 
     private double carX;
     private double carY;
@@ -176,7 +177,7 @@ public class Car extends Thread{
                 ground.getCrossing().removeCar(this); // remove car from crosswalk
                 switchToIntersection();
             } else if (atCross){
-                if (!carSignalDisplay.isRed()) { // check if light is green
+                if (carSignalDisplay.getColor() == SignalColor.GREEN) { // check if light is green
                     isMoving = true;
                 } else if (!triggered){ // trigger the lane sensor that we're waiting
                     onLaneSensor(true);
@@ -311,6 +312,7 @@ public class Car extends Thread{
         carX = ground.x;
         carY = ground.y;
         isMoving = true;
+        lead = ground.getLast();
 
         if (side == Direction.NORTH) {
             carY +=  laneLength;

@@ -91,15 +91,15 @@ public class LaneDisplay extends Ground{
 
         Paint color = Paint.valueOf("#990000");
         SignalColor c = lane.getSignal(); // Checks what the TC set this lane's signal as
-        Boolean isRed = true;
 
         if (c == SignalColor.GREEN){ // would need to react if the carSignalDisplay is yellow still
            color = Paint.valueOf("#009900");
-           isRed = false;
+        } else if (c == SignalColor.YELLOW){
+            color = Paint.valueOf("#ffff4d");
         }
 
         gc.setFill(color);
-        carSignalDisplay.changeColor(isRed);
+        carSignalDisplay.changeColor(c);
 
         if (side == Direction.NORTH ) {
             gc.fillRect(carSignalDisplay.x, carSignalDisplay.y + laneLength, laneWidth, 4);
