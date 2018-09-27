@@ -10,6 +10,7 @@ import javafx.scene.shape.Path;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.WeakHashMap;
 
 public class LaneDisplay extends Ground{
 
@@ -208,6 +209,11 @@ public class LaneDisplay extends Ground{
             x += 10;
             if (count == 1){
                 drawStraight(x, y, width, height);
+            } else if (count == 2){
+                drawLeft(x, y, width, height);
+            } else {
+                drawStraight(x,y,width,height);
+                drawRight(x, y, width, height);
             }
 
         } else if (side == Direction.SOUTH){
@@ -215,6 +221,11 @@ public class LaneDisplay extends Ground{
             y+= 50;
             if (count == 3){
                 drawStraight(x, y, width, height);
+            } else if (count == 2){
+                drawLeft(x, y, width, height);
+            } else {
+                drawStraight(x, y, width, height);
+                drawRight(x, y, width, height);
             }
         } else if (side == Direction.EAST){
             width = 14;
@@ -223,6 +234,11 @@ public class LaneDisplay extends Ground{
             y += 10;
             if (count == 1){
                 drawStraight(x, y, width, height);
+            } else if (count == 2){
+                drawLeft(x,y, width, height);
+            } else {
+                drawStraight(x, y, width, height);
+                drawRight(x, y, width, height);
             }
         } else if (side == Direction.WEST){
             width = 14;
@@ -231,36 +247,118 @@ public class LaneDisplay extends Ground{
             y += 10;
             if (count == 3){
                 drawStraight(x, y, width, height);
+            } else if (count == 2){
+                drawLeft(x, y, width, height);
+            } else {
+                drawStraight(x, y, width, height);
+                drawRight(x, y, width, height);
             }
         }
 
     }
 
+    private void drawRight(double x, double y, double width, double height){
+
+        gc.setFill(Paint.valueOf("#ffffff"));
+
+
+        if (side == Direction.NORTH) {
+            y += height / 2;
+            x -= 4;
+            gc.fillRect(x, y, 4, width);
+            drawTriangle(x, y, Direction.WEST);
+        } else if (side == Direction.SOUTH){
+            y += 4;
+            gc.fillRect(x, y, 4, width);
+            drawTriangle(x + 4, y, Direction.EAST);
+        } else if (side == Direction.EAST){
+            x += width / 2;
+            gc.fillRect(x, y - 4, height, 4);
+            drawTriangle(x, y - 4, Direction.NORTH);
+        } else if (side == Direction.WEST){
+            x += width / 2;
+            gc.fillRect(x, y + height, height, 4);
+            drawTriangle(x, y + 4, Direction.SOUTH);
+        }
+
+
+        //drawTriangle(x, y);
+
+    }
+
+    private void drawLeft(double x, double y, double width, double height){
+        gc.setFill(Paint.valueOf("#ffffff"));
+
+
+        if (side == Direction.NORTH){
+            x -= 7;
+            gc.fillRect(x, y, width, height);
+            gc.fillRect(x, y + height, 5, width);
+            drawTriangle(x + 5, y + height, Direction.EAST);
+        } else if (side == Direction.SOUTH){
+            x += 5;
+            gc.fillRect(x, y, width, height);
+            gc.fillRect(x - 5, y, 5, width);
+            drawTriangle(x - 5, y, Direction.WEST);
+        } else if (side == Direction.EAST){
+            y -= 7;
+            gc.fillRect(x, y, width, height);
+            gc.fillRect(x, y, height, 5);
+            drawTriangle(x , y + 5, Direction.SOUTH);
+        } else if (side == Direction.WEST){
+            y += 5;
+            gc.fillRect(x, y, width, height);
+            gc.fillRect(x + width, y - (5 - height), height, 5);
+            drawTriangle(x + width, y - (5 - height), Direction.NORTH);
+        }
+
+        //drawTriangle(x, y);
+    }
+
+
+
+
     private void drawStraight(double x, double y, double width, double height){
         gc.setFill(Paint.valueOf("#ffffff"));
         gc.fillRect(x, y, width, height);
 
-        if (side == Direction.NORTH) y += height;
-        if (side == Direction.WEST) x += width;
-        drawTriangle(x, y);
+        if (side == Direction.NORTH) {
+            y += height;
+            drawTriangle(x, y, Direction.SOUTH);
+        }
+
+        if (side == Direction.WEST) {
+            x += width;
+            drawTriangle(x, y, Direction.EAST);
+        }
+
+        if (side == Direction.SOUTH){
+            drawTriangle(x, y, Direction.NORTH);
+        }
+
+        if (side == Direction.EAST){
+            drawTriangle(x, y, Direction.WEST);
+        }
+
+
     }
 
-    public void drawTriangle(double x, double y) {
-        if (side == Direction.NORTH){
-            double [] xs = {x - 4, x + 1, x + 6};
-            double [] ys = {y, y + 7, y};
+    public void drawTriangle(double x, double y, Direction pointing) {
+        if (pointing == Direction.SOUTH){
+            double [] xs = {x - 3, x + 1, x + 5};
+            double [] ys = {y, y + 6, y};
             gc.fillPolygon(xs, ys, 3);
-        } else if (side == Direction.EAST){
-            double [] xs = {x, x - 7, x};
-            double [] ys = {y - 4, y + 1, y + 6};
+        } else if (pointing == Direction.WEST){
+            double [] xs = {x, x - 6, x};
+            double [] ys = {y - 3, y + 1, y + 5};
             gc.fillPolygon(xs, ys, 3);
-        } else if (side == Direction.SOUTH){
-            double [] xs = {x - 4, x + 1, x + 6};
-            double [] ys = {y, y - 7, y};
+        } else if (pointing == Direction.NORTH){
+            double [] xs = {x - 3, x + 1, x + 5};
+            double [] ys = {y, y - 6, y};
             gc.fillPolygon(xs, ys, 3);
-        } else if (side == Direction.WEST){
-            double [] xs = {x, x + 7, x};
-            double [] ys = {y - 4, y + 1, y + 6};
+        } else if (pointing == Direction.EAST){
+            double [] xs = {x, x + 6, x};
+            double [] ys = {y - 3, y + 1, y + 5};
             gc.fillPolygon(xs, ys, 3);
         }
 
