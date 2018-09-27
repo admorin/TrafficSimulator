@@ -58,7 +58,7 @@ public class Controller extends Thread{
     public void rushMode(Label label){
         label.setText("Modes:\nRush Hour\nVehicle & Pedestrian\nPeriod = 0.25s");
         spawnInterval.cancel(false);
-        spawnInterval = spawner.scheduleAtFixedRate(() -> spawnBoth(), 100, 150, TimeUnit.MILLISECONDS);
+        spawnInterval = spawner.scheduleAtFixedRate(() -> spawnBoth(), 100, 200, TimeUnit.MILLISECONDS);
     }
 
 
@@ -144,7 +144,7 @@ public class Controller extends Thread{
                 sim.freeTraffic(); // notify all
             } else {
                 // this shouldn't happen
-                System.out.println("threads count at " + threadCount);
+                //System.out.println("threads count at " + threadCount);
                 //reset();
             }
         }
