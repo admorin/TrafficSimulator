@@ -51,6 +51,17 @@ public class Main extends Application {
         Button spawnPedButton = new Button("Spawn Pedestrian");
         Button resetButton = new Button("Reset");
 
+        rushButton.setStyle("-fx-background-color: #0073e6;-fx-text-fill: white;-fx-effect: dropshadow(two-pass-box , darkgray, 10, 0.0 , 4, 5);");
+        heavyButton.setStyle("-fx-background-color: #0073e6;-fx-text-fill: white;-fx-effect: dropshadow(two-pass-box , darkgray, 10, 0.0 , 4, 5);");
+        moderateButton.setStyle("-fx-background-color: #0073e6;-fx-text-fill: white;-fx-effect: dropshadow(two-pass-box , darkgray, 10, 0.0 , 4, 5);");
+        lightButton.setStyle("-fx-background-color: #0073e6;-fx-text-fill: white;-fx-effect: dropshadow(two-pass-box , darkgray, 10, 0.0 , 4, 5);");
+
+        spawnCarButton.setStyle("-fx-background-color: #5cd65c;-fx-text-fill: white;-fx-effect: dropshadow(two-pass-box , darkgray, 10, 0.0 , 4, 5);");
+        spawnEmergencyButton.setStyle("-fx-background-color: #5cd65c;-fx-text-fill: white;-fx-effect: dropshadow(two-pass-box , darkgray, 10, 0.0 , 4, 5);");
+        spawnPedButton.setStyle("-fx-background-color: #5cd65c;-fx-text-fill: white;-fx-effect: dropshadow(two-pass-box , darkgray, 10, 0.0 , 4, 5);");
+
+        resetButton.setStyle("-fx-background-color: #ff6666;-fx-text-fill: white;-fx-effect: dropshadow(two-pass-box , darkgray, 10, 0.0 , 4, 5);");
+
         rushButton.setPrefSize(140, 30);
         heavyButton.setPrefSize(140, 30);
         moderateButton.setPrefSize(140, 30);

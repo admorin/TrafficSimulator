@@ -28,6 +28,34 @@ public class Corner extends Ground{
         return new Pedestrian(gc, this, dst);
     }
 
+    public void setPedOnSensor(Boolean on, Direction dir){
+        if (dir == Direction.NORTH){
+            if (dir == Direction.EAST) { // heading east
+                signalEW.setPedestrianAt(on);
+            } else { //heading south
+                signalNS.setPedestrianAt(on);
+            }
+        } else if (dir == Direction.EAST){
+            if (dir == Direction.SOUTH) { // heading south
+                signalNS.setPedestrianAt(on);
+            } else { //heading east
+                signalEW.setPedestrianAt(on);
+            }
+        } else if (dir == Direction.SOUTH){
+            if (dir == Direction.WEST) { // heading west
+                signalEW.setPedestrianAt(on);
+            } else { //heading north
+                signalNS.setPedestrianAt(on);
+            }
+        } else if (dir == Direction.WEST){
+            if (dir == Direction.NORTH) { // heading west
+                signalNS.setPedestrianAt(on);
+            } else { //heading east
+                signalEW.setPedestrianAt(on);
+            }
+        }
+    }
+
     // Give corner reference to the TC ped light it should be checking for changes
     //
     public void setSignal(Lights signal){

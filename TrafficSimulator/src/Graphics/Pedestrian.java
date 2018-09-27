@@ -14,7 +14,7 @@ public class Pedestrian extends Thread{
     private Ground ground;
     private Lights signal;
     private Ground dst;
-    private Pedestrian lead;
+    private Boolean triggered = false;  // true if car has triggered the lane sensor
 
     public Boolean running = true;
     public  Boolean collision = false;
@@ -23,7 +23,7 @@ public class Pedestrian extends Thread{
     private int type = 0;
 
     private Direction dir;
-    private Paint color = Paint.valueOf("#80ff80");
+    private Paint color = Paint.valueOf("#ffc266");
 
     private double pedX = 0;
     private double pedY = 0;
@@ -37,9 +37,6 @@ public class Pedestrian extends Thread{
         this.gc = gc;
         this.ground = ground;
         this.dst = dst;
-
-        this.lead = ground.getLastPed(); // get Ped to check for collision
-        this.ground.setLast(this); // set this Ped as last on the current Ground piece
 
         pedX = ground.x;
         pedY = ground.y;
@@ -122,8 +119,9 @@ public class Pedestrian extends Thread{
             } else if (!crossing){
                 if (signal.getIsGreen()){
                     switchToCross();
-                } else {
-                    isMoving = false;
+                } else if (!triggered){ // trigger the lane sensor that we're waiting
+                    onLaneSensor(true);
+                    triggered = true;
                 }
             } else {
                 switchToDest();
@@ -132,10 +130,18 @@ public class Pedestrian extends Thread{
     }
 
 
+    // Triggers the lane sensor when a car is waiting at a red light
+    //
+    private void onLaneSensor(Boolean on){
+        Corner c = (Corner) ground;
+        c.setPedOnSensor(on, dir);
+    }
+
     // Switches current ground piece from start Corner
     // to crosswalk destination
     //
     private synchronized void switchToCross(){
+        onLaneSensor(false); // set lane sensor to false
         ground = dst;
         pedX = dst.x;
         pedY = dst.y;
