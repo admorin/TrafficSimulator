@@ -144,7 +144,7 @@ public class Controller extends Thread{
                 sim.freeTraffic(); // notify all
             } else {
                 // this shouldn't happen
-                System.out.println("threads count at " + threadCount);
+                //System.out.println("threads count at " + threadCount);
                 //reset();
             }
         }

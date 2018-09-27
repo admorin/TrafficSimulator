@@ -1,12 +1,12 @@
-package Graphics;
+package Graphics.Grounds;
 
-import Primary.Lanes;
+import Graphics.Direction;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.util.LinkedList;
 import java.util.Random;
 
-class RoadDisplay extends Ground {
+public class RoadDisplay extends Ground {
 
     // RoadDisplay is currently set up to add 5 lanes to each road, 3 are ingoing,
     // 2 are outgoing. It takes in the size of the intersection, the side its
@@ -15,7 +15,7 @@ class RoadDisplay extends Ground {
     private final GraphicsContext gc;
     private final double size; // main intersection square size to fit the lanes around
 
-    private final LinkedList<LaneDisplay> lanes = new LinkedList<>();
+    private final LinkedList<LaneDisplay> lanes = new LinkedList<>(); // all the lanes within this road
     private final Random rn = new Random();
 
     public RoadDisplay(GraphicsContext gc, Direction side, double size, Ground neighbor) {
@@ -105,8 +105,7 @@ class RoadDisplay extends Ground {
     // Create all the lanes that are apart of this road
     //
     private void setLanes(Ground neighbor){
-        Boolean isVert = false;
-        if (side == Direction.NORTH || side == Direction.SOUTH)  isVert = true;
+        Boolean isVert = (side == Direction.NORTH || side == Direction.SOUTH);
 
         LaneDisplay l1 = new LaneDisplay(gc, isVert, 0, side);
         LaneDisplay l2 = new LaneDisplay(gc, isVert, 1, side);

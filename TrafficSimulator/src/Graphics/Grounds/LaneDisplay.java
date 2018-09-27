@@ -1,12 +1,14 @@
-package Graphics;
+package Graphics.Grounds;
 
+import Graphics.CarSignalDisplay;
+import Graphics.Direction;
 import Primary.Lanes;
 import Primary.SignalColor;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Paint;
 
 
-public class LaneDisplay extends Ground{
+public class LaneDisplay extends Ground {
 
     private final GraphicsContext gc;
     public final Boolean isVert; // vertical or horizontal lane
@@ -34,14 +36,20 @@ public class LaneDisplay extends Ground{
         setLanes(); // assign each LaneDisplay object a reference to the proper Lanes enum object
     }
 
+    // Used by to get reference to car signal on lane
+    //
     public CarSignalDisplay getCarSignalDisplay() {
         return this.carSignalDisplay;
     }
 
+    // Triggers the the lane sensor there is a car waiting
+    //
     public void setCarOnSensor(Boolean val){
         if (lane.getCarOnLane() != val) lane.setCarOnLane(val);
     }
 
+    // Triggers the lane sensor there is an emergency spawned
+    //
     public void setEmergencySensor(Boolean on){
         if (lane.getEmergencyOnLane() != on) lane.setEmergencyOnLane(on);
     }
@@ -90,6 +98,8 @@ public class LaneDisplay extends Ground{
            color = Paint.valueOf("#009900");
         } else if (c == SignalColor.YELLOW){
             color = Paint.valueOf("#ffff4d");
+        } else if (c == SignalColor.BLACK){
+            color = Paint.valueOf("#000000");
         }
 
         gc.setFill(color);

@@ -1,5 +1,8 @@
-package Graphics;
+package Graphics.Grounds;
 
+import Graphics.Direction;
+import Graphics.Traffic.Car;
+import Graphics.Traffic.Pedestrian;
 import Primary.Controller;
 
 import java.util.LinkedList;
@@ -16,7 +19,8 @@ public class Ground {
     // keeps track of the last Car in line on the component so if a
     // new one is spawned it knows the lead Car in front of it
     private Car last;
-    private Pedestrian pedLast;
+    private Pedestrian pedLastEW;
+    private Pedestrian pedLastNS;
     private Crossing crosswalk;
 
     private LinkedList<Car> cars = new LinkedList<>();
@@ -40,12 +44,21 @@ public class Ground {
         this.type = type; // type = 1 if Intersection, type = 0 if LaneDisplay
     }
 
+    // Sets the last car spawned on a lane component
+    //
     public void setLast(Car last){
         this.last = last;
     }
 
-    public void setLast(Pedestrian last){
-        pedLast = last;
+    // Sets the last ped spawned on a corner depending on dir
+    //
+    public void setPedLast(Pedestrian last, Boolean isVert){
+        if (isVert) {
+            pedLastNS = last;
+        } else {
+            pedLastEW = last;
+        }
+
     }
 
     // Used on Car creation to ask the object the last car in the lane
@@ -55,8 +68,14 @@ public class Ground {
         return last;
     }
 
-    public Pedestrian getLastPed(){
-        return pedLast;
+    // Used on Ped creation to ask the object the last ped on the corner
+    // so it knows which ped to check for collision
+    //
+    public Pedestrian getLastPed(Boolean isVert){
+        if (isVert) {
+            return pedLastNS;
+        }
+        return  pedLastEW;
     }
 
     public void setCrosswalk(Crossing crosswalk){
@@ -100,6 +119,10 @@ public class Ground {
         return result;
     }
 
+    // Check the passed in ped to see if it has collided
+    // with any of the other cars in the crosswalk and
+    // returns true if so
+    //
     public synchronized Boolean checkCollision(Pedestrian p){
         Boolean result = false;
         Boolean collision;
@@ -129,7 +152,7 @@ public class Ground {
     private Boolean checkBounds(Car c, Pedestrian p){
         double yDif = Math.abs(c.getCarY() -  p.getY());
         double xDif = Math.abs(c.getCarX() - p.getX());
-        return yDif < 5 && xDif < 5;
+        return yDif < 7 && xDif < 7;
     }
 
 

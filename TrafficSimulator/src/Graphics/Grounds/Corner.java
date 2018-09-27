@@ -1,5 +1,8 @@
-package Graphics;
+package Graphics.Grounds;
 
+import Graphics.Direction;
+import Graphics.Simulation;
+import Graphics.Traffic.Pedestrian;
 import Primary.Lights;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Paint;
@@ -10,6 +13,7 @@ public class Corner extends Ground{
     private GraphicsContext gc;
     private double roadLength;
     private int size = 40;
+    private int crossDepth = 15;
 
     private Lights signalNS; // corner crosswalk signal for north south traffic
     private Lights signalEW; // corner crosswalk signal for east west traffic
@@ -28,6 +32,9 @@ public class Corner extends Ground{
         return new Pedestrian(gc, this, dst);
     }
 
+    // Tells the Lights enum signal reference that there is a ped
+    // waiting on the corner depending on the ped's direction
+    //
     public void setPedOnSensor(Boolean on, Direction dir){
         if (dir == Direction.NORTH){
             if (dir == Direction.EAST) { // heading east
@@ -99,10 +106,10 @@ public class Corner extends Ground{
         } else if (road.side == Direction.EAST){
             y -= size;
         } else if (road.side == Direction.SOUTH) {
-            x += 100; // size of intersection square
+            x += Simulation.size; // size of intersection square
         } else if (road.side == Direction.WEST){
             x += roadLength - size;
-            y += 100;
+            y += Simulation.size;
         }
 
         gc.fillRect(x, y, size, size);
@@ -139,15 +146,15 @@ public class Corner extends Ground{
             // always drawing the east west signal
             gc.setFill(ewColor);
             if (side == Direction.NORTH || side == Direction.WEST) sigX += size - 5;
-            if (side == Direction.WEST || side == Direction.SOUTH) sigY += size - 15;
-            gc.fillRect(sigX, sigY, 5, 15);
+            if (side == Direction.WEST || side == Direction.SOUTH) sigY += size - crossDepth;
+            gc.fillRect(sigX, sigY, 5, crossDepth);
         } else {
             // always drawing the north south ped signal
             gc.setFill(nsColor);
             if (side == Direction.NORTH) sigY += size - 5;
             if (side == Direction.EAST) sigY += size - 5;
-            if (side == Direction.EAST || side == Direction.SOUTH) sigX += size - 15;
-            gc.fillRect(sigX, sigY, 15, 5);
+            if (side == Direction.EAST || side == Direction.SOUTH) sigX += size - crossDepth;
+            gc.fillRect(sigX, sigY, crossDepth, 5);
         }
 
     }

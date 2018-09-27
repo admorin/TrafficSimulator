@@ -1,4 +1,6 @@
-package Graphics;
+package Graphics.Grounds;
+import Graphics.Direction;
+import Graphics.Traffic.Pedestrian;
 import Primary.Lights;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Paint;
@@ -9,8 +11,9 @@ public class Crossing extends Ground {
     private GraphicsContext gc;
     private RoadDisplay road; // Reference to the road the crosswalks over
     private double roadLength;
-    private Corner start;
+    private double crosswalkDepth = 15;
 
+    private Corner start;
     private Corner dest;
     private Lights signal;
 
@@ -24,6 +27,8 @@ public class Crossing extends Ground {
         setSignal();
     }
 
+    // Used py ped to check if it can cross the road
+    //
     public Lights getSignal(){
         return signal;
     }
@@ -53,10 +58,6 @@ public class Crossing extends Ground {
         return start.spawnPed(dst);
     }
 
-
-    public Corner getCorner(){
-        return start;
-    }
 
 
     // Used by pedestrians to check which Corner is the destination
@@ -100,38 +101,39 @@ public class Crossing extends Ground {
 
 
 
-    // Draws the crosswalk and it's dashes
+    // Draws the crosswalk
+    //
     public void draw(){
         gc.setFill(Paint.valueOf("#33334d"));
 
         if (road.side == Direction.NORTH){
             this.x = road.x;
-            this.y = road.y + roadLength - 15;
-            gc.fillRect(road.x, road.y + roadLength - 15, 100, 15);
+            this.y = road.y + roadLength - crosswalkDepth;
+            gc.fillRect(road.x, road.y + roadLength - crosswalkDepth, 100, crosswalkDepth);
         }
         if (road.side == Direction.SOUTH){
             this.x = road.x;
             this.y = road.y + 4;
-            gc.fillRect(road.x, road.y + 4, 100, 15);
+            gc.fillRect(road.x, road.y + 4, 100, crosswalkDepth);
         } else if (road.side == Direction.EAST){
             this.x = road.x + 4;
             this.y = road.y;
-            gc.fillRect(road.x + 4, road.y, 15, 100);
+            gc.fillRect(road.x + 4, road.y, crosswalkDepth, 100);
 
         } else if (road.side == Direction.WEST){
-            this.x = road.x + roadLength - 15;
+            this.x = road.x + roadLength - crosswalkDepth;
             this.y = road.y;
-            gc.fillRect(road.x + roadLength - 15, road.y, 15, 100);
+            gc.fillRect(road.x + roadLength - crosswalkDepth, road.y, crosswalkDepth, 100);
         }
         drawDashes();
         start.draw();
 
     }
 
+    // Draws the crosswalk dashes
+    //
     private void drawDashes(){
         gc.setFill(Paint.valueOf("#ffffff"));
-
-        // draws the crossing dashes
         for (int i = 0; i < 10; i ++) {
             if (road.side == Direction.NORTH){
                 gc.fillRect((road.x + (10 * i) + 4), road.y + roadLength - 15, 3, 15);

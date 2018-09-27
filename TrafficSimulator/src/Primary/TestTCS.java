@@ -21,7 +21,6 @@ class TestTCS extends Thread {
             else eastwest.add(l);
         }
         while(running){
-
             if (count %  4 ==  0){
                 color1 = SignalColor.GREEN;
                 color2 = SignalColor.RED;
@@ -89,6 +88,7 @@ class TestTCS extends Thread {
                 r.setEmergencyOnLane(!r.getEmergencyOnLane());
             }
             */
+
 
             System.out.println("Loop Done...");
             try {

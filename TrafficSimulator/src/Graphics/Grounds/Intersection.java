@@ -1,25 +1,25 @@
-package Graphics;
+package Graphics.Grounds;
 
+import Graphics.Direction;
+import Graphics.Simulation;
+import Graphics.Traffic.Pedestrian;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.util.LinkedList;
 import java.util.Random;
 
-class Intersection extends Ground {
+public class Intersection extends Ground {
 
     private final GraphicsContext gc;
-    private final double size;
+    private final double size = Simulation.size;
     private LinkedList<RoadDisplay> roads = new LinkedList<>();
     private LinkedList<Crossing> crosswalks = new LinkedList<>();
 
 
-    public Intersection(GraphicsContext gc, double size){
+    public Intersection(GraphicsContext gc){
         this.gc = gc;
-        this.size = size;
         this.setPosition(gc.getCanvas().getWidth() /2 - (size/2), gc.getCanvas().getHeight() /2 - (size/2), 1);
     }
-
-
 
     // Draws the main square and all it's connecting roads
     //
@@ -137,11 +137,11 @@ class Intersection extends Ground {
         Random rn = new Random();
         int range = (crosswalks.size() - 1) + 1;
         int random =  rn.nextInt(range);
-        //random = 0; // corner being spawned on
+        //random = 0; // uncomment for specific start corner
 
         Crossing c = crosswalks.get(random);
         Crossing dest = getPedDest(c);
-        // Crossing dest = crosswalks.get(0); // crosswalk its going to get on
+        //Crossing dest = crosswalks.get(3); // uncomment for specific dest crosswalk
 
         return crosswalks.get(random).spawn(dest);
     }

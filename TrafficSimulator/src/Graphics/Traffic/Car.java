@@ -1,5 +1,9 @@
-package Graphics;
+package Graphics.Traffic;
 
+import Graphics.*;
+import Graphics.Direction;
+import Graphics.Grounds.Ground;
+import Graphics.Grounds.LaneDisplay;
 import Primary.Controller;
 import Primary.SignalColor;
 import javafx.scene.canvas.GraphicsContext;
@@ -13,6 +17,7 @@ public class Car extends Thread{
     private Ground ground; // keeps track of which Ground piece it's on, could be LaneDisplay or Intersection
     private final Ground dest; // Always the ground piece it's heading to
     public Boolean emergency; // if emergency vehicle then true
+    private double speed = 1;
 
     private final GraphicsContext gc;
     private Boolean isMoving = true;
@@ -65,7 +70,7 @@ public class Car extends Thread{
 
         this.carX = ground.x;
         this.carY = ground.y;
-        this.laneLength = (gc.getCanvas().getWidth() - 100) / 2;
+        this.laneLength = (gc.getCanvas().getWidth() - Simulation.size) / 2;
         this.destLength = laneLength;
 
         if (emergency) triggerEmergencySensor(true);
@@ -284,7 +289,7 @@ public class Car extends Thread{
 
         Ground old = ground;
         ground = ground.getIntersection(); // sets current Ground object to be intersection
-        laneLength = 100; // very important must match intersection size
+        laneLength = Simulation.size;
         isMoving = true;
 
         if (side == Direction.NORTH || side == Direction.SOUTH) {
@@ -321,7 +326,7 @@ public class Car extends Thread{
     private synchronized void switchToDest(){
         ground = dest;
         side = ground.side;
-        laneLength = (gc.getCanvas().getWidth() - 100) / 2;
+        laneLength = (gc.getCanvas().getWidth() - Simulation.size) / 2;
         isLeaving = true;
         carX = ground.x;
         carY = ground.y;
@@ -492,7 +497,7 @@ public class Car extends Thread{
                 }
             }
 
-        } else if (ground.type == 0 && !isLeaving){ // checks when to stop moving on lane or intersection
+        } else if (ground.type == 0 && !isLeaving){ // checks when to stop moving on lane to switch to intersection
             if (side == Direction.NORTH) {
                 if (carY > ground.y - height + laneLength ) {
                     isMoving = false;
@@ -505,7 +510,7 @@ public class Car extends Thread{
             }
 
             if (side == Direction.SOUTH) {
-                if (carY < ground.y){
+                if (carY < ground.y - height){
                     isMoving = false;
                     willSwitch = true;
                 } else if (carY < ground.y + 20 && !atCross){
@@ -550,30 +555,30 @@ public class Car extends Thread{
 
         if (isLeaving) {
             if (side == Direction.NORTH) {
-                carY -= 1;
+                carY -= speed;
             } else if (side == Direction.SOUTH) {
-                carY += 1;
+                carY += speed;
             }else if (side == Direction.EAST) {
-                carX += 1;
+                carX += speed;
             } else if (side == Direction.WEST) {
-                carX -= 1;
+                carX -= speed;
             }
         } else {
             if (side == Direction.NORTH) {
                 if (ground.type == 1 && pathType == 1)carX -= 0.3;
-                if (ground.type == 1 && pathType == 2) carX += 0.65;
+                if (ground.type == 1 && pathType == 2) carX += 0.6;
                 carY += 1;
             } else if (side == Direction.SOUTH) {
                 if (ground.type == 1 && pathType == 1)carX += 0.3;
-                if (ground.type == 1 && pathType == 2) carX -= 0.65;
+                if (ground.type == 1 && pathType == 2) carX -= 0.6;
                 carY -= 1;
             }else if (side == Direction.EAST) {
                 if (ground.type == 1 && pathType == 1)carY -= 0.3;
-                if (ground.type == 1 && pathType == 2) carY += 0.65;
+                if (ground.type == 1 && pathType == 2) carY += 0.6;
                 carX -= 1;
             } else if (side == Direction.WEST) {
                 if (ground.type == 1 && pathType == 1)carY += 0.3;
-                if (ground.type == 1 && pathType == 2) carY -= 0.65;
+                if (ground.type == 1 && pathType == 2) carY -= 0.6;
                 carX += 1;
             }
         }
