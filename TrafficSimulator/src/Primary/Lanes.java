@@ -19,7 +19,6 @@ public enum Lanes {
     private boolean emergencyOnLane;
     private SignalColor color;
 
-
     Lanes(boolean isTurn, boolean carOnLane, boolean emergencyOnLane, SignalColor color) {
         this.isTurn = isTurn;
         this.carOnLane = carOnLane;
