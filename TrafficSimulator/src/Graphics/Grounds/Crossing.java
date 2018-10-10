@@ -64,38 +64,16 @@ public class Crossing extends Ground {
     // depending on the direction it's going
     //
     public Corner getDest(Direction dir){
-
-        if (side == Direction.NORTH){
-            if (dir == Direction.EAST){
-                return dest;
-            } else {
-                return start;
-            }
+        switch (side) {
+            case NORTH:
+                if (dir == Direction.EAST) return dest; else return start;
+            case WEST:
+                if (dir == Direction.SOUTH) return start; else return dest;
+            case EAST:
+                if (dir == Direction.NORTH) return start; else return dest;
+            case SOUTH:
+                if (dir == Direction.EAST) return start; else return dest;
         }
-        if (side == Direction.WEST){
-            if (dir == Direction.SOUTH){
-                return start;
-            } else {
-                return dest;
-            }
-        }
-
-        if (side == Direction.EAST){
-            if (dir == Direction.NORTH){
-                return start;
-            } else {
-                return dest;
-            }
-        }
-
-        if (side == Direction.SOUTH){
-            if (dir == Direction.EAST){
-                return start;
-            } else {
-                return dest;
-            }
-        }
-
         return dest;
     }
 
@@ -106,25 +84,28 @@ public class Crossing extends Ground {
     public void draw(){
         gc.setFill(Paint.valueOf("#33334d"));
 
-        if (road.side == Direction.NORTH){
-            this.x = road.x;
-            this.y = road.y + roadLength - crosswalkDepth;
-            gc.fillRect(road.x, road.y + roadLength - crosswalkDepth, 100, crosswalkDepth);
+        switch (road.side){
+            case NORTH:
+                this.x = road.x;
+                this.y = road.y + roadLength - crosswalkDepth;
+                gc.fillRect(road.x, road.y + roadLength - crosswalkDepth, 100, crosswalkDepth);
+                break;
+            case SOUTH:
+                this.x = road.x;
+                this.y = road.y + 4;
+                gc.fillRect(road.x, road.y + 4, 100, crosswalkDepth);
+            case EAST:
+                this.x = road.x + 4;
+                this.y = road.y;
+                gc.fillRect(road.x + 4, road.y, crosswalkDepth, 100);
+                break;
+            case WEST:
+                this.x = road.x + roadLength - crosswalkDepth;
+                this.y = road.y;
+                gc.fillRect(road.x + roadLength - crosswalkDepth, road.y, crosswalkDepth, 100);
+                break;
         }
-        if (road.side == Direction.SOUTH){
-            this.x = road.x;
-            this.y = road.y + 4;
-            gc.fillRect(road.x, road.y + 4, 100, crosswalkDepth);
-        } else if (road.side == Direction.EAST){
-            this.x = road.x + 4;
-            this.y = road.y;
-            gc.fillRect(road.x + 4, road.y, crosswalkDepth, 100);
 
-        } else if (road.side == Direction.WEST){
-            this.x = road.x + roadLength - crosswalkDepth;
-            this.y = road.y;
-            gc.fillRect(road.x + roadLength - crosswalkDepth, road.y, crosswalkDepth, 100);
-        }
         drawDashes();
         start.draw();
 

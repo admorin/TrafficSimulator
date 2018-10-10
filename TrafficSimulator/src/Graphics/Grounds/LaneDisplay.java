@@ -45,7 +45,7 @@ public class LaneDisplay extends Ground {
     // Triggers the the lane sensor there is a car waiting
     //
     public void setCarOnSensor(Boolean val){
-        if (lane.getCarOnLane() != val) lane.setCarOnLane(val);
+        if (lane.isCarOnLane() != val) lane.setCarOnLane(val);
     }
 
     // Triggers the lane sensor there is an emergency spawned

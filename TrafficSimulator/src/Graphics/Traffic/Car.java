@@ -17,7 +17,8 @@ public class Car extends Thread{
     private Ground ground; // keeps track of which Ground piece it's on, could be LaneDisplay or Intersection
     private final Ground dest; // Always the ground piece it's heading to
     public Boolean emergency; // if emergency vehicle then true
-    private double speed = 1;
+
+    private double speed = 1; // Change this to increase or decrease car thread's animation speed
 
     private final GraphicsContext gc;
     private Boolean isMoving = true;
@@ -46,7 +47,7 @@ public class Car extends Thread{
     private Boolean atCross = false; // true when car is waiting at crosswalk waitng for light
 
     public Boolean collision = false; // is true when collided within intersection and stopped
-    public int needsGroundUpdate = 0; // is true when it has entered or exited the intersection
+    public int needsGroundUpdate = 0; // is 1 or 2 when it has entered or exited the intersection
 
     private final Paint[] col = {
             Paint.valueOf("#ff8888"), // Array of colors
@@ -244,13 +245,13 @@ public class Car extends Thread{
         } else {
             gc.setFill(color);
 
-            if ((pathType == 1 || pathType == 2) && ground.type == 1) {
+            if ((pathType == 1 || pathType == 2) && ground.type == 1) { // rotate for turn animation
                 if (!collision)rotation += rotationRate;
                 gc.save();
                 gc.transform(new Affine(new Rotate(rotation, carX + width/2, carY + height/2)));
                 gc.fillRect(carX, carY, width, height);
                 gc.restore();
-            } else {
+            } else { // draw normal car
                 gc.fillRect(carX, carY, width, height);
             }
         }
@@ -425,6 +426,86 @@ public class Car extends Thread{
     }
 
 
+    // Checks if the car needs to switch Ground component then
+    // moves a direction depending on the road it's on and if outgoing
+    //
+    private void move(){
+
+        if (!isLeaving) checkCollision();
+        checkBounds();
+
+        if (isLeaving) {
+            if (side == Direction.NORTH) {
+                carY -= speed;
+            } else if (side == Direction.SOUTH) {
+                carY += speed;
+            }else if (side == Direction.EAST) {
+                carX += speed;
+            } else if (side == Direction.WEST) {
+                carX -= speed;
+            }
+        } else {
+            if (side == Direction.NORTH) {
+                if (ground.type == 1 && pathType == 1)carX -= 0.3; // checks if car
+                if (ground.type == 1 && pathType == 2) carX += 0.6; // needs turning movement
+                carY += speed;
+            } else if (side == Direction.SOUTH) {
+                if (ground.type == 1 && pathType == 1)carX += 0.3;
+                if (ground.type == 1 && pathType == 2) carX -= 0.6;
+                carY -= speed;
+            }else if (side == Direction.EAST) {
+                if (ground.type == 1 && pathType == 1)carY -= 0.3;
+                if (ground.type == 1 && pathType == 2) carY += 0.6;
+                carX -= speed;
+            } else if (side == Direction.WEST) {
+                if (ground.type == 1 && pathType == 1)carY += 0.3;
+                if (ground.type == 1 && pathType == 2) carY -= 0.6;
+                carX += speed;
+            }
+        }
+    }
+
+    private Paint randomColor(){
+        Random r = new Random();
+        int range = (5 - 1) + 1;
+        int rand =  r.nextInt(range);
+        return col[rand];
+    }
+
+
+
+    // Check car thread leading this one to see if it's within bounds
+    // for collision then stops if so
+    //
+    private void checkCollision() {
+        if (ground.type == 1 && isMoving){ // if on the intersection
+            Boolean result = ground.checkCollision(this); // then check all other cars on it
+            if (result){ // result = true when car has crashed
+                color = Paint.valueOf("#ff0000");
+                isMoving = false;
+                collision = true;
+            }
+
+        } else if (lead != null) { // Check the car in front for collision
+            if (side == Direction.NORTH || side == Direction.SOUTH){
+                double yDif = Math.abs(lead.carY - carY);
+                isMoving = !(yDif < height + 5);
+                if (lead.ground != this.ground) isMoving = true;
+            } else {
+                double xDif = Math.abs(lead.carX - carX);
+                if (xDif < width + 5) {
+                    isMoving = false;
+                } else {
+                    isMoving = true;
+                }
+                if (lead.ground != this.ground) isMoving = true;
+            }
+        } else { // the car in front must've moved onto different component so start moving
+            isMoving = true;
+        }
+    }
+
+
     // Checks if the car is about to exit the current Ground object it's on
     //
     private void checkBounds() {
@@ -540,88 +621,6 @@ public class Car extends Thread{
                     needsGroundUpdate = 3;
                 }
             }
-        }
-    }
-
-
-
-    // Checks if the car needs to switch Ground component then
-    // moves a direction depending on the road it's on and if outgoing
-    //
-    private void move(){
-
-        if (!isLeaving) checkCollision();
-        checkBounds();
-
-        if (isLeaving) {
-            if (side == Direction.NORTH) {
-                carY -= speed;
-            } else if (side == Direction.SOUTH) {
-                carY += speed;
-            }else if (side == Direction.EAST) {
-                carX += speed;
-            } else if (side == Direction.WEST) {
-                carX -= speed;
-            }
-        } else {
-            if (side == Direction.NORTH) {
-                if (ground.type == 1 && pathType == 1)carX -= 0.3;
-                if (ground.type == 1 && pathType == 2) carX += 0.6;
-                carY += 1;
-            } else if (side == Direction.SOUTH) {
-                if (ground.type == 1 && pathType == 1)carX += 0.3;
-                if (ground.type == 1 && pathType == 2) carX -= 0.6;
-                carY -= 1;
-            }else if (side == Direction.EAST) {
-                if (ground.type == 1 && pathType == 1)carY -= 0.3;
-                if (ground.type == 1 && pathType == 2) carY += 0.6;
-                carX -= 1;
-            } else if (side == Direction.WEST) {
-                if (ground.type == 1 && pathType == 1)carY += 0.3;
-                if (ground.type == 1 && pathType == 2) carY -= 0.6;
-                carX += 1;
-            }
-        }
-    }
-
-    private Paint randomColor(){
-        Random r = new Random();
-        int range = (5 - 1) + 1;
-        int rand =  r.nextInt(range);
-        return col[rand];
-
-    }
-
-
-
-    // Check car thread leading this one to see if it's within bounds
-    // for collision then stops if so
-    //
-    private void checkCollision() {
-        if (ground.type == 1 && isMoving){ // if on the intersection
-            Boolean result = ground.checkCollision(this); // then check all other cars on it
-            if (result){ // result = true when car has crashed
-                color = Paint.valueOf("#ff0000");
-                isMoving = false;
-                collision = true;
-            }
-
-        } else if (lead != null) { // Check the car in front for collision
-            if (side == Direction.NORTH || side == Direction.SOUTH){
-                double yDif = Math.abs(lead.carY - carY);
-                isMoving = !(yDif < height + 5);
-                if (lead.ground != this.ground) isMoving = true;
-            } else {
-                double xDif = Math.abs(lead.carX - carX);
-                if (xDif < width + 5) {
-                    isMoving = false;
-                } else {
-                    isMoving = true;
-                }
-                if (lead.ground != this.ground) isMoving = true;
-            }
-        } else { // the car in front must've moved onto different component so start moving
-            isMoving = true;
         }
     }
 }

@@ -76,6 +76,7 @@ public class Simulation {
         }
     }
 
+
     public Boolean updateSpots(){
         synchronized (Controller.simLock) {
             for (Car c : cars) {
@@ -83,6 +84,8 @@ public class Simulation {
                 if (c.running && c.needsGroundUpdate != 0) c.updateGround();
             }
         }
+
+
         return  endSim;
     }
 

@@ -4,14 +4,13 @@ import Graphics.Direction;
 import Graphics.Simulation;
 import Graphics.Traffic.Pedestrian;
 import javafx.scene.canvas.GraphicsContext;
-
 import java.util.LinkedList;
 import java.util.Random;
 
 public class Intersection extends Ground {
 
     private final GraphicsContext gc;
-    private final double size = Simulation.size;
+    private double size = Simulation.size;
     private LinkedList<RoadDisplay> roads = new LinkedList<>();
     private LinkedList<Crossing> crosswalks = new LinkedList<>();
 
@@ -20,6 +19,7 @@ public class Intersection extends Ground {
         this.gc = gc;
         this.setPosition(gc.getCanvas().getWidth() /2 - (size/2), gc.getCanvas().getHeight() /2 - (size/2), 1);
     }
+
 
     // Draws the main square and all it's connecting roads
     //
@@ -121,6 +121,8 @@ public class Intersection extends Ground {
         return road.getRandomDest(start);
     }
 
+    // Gives the main intersection reference to it's connecting roads
+    //
     public void connectRoads(LinkedList<RoadDisplay> roads){
         this.roads = roads;
         setup();

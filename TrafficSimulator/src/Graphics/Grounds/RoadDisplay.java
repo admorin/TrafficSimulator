@@ -26,6 +26,8 @@ public class RoadDisplay extends Ground {
         setLanes(neighbor); // Set up the amount of lanes within each road
     }
 
+    // returns north, east, south, or west depending on this road's side
+    //
     public Direction getSide(){
         return side;
     }

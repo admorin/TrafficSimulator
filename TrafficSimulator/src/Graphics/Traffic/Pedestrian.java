@@ -24,6 +24,8 @@ public class Pedestrian extends Thread{
     public  Boolean collision = false;
     private Pedestrian lead;
 
+    private double speed = 1; // Change this to increase or decrease ped thread's animation speed
+
     private Boolean isMoving = true;
     private Boolean willSwitch = false;
     private int type = 0;
@@ -31,11 +33,11 @@ public class Pedestrian extends Thread{
     private Direction dir;
     private Paint color = Paint.valueOf("#ffc266");
 
-    private double pedX = 0;
-    private double pedY = 0;
+    private double pedX;
+    private double pedY;
     private int width = 10;
     private int height = 10;
-    private int groundSize = 40;
+    private int groundSize = 40; // size of corner
     private Boolean crossing = false;
 
 
@@ -125,7 +127,7 @@ public class Pedestrian extends Thread{
             } else if (collision){ // ped got nailed by a car
                 isMoving = false;
             } else if (!crossing && willSwitch){ // front of line checking ped signal
-                if (signal.getIsGreen()){
+                if (signal.getGreen()){
                     switchToCross();
                 } else if (!triggered){ // trigger the lane sensor that we're waiting
                     onLaneSensor(true);
@@ -140,7 +142,7 @@ public class Pedestrian extends Thread{
     }
 
 
-    // Triggers the lane sensor when a car is waiting at a red light
+    // Triggers the corner sensor when a ped is waiting for a crosswalk
     //
     private void onLaneSensor(Boolean on){
         Corner c = (Corner) ground;
@@ -217,13 +219,13 @@ public class Pedestrian extends Thread{
         if (type == 1) checkCollision();
 
         if (dir == Direction.NORTH){
-            pedY -= 1;
+            pedY -= speed;
         } else if(dir == Direction.SOUTH){
-            pedY += 1;
+            pedY += speed;
         } else if (dir == Direction.EAST){
-            pedX += 1;
+            pedX += speed;
         } else if (dir == Direction.WEST){
-            pedX -= 1;
+            pedX -= speed;
         }
     }
 

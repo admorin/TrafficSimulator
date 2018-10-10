@@ -141,11 +141,7 @@ public class Controller extends Thread{
                 if (collision && !willEnd) end(); // comment out just this line and you can cause huge car pile up collisions
 
                 sim.drawTraffic(); // loop over all traffic and draw new positions
-                sim.freeTraffic(); // notify all
-            } else {
-                // this shouldn't happen
-                //System.out.println("threads count at " + threadCount);
-                //reset();
+                sim.freeTraffic(); // notify all traffic they can move again
             }
         }
 
@@ -183,8 +179,6 @@ public class Controller extends Thread{
             ending = false;
             willEnd = false;
         }
-
-
     }
 
 }

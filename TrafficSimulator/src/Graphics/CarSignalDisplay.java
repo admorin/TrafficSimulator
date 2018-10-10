@@ -5,7 +5,7 @@ import Primary.SignalColor;
 public class CarSignalDisplay {
 
     private SignalColor color;  // just holds an x, y, and color
-    public double x;           // to draw light on gui dending
+    public double x;           // to draw light on gui depending
     public double y;           // on enum value
 
     public CarSignalDisplay(){}
@@ -28,8 +28,6 @@ public class CarSignalDisplay {
         }
     }
 
-    // Needs to change to handle yellow later too, not just green n red
-    //
     public void changeColor(SignalColor color)
     {
         this.color = color;

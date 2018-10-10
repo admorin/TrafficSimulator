@@ -4,7 +4,6 @@ import Graphics.Direction;
 import Graphics.Traffic.Car;
 import Graphics.Traffic.Pedestrian;
 import Primary.Controller;
-
 import java.util.LinkedList;
 
 public class Ground {

@@ -1,5 +1,4 @@
 package Primary;
-
 import java.util.LinkedList;
 
 /**
@@ -61,6 +60,8 @@ class TestTCS extends Thread {
             /*
             This is a simple way of alternating the states of signal colors on a timed basis.
              */
+
+
             if (count %  4 ==  0){
                 north_south_color = SignalColor.GREEN;
                 east_west_color = SignalColor.RED;
@@ -74,6 +75,7 @@ class TestTCS extends Thread {
                 north_south_color = SignalColor.RED;
                 east_west_color = SignalColor.YELLOW;
             }
+
 
             /*
             This changes our grouping of lanes to the colors specified above.
@@ -93,7 +95,9 @@ class TestTCS extends Thread {
 
             count ++;
 
-            //System.out.println("Loop Done...");
+
+            //testSensors();
+
             try {
                 sleep(3000);
             } catch (InterruptedException e) {
@@ -105,6 +109,20 @@ class TestTCS extends Thread {
 
     public void end(){
         running = false;
+    }
+
+    /*
+    Loops over the ped crosswalks and car lanes to
+    print if each has traffic waiting on it
+    */
+    private void testSensors() {
+        for (Lanes l : Lanes.values()) {
+            System.out.println(l.toString() + " has car waiting: " + l.isCarOnLane());
+        }
+
+        for (Lights l : Lights.values()){
+            System.out.println(l.toString() + " has ped waiting: " + l.isPedestrianAt());
+        }
     }
 
 }

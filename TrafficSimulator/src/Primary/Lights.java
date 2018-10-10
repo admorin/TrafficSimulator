@@ -28,7 +28,7 @@ public enum Lights {
         }
     }
 
-    public Boolean getIsGreen(){
+    public Boolean getGreen(){
         return isGreen;
     }
 

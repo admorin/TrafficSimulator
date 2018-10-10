@@ -1,5 +1,4 @@
 package Graphics.Grounds;
-
 import Graphics.Direction;
 import Graphics.Simulation;
 import Graphics.Traffic.Pedestrian;
@@ -15,8 +14,8 @@ public class Corner extends Ground{
     private int size = 40;
     private int crossDepth = 15;
 
-    private Lights signalNS; // corner crosswalk signal for north south traffic
-    private Lights signalEW; // corner crosswalk signal for east west traffic
+    private Lights signalNS; // crosswalk signal for north south traffic
+    private Lights signalEW; // crosswalk signal for east west traffic
 
     public Corner(GraphicsContext gc, RoadDisplay road, double roadLength){
         this.gc = gc;
@@ -36,60 +35,39 @@ public class Corner extends Ground{
     // waiting on the corner depending on the ped's direction
     //
     public void setPedOnSensor(Boolean on, Direction dir){
-        if (dir == Direction.NORTH){
-            if (dir == Direction.EAST) { // heading east
-                signalEW.setPedestrianAt(on);
-            } else { //heading south
-                signalNS.setPedestrianAt(on);
-            }
-        } else if (dir == Direction.EAST){
-            if (dir == Direction.SOUTH) { // heading south
-                signalNS.setPedestrianAt(on);
-            } else { //heading east
-                signalEW.setPedestrianAt(on);
-            }
-        } else if (dir == Direction.SOUTH){
-            if (dir == Direction.WEST) { // heading west
-                signalEW.setPedestrianAt(on);
-            } else { //heading north
-                signalNS.setPedestrianAt(on);
-            }
-        } else if (dir == Direction.WEST){
-            if (dir == Direction.NORTH) { // heading west
-                signalNS.setPedestrianAt(on);
-            } else { //heading east
-                signalEW.setPedestrianAt(on);
-            }
+
+        switch (side) {
+            case NORTH:
+                if (dir == Direction.EAST) signalEW.setPedestrianAt(on); else signalNS.setPedestrianAt(on);
+                break;
+            case EAST:
+                if (dir == Direction.SOUTH) signalNS.setPedestrianAt(on); else signalEW.setPedestrianAt(on);
+                break;
+            case SOUTH:
+                if (dir == Direction.WEST) signalEW.setPedestrianAt(on); else signalNS.setPedestrianAt(on);
+                break;
+            case WEST:
+                if (dir == Direction.NORTH) signalNS.setPedestrianAt(on); else signalEW.setPedestrianAt(on);
+                break;
         }
     }
 
     // Give corner reference to the TC ped light it should be checking for changes
     //
     public void setSignal(Lights signal){
-        if (side == Direction.NORTH){
-            if (signal == Lights.NORTH){
-                signalEW = signal;
-            } else {
-                signalNS = signal;
-            }
-        } else if (side == Direction.SOUTH){
-            if (signal == Lights.SOUTH){
-                signalEW = signal;
-            } else {
-                signalNS = signal;
-            }
-        } else if (side == Direction.EAST){
-            if (signal == Lights.EAST){
-                signalNS = signal;
-            } else {
-                signalEW = signal;
-            }
-        } else if (side == Direction.WEST){
-            if (signal == Lights.WEST){
-                signalNS = signal;
-            } else {
-                signalEW = signal;
-            }
+        switch (side){
+            case NORTH:
+                if (signal == Lights.NORTH) signalEW = signal; else signalNS = signal;
+                break;
+            case SOUTH:
+                if (signal == Lights.SOUTH) signalEW = signal; else signalNS = signal;
+                break;
+            case EAST:
+                if (signal == Lights.EAST) signalEW = signal; else signalNS = signal;
+                break;
+            case WEST:
+                if (signal == Lights.WEST) signalEW = signal; else signalNS = signal;
+                break;
         }
     }
 
@@ -130,13 +108,13 @@ public class Corner extends Ground{
         Paint nsColor;
         Paint ewColor;
 
-        if (signalNS.getIsGreen()){
+        if (signalNS.getGreen()){
             nsColor = Paint.valueOf("#009900");
         } else {
             nsColor = Paint.valueOf("#990000");
         }
 
-        if (signalEW.getIsGreen()){
+        if (signalEW.getGreen()){
             ewColor = Paint.valueOf("#009900");
         } else {
             ewColor = Paint.valueOf("#990000");
